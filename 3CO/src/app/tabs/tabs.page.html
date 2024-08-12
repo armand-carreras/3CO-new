@@ -1,0 +1,25 @@
+<ion-tabs>
+
+  <ion-tab-bar color="secondary" slot="bottom">
+    <ion-tab-button [ngClass]="{'selected': route==='labels'}" tab="labels" href="/tabs/labels">
+      <ion-icon name="pricetags-outline"></ion-icon>
+      <ion-label>Explore</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button [ngClass]="{'selected': route==='product'}" tab="product" href="/tabs/product">
+      <ion-icon name="cube-outline"></ion-icon>
+      <ion-label>Engage</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button [ngClass]="{'selected': route==='learn'}" tab="learn" href="/tabs/learn">
+      <ion-icon name="school-outline"></ion-icon>
+      <ion-label>Learn</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button [ngClass]="{'selected': route==='account'}" tab="account" href="/tabs/account">
+      <ion-icon name="settings-outline"></ion-icon>
+      <ion-label>Account</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+</ion-tabs>

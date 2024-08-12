@@ -1,0 +1,7 @@
+{
+  "name": "3CO",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

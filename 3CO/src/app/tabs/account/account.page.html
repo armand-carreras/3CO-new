@@ -1,0 +1,46 @@
+<ion-content>
+
+  <div class="profile-container">
+    <div class="mini-info">
+      <img [src]=user.avatarImg alt="Avatar" width="45%">
+      <div>
+        <ion-text color="primary"><strong><h2 class="no-margin no-padding">{{user.name}} {{user.lastName}}</h2></strong></ion-text>
+        <ion-note>{{user.email}}</ion-note>
+      </div>
+
+      <br>
+
+      <div class="scans-rewards-container">
+        <div class="info-box">
+          <ion-text color="primary">Scans</ion-text>
+          <ion-text color="tertiary"><strong>{{user.scans}}</strong></ion-text>
+        </div>
+        <div class="info-box">
+          <ion-text color="primary">Rewards</ion-text>
+          <ion-text color="tertiary"><strong>{{user.rewards}}</strong></ion-text>
+        </div>
+      </div>
+    </div>
+
+
+    <ion-list>
+      <ion-item button detail="true" lines="none" (click)="checkPersonalInfo()">
+        <ion-icon slot="start" color="primary" name="person-outline"></ion-icon>
+        <ion-label>Personal Details</ion-label>
+      </ion-item>
+      <ion-item button detail="true" lines="none" (click)="checkRewards()">
+        <ion-icon slot="start" color="primary" name="pricetag-outline"></ion-icon>
+        <ion-label>Rewards</ion-label>
+      </ion-item>
+      <ion-item button detail="true" lines="none" (click)="checkSettings()">
+        <ion-icon slot="start" color="primary" name="settings-outline"></ion-icon>
+        <ion-label>Settings</ion-label>
+      </ion-item>
+      <ion-item button detail="true" lines="none" (click)="checkVersion()">
+        <ion-icon slot="start" color="primary" name="extension-puzzle-outline"></ion-icon>
+        <ion-label>Version</ion-label>
+      </ion-item>
+    </ion-list>
+
+  </div>
+</ion-content>
