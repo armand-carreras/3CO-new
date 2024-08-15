@@ -1,13 +1,111 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>labels</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
+  <div id="home-container">
+    
+    <div id="title">
+      <ion-text color="secondary">
+        <h1>Discover the<br>eco-environment!</h1>
+      </ion-text>
+      <img src="assets/3CO/3_CO_sin_letras.png">
+    </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">labels</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+    <div id="content">
+
+      <div id="descriptive-container">
+        <div id="description">
+          <ion-text color="secondary">
+            <h4><strong>Welcome to 3-CO.</strong></h4>
+          </ion-text>
+          <ion-note>Scan labels for eco-friendly feedback</ion-note>
+        </div>
+        
+        <div class="scan-container">
+          <div id="scan-banner">
+            <ion-text color="light">
+              <p><strong>Earn your badges by <br>scanning</strong></p>
+            </ion-text>
+            <ion-button (click)="scan()" shape="round" color="primary">Scan</ion-button>
+          </div>
+          <img src="assets/3CO/QRCode_read.png">
+        </div>
+
+        <div id="discover">
+          <ion-text>
+            <p style="font-weight: bold;">Discover the Labels</p>
+          </ion-text>
+          <ion-button  color="primary" fill="clear" shape="round">
+            <ion-label id="scan-label">See all</ion-label>
+          </ion-button>
+        </div>
+
+        <div class="labels-container">
+          <div class="label-info-box">
+            <img src="assets/databases/CERTIFIED.png">
+            <ion-text color="medium">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</ion-text>
+            <div class="rating">
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star-half-outline"></ion-icon>
+            </div>
+          </div>
+          <div class="label-info-box">
+            <img src="assets/databases/fairtrade.png">
+            <ion-text color="medium">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</ion-text>
+            <div class="rating">
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star-half-outline"></ion-icon>
+            </div>
+          </div>
+          <div class="label-info-box">
+            <img src="assets/databases/RAINFOREST.png">
+            <ion-text color="medium">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</ion-text>
+            <div class="rating">
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star-half-outline"></ion-icon>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+  <ion-modal [isOpen]="modalIsOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar mode="ios">
+          <ion-title>Send Image</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setModal(false)">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <img [src]="imgEncodedPhotoBase64" alt="Your photo could not be load properly.">
+        <ion-button (click)="sendImage()" expand="block" shape="round" [disabled]="imgEncodedPhotoBase64===''">Send Image</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <ion-modal [isOpen]="resultModalTrigger">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar mode="ios">
+          <ion-title>Processed Image</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="dismissResultModal()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <img [src]="resultImage" alt="Your photo could not be load properly.">
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

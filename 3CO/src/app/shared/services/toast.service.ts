@@ -8,36 +8,44 @@ export class ToastService {
 
   constructor(private toast: ToastController) { }
 
-  public async info(msg: string){
+  public async setToast(message: string, color?: PredefinedColors, duration?: number): Promise<HTMLIonToastElement> {
     const toast = await this.toast.create({
-      message: msg,
-      animated: true,
-      color: 'success',
-      duration: 1500
-    })
-    toast.present();
+      color: color ?? 'danger',
+      duration: duration ?? 2000,
+      message: message,
+    });
     return toast;
   }
 
-  public async warning(msg: string){
+  public async setAnimatedToast(message: string, color?: PredefinedColors, duration?: number): Promise<HTMLIonToastElement> {
     const toast = await this.toast.create({
-      message: msg,
+      color: color ?? 'danger',
+      duration: duration ?? 2000,
+      message: message,
       animated: true,
-      color: 'warning',
-      duration: 1500
-    })
-    toast.present();
+    });
     return toast;
   }
 
-  public async error(msg: string){
+  public async presentAutoDismissToast(message: string, color?: PredefinedColors, duration?: number): Promise<void> {
     const toast = await this.toast.create({
-      message: msg,
+      color: color ?? 'danger',
+      duration: duration ?? 1500,
+      message: message,
       animated: true,
-      color: 'danger',
-      duration: 1500
-    })
+    });
     toast.present();
-    return toast;
   }
+
 }
+
+export type PredefinedColors =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'light'
+  | 'medium'
+  | 'dark';

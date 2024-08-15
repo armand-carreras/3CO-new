@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-account',
@@ -10,19 +11,20 @@ import { User } from 'src/app/shared/models/user';
 export class AccountPage implements OnInit {
 
   public user: User = {
-    name: 'John',
-    lastName: 'Doe',
-    location: 'Spain',
+    name: 'John Doe',
     email: 'johndoe@3co.com',
     password: '12345',
     avatarImg: '/assets/avatar/male-avatar.png',
-    scans: 341,
-    rewards: 215
+    scans: 0,
+    rewards: 0
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+    private userServ: UserService
+  ) { }
 
   ngOnInit() {
+    this.updateUser()
   }
 
   public checkPersonalInfo() {
@@ -39,6 +41,15 @@ export class AccountPage implements OnInit {
 
   public checkVersion() {
     this.router.navigate(['tabs/account/version']);
+  }
+
+  private updateUser() {
+    this.userServ.getUser().subscribe(user =>
+      {
+        console.log(user);
+        this.user = user
+      }
+    );
   }
 
 

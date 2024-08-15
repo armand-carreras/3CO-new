@@ -27,4 +27,12 @@ export class StorageService {
 
   }
 
+  public storeToken(token: string) {
+    this._storage?.set('token', token);
+  }
+
+  public getToken() {
+    return this._storage?.get('token');
+  }
+
 }

@@ -1,11 +1,10 @@
 export interface User {
 
     name: string;
-    lastName: string;
-    location: string;
+    location?: string;
     email: string;
     password: string;
     avatarImg: string;
-    scans: number;
-    rewards: number;
+    scans?: number;
+    rewards?: number;
 }

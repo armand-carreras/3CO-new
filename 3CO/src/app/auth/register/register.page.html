@@ -1,13 +1,31 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>register</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">register</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <div class="register-container">
+
+    <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
+    
+    <div class="input-container">
+      <ion-text><h3><strong>Sign Up</strong></h3></ion-text>
+      <br>
+      <ion-input [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder="Enter name" ></ion-input>
+      <br>
+      <ion-input [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
+      <br>
+      <ion-input [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Enter password">
+        <ion-input-password-toggle></ion-input-password-toggle>
+      </ion-input>
+      <br>
+      <ion-input [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Re-enter password">
+        <ion-input-password-toggle></ion-input-password-toggle>
+      </ion-input>
+      <br>
+      <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="register()">Sign Up</ion-button>
+      <br>
+      <div class="links-container">
+        Already have an account. <a href="auth/login">Sign In</a>
+      </div>
+    </div>
+
+  </div>
+
 </ion-content>

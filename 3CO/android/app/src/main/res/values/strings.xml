@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">3CO</string>
+    <string name="title_activity_main">3CO</string>
+    <string name="package_name">eu.project.threeco</string>
+    <string name="custom_url_scheme">eu.project.threeco</string>
+</resources>

@@ -1,31 +1,32 @@
 <ion-content>
-<div class="login-container">
-
-  <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
   
-  <div class="input-container">
-    <ion-text><h3><strong>Sign In</strong></h3></ion-text>
-    <br>
-    <ion-input label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
-    <br>
-    <ion-input label="Password" shape="round" label-placement="stacked" fill="outline" placeholder="Enter password"></ion-input>
-    <br>
-    <ion-button expand="full" shape="round">Sign In</ion-button>
-    <br>
-    <div class="links-container">
-      <a href="auth/register">Register</a> <a href="auth/password-recovery">Forgot Password?</a>
+  <div class="login-container">
+
+    <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
+    
+    <div class="input-container">
+      <ion-text><h3><strong>Sign In</strong></h3></ion-text>
+      <br>
+      <ion-input [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
+      <br>
+      <ion-input [(ngModel)]="password" type="password" label="Password" shape="round" label-placement="stacked" fill="outline" placeholder="Enter password"></ion-input>
+      <br>
+      <ion-button expand="full" shape="round" (click)="login()">Sign In</ion-button>
+      <br>
+      <div class="links-container">
+        <a href="auth/register">Register</a> <a href="auth/password-recovery">Forgot Password?</a>
+      </div>
     </div>
-  </div>
 
 
-  <div class="guest-container">
-    <div class="guest-text">
-      <ion-text>Start as a guest.</ion-text>
-      <ion-note color="danger">(Some content may not be available)</ion-note>
+    <div class="guest-container">
+      <div class="guest-text">
+        <ion-text>Start as a guest.</ion-text>
+        <ion-note color="danger">(Some content may not be available)</ion-note>
+      </div>
+      <ion-button shape="round" fill="outline" size="small" (click)="startAsGuest()">Log as Guest</ion-button>
     </div>
-    <ion-button shape="round" fill="outline" size="small" (click)="startAsGuest()">Log as Guest</ion-button>
-  </div>
 
-</div>
+  </div>
 
 </ion-content>

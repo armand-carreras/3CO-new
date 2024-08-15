@@ -4,6 +4,8 @@ import { ToastService } from './toast.service';
 import { LoadingController } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Photo } from '@capacitor/camera';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +23,7 @@ export class PhotoHandlingService {
     const formData = new FormData();
     formData.append('file', this.base64toBlob(base64File), 'file.jpg');
 
-    return this.http.post<any>(environment.endpoints.base+environment.endpoints.image_detection, formData);
+    return this.http.post<any>(environment.paths.base_detection_api+environment.paths.image_detection, formData);
   }
 
   private base64toBlob(base64Data: string) {
@@ -34,24 +36,22 @@ export class PhotoHandlingService {
     return new Blob([byteArray], { type: 'application/octet-stream' });
   }
 
+  /* public async sendBase64ImageToUpload( image:  string, endpoint?: string ) {
+    const body = new FormData();
+    console.debug(image);
+    body.append('encoded_image', image);
+
+    const url = 'http://127.0.0.1:8000/upload/';
+    const httpHeaders: HttpHeaders = new HttpHeaders()
+      .append('accept','multipart/form-data')
 
 
-  // public async sendBase64ImageToEndpoint( image:  string, endpoint?: string ) {
-  //   const body = new FormData();
-  //   console.debug(image);
-  //   body.append('encoded_image', image);
+    const loader = await this.loader.create( { message: "Sending Image..." });
+    loader.present();
+    return await firstValueFrom(this.http.post( endpoint ?? url, body, {headers: httpHeaders}))
+    .then((response)=>{console.log(response)})
+    .catch((error)=>{console.error('ERROR on request: ', JSON.stringify(error))})
+    .finally(()=>{loader.dismiss();console.log('request concluded')})
 
-  //   const url = 'http://127.0.0.1:8000/upload/';
-  //   const httpHeaders: HttpHeaders = new HttpHeaders()
-  //     .append('accept','multipart/form-data')
-
-
-  //   const loader = await this.loader.create( { message: "Sending Image..." });
-  //   loader.present();
-  //   return await firstValueFrom(this.http.post( endpoint ?? url, body, {headers: httpHeaders}))
-  //   .then((response)=>{console.log(response)})
-  //   .catch((error)=>{console.error('ERROR on request: ', JSON.stringify(error))})
-  //   .finally(()=>{loader.dismiss();console.log('request concluded')})
-
-  // }
+   } */
 }

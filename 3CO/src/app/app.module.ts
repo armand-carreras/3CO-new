@@ -10,6 +10,7 @@ import { StorageService } from './shared/services/storage.service';
 import { ThemeService } from './shared/services/theme.service';
 import { SQLiteService } from './shared/services/SQLite/sqlite.service';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { provideHttpClient} from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +24,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     StorageService,
     ThemeService,
     SQLiteService,
+    provideHttpClient(),
     { 
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
