@@ -15,10 +15,7 @@
     .input-container {
         width: 90%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
+        display: inline-grid;
         h3{
             margin:0;
         }
@@ -57,4 +54,8 @@
             font-size: 0.5rem;
         }
     }
+}
+
+.padding-bottom{
+    padding-bottom: 1.5rem;
 }

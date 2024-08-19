@@ -7,7 +7,7 @@ import { environment } from './environments/environment';
 import { enableProdMode } from '@angular/core';
 // Call the element loader before the bootstrapModule/bootstrapApplication call
 
-defineCustomElements(window);
+
 if (environment.production) {
   enableProdMode();
 }
