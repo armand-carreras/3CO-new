@@ -30,29 +30,28 @@ export class LabelSQLiteHandlerService {
     return this.conn;
   }
 
-  initializeApp() {
-    this.platform.ready().then(async () => {
+  async initializeApp() {
+    await this.platform.ready().then(async () => {
       await this._sqlite.initializePlugin().then(async ret => {
         this.initPlugin = ret;
         console.log('>>>> in App  this.initPlugin ' + this.initPlugin);
         await this.connectToDBFile();
       });
     });
+    await this._sqlite.initWebStore();
   }
 
   async connectToDBFile() {
 
-    await this._sqlite.copyFromAssets();
-    this.conn = await this._sqlite.createConnection('chinook',false,'no-encrypted',1);
+    this.conn = await this._sqlite.retrieveConnection('ecolabel',false );
     if(this.conn) { this.connected=true; }
  
-
   }
 
 
   // Function to copy the SQLite database file
   async getDatabaseFile() {
-    const sourcePath = 'assets/3COLabelDatabase/chinook.db'; // Path to your existing SQLite database file
+    const sourcePath = 'assets/3COLabelDatabase/ecolabel.db'; // Path to your existing SQLite database file
 
     try {
         return await Filesystem.getUri({path: sourcePath, directory: Directory.Data});
@@ -60,6 +59,11 @@ export class LabelSQLiteHandlerService {
         console.error('Error getting database file uri:', error);
         return -1;
     }
+  }
+
+  async getLabels() {
+    const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "data" d');
+    console.log(sqliteValues.values);
   }
 
 

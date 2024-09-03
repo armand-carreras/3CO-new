@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeService } from './shared/services/theme.service';
 import { StorageService } from './shared/services/storage.service';
 import { LabelSQLiteHandlerService } from './shared/services/SQLite/label-sqlite-handler.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-root',
@@ -14,17 +15,19 @@ export class AppComponent implements OnInit {
     private storageServ: StorageService,
     private labelService: LabelSQLiteHandlerService
   ) { 
-    this.labelService.initializeApp();
-   }
-
+    
+  }
+  
   async ngOnInit(){
+    
+    await this.labelService.initializeApp();
+    await this.labelService.getLabels();
 
-    if (document.querySelector('jeep-sqlite') === null) {
-      const jeepSqlite = document.createElement('jeep-sqlite');
-      document.body.appendChild(jeepSqlite);
-    }
     
     await this.storageServ.init();
     await this.themeServ.initTheme();
   }
+
+
+ 
 }
