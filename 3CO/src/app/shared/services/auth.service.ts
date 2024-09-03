@@ -7,6 +7,7 @@ import { ToastService } from './toast.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
+import * as crypto from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,8 @@ export class AuthService {
 
   private token: BehaviorSubject<string> = new BehaviorSubject('');
 
+  private isGuest: boolean = true;
+
   constructor(
     private router: Router,
     private toastServ: ToastService,
@@ -29,6 +32,11 @@ export class AuthService {
     private userService: UserService
   ) {
     this.loadToken();
+  }
+
+
+  get isUserGuest() {
+    return this.isGuest;
   }
 
   get token$() {
@@ -77,6 +85,7 @@ export class AuthService {
       tap((res)=> {
         console.log("Resource from login: ",res);
         this.setToken(res.token);
+        this.isGuest = false;
       }),
       map((res)=> res.token)
     );
@@ -121,3 +130,10 @@ export class AuthService {
   }
 
 }
+
+
+const key = crypto.enc.Hex.parse(environment.passphrase);
+const iv = crypto.enc.Hex.parse(environment.AESiv);
+// encrypt
+export const aesEncryptor = crypto.algo.AES.createEncryptor(key, { iv: iv });
+export const aesDecryptor = crypto.algo.AES.createDecryptor(key, { iv: iv });

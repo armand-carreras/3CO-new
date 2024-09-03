@@ -6,6 +6,9 @@ import { CameraService } from 'src/app/shared/services/camera.service';
 import { PhotoHandlingService } from 'src/app/shared/services/photo-handling.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 
+
+
+
 @Component({
   selector: 'app-labels',
   templateUrl: './labels.page.html',
@@ -13,6 +16,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 })
 export class LabelsPage implements OnInit {
 
+  public rtspModal: boolean = false;
   private isModalOpen: boolean;
   private isResultModalOpen: boolean = false;
   private photo!: Photo;
@@ -63,6 +67,9 @@ export class LabelsPage implements OnInit {
   /**
    * Buttons interaction
    */
+  public showRTSPModal() {
+    this.rtspModal = !this.rtspModal;
+  }
 
   public dismissResultModal() {
     this.isResultModalOpen = false;
@@ -139,5 +146,9 @@ export class LabelsPage implements OnInit {
     }
   }
 
+
+
+
+  
 
 }

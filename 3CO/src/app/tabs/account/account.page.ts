@@ -11,9 +11,8 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class AccountPage implements OnInit {
 
   public user: User = {
-    name: 'John Doe',
-    email: 'johndoe@3co.com',
-    password: '12345',
+    name: 'Guest User',
+    email: 'guest@3co.none',
     avatarImg: '/assets/avatar/male-avatar.png',
     scans: 0,
     rewards: 0

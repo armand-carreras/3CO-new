@@ -56,11 +56,13 @@ export class PersonalDetailsPage implements OnInit {
 
   }
 
-  private setUser(user: User) {
+  private setUser( user: User ) {
     this.user = user;
     this.newName = user.name;
     this.newEmail = user.email;
-    this.newPassword = user.password;
+    if( user.password ) {
+      this.newPassword = user.password;
+    }
   }
 
 }

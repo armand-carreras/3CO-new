@@ -36,3 +36,11 @@ export class StorageService {
   }
 
 }
+
+
+const userKeys = {
+  name: 'userName',
+  scans: 'userScans',
+  rewards: 'userRewards',
+  
+}

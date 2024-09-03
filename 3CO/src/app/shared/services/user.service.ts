@@ -12,17 +12,30 @@ export class UserService {
   private user: BehaviorSubject<User> = new BehaviorSubject<User>(
     {
       avatarImg: '/assets/avatar/male-avatar.png',
-      email: 'johndoe@3co.com',
-      name: 'John Doe',
+      email: 'guest@3co.com',
+      name: 'Guest User',
       password: 'pass',
       scans: 0,
       rewards: 0
     }
   );
+  private isGuest: boolean = true;
 
   private password: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   constructor(private storage: StorageService) { }
+
+  
+  get isUserGuest() {
+    return this.isGuest;
+  }
+
+  set setUserNotGuest( toggle: boolean ) {
+    this.isGuest = toggle;
+  }
+
+
+
 
   //Set user value
   public setUser(user: User) {
