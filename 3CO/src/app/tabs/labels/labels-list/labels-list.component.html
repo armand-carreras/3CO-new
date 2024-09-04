@@ -3,8 +3,9 @@
   <div class="label-list-container">
 
     <div class="header">
-      <img class="main-img" src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
-      <ion-chip>
+        <img (click)="goToMainPage()" class="main-img" src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
+    
+      <ion-chip (click)="goToProfile()">
         <ion-avatar >
           <img src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
         </ion-avatar>
@@ -55,9 +56,24 @@
   <ion-modal #modal trigger="open-modal" [initialBreakpoint]="0.5" [breakpoints]="[ 0, 0.5 ]">
     <ng-template>
       <ion-content>
-        <ion-button id="open-modal" fill="transparent" shape="round" >
-          <ion-icon style="font-size: 1.5rem;" name="close-outline" color="primary"></ion-icon>
-        </ion-button>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Filters</ion-title>
+            <ion-buttons slot="end">
+              <ion-button color="primary" (click)="applyFilters()">Apply</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-text>Shape</ion-text>
+        <div class="shapes-container">
+          <ion-chip><div class="square"></div></ion-chip>
+          <ion-chip><div class="rectangle"></div></ion-chip>
+          <ion-chip><div class="circle"></div></ion-chip>
+          <ion-chip><div class="triangle"></div></ion-chip>
+          <ion-chip><div class="hexagon"></div></ion-chip>
+          <ion-chip><div class="octagon"></div></ion-chip>
+        </div>
+
 
       </ion-content>
     </ng-template>

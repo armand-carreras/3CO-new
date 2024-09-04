@@ -43,3 +43,41 @@
         flex: 1;
     }
 }
+
+
+ion-chip > div {
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--ion-color-primary);
+}
+.hexagon {
+    -webkit-clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+}
+.circle {
+    border-radius: 50%;
+}
+.rectangle{
+    max-height: 1rem;
+}
+.triangle {
+    width: 0; 
+    max-height: 0; 
+    border-left: 1rem solid transparent;
+    border-right: 1rem solid transparent;
+    background: transparent!important;
+    border-bottom: 1.5rem solid var(--ion-color-primary);
+}
+
+.octagon {
+    width: 1.5rem;
+    aspect-ratio: 1;
+    --o:calc(50%*tan(-22.5deg));
+    clip-path: polygon(
+      var(--o) 50%,
+      50% var(--o),
+      calc(100% - var(--o)) 50%,
+      50% calc(100% - var(--o))
+    );
+    background: #3B8686;
+  }

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { firstValueFrom, Subscription, tap } from 'rxjs';
 import { Label } from 'src/app/shared/models/label';
 import { User } from 'src/app/shared/models/user';
@@ -22,7 +23,8 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   constructor(
     private labelsService: LabelSQLiteHandlerService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { 
   }
   
@@ -42,6 +44,16 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   public handleSearchBarInput(ev: any) {
     console.log(ev);
+  }
+
+  public goToProfile(){
+    this.router.navigate(['/tabs/account']);
+  }
+  public goToMainPage() {
+    this.router.navigate(['/tabs/labels']);
+  }
+  public applyFilters(){
+    console.log('applyfilters');
   }
 
 
