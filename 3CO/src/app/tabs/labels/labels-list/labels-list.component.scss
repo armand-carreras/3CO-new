@@ -1,0 +1,45 @@
+.label-list-container {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem 1rem;
+    .header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .main-img{
+            width: 15%;
+            height: auto;
+        }
+    }
+    .title-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        //margin: 0.5rem 1rem;
+    }
+    .searchbar-filter{
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        //margin: 0 1rem;
+        justify-content: space-between;
+        align-items: center;
+        ion-searchbar {
+            --background: #7e7e7e30;
+            --border-radius: 15px;
+        }
+    }
+    .all-categories-container {
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+    }
+}

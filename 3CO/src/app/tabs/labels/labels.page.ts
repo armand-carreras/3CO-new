@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
 import { LoadingController, Platform } from '@ionic/angular';
 import { firstValueFrom, tap } from 'rxjs';
@@ -16,7 +17,6 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 })
 export class LabelsPage implements OnInit {
 
-  public rtspModal: boolean = false;
   private isModalOpen: boolean;
   private isResultModalOpen: boolean = false;
   private photo!: Photo;
@@ -24,6 +24,7 @@ export class LabelsPage implements OnInit {
   private receivedBase64Image: string = '';
 
   constructor(
+    private router: Router,
     private platform: Platform,
     private cameraService: CameraService,
     private photoService: PhotoHandlingService,
@@ -64,12 +65,6 @@ export class LabelsPage implements OnInit {
     console.log('Working Home component');
   }
 
-  /**
-   * Buttons interaction
-   */
-  public showRTSPModal() {
-    this.rtspModal = !this.rtspModal;
-  }
 
   public dismissResultModal() {
     this.isResultModalOpen = false;
@@ -103,6 +98,10 @@ export class LabelsPage implements OnInit {
     } else {
       this.webScan();
     }
+  }
+
+  public seeMoreLabels() {
+    this.router.navigate(['/tabs/labels/label-list']);
   }
 
   private async mobileScan() {

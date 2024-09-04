@@ -16,9 +16,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
-
 // --> Below only required if you want to use a web platform
 const platform = Capacitor.getPlatform();
 if(platform === "web") {
@@ -38,3 +35,9 @@ if(platform === "web") {
 
     });
 }
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.log(err));
+
+
+  

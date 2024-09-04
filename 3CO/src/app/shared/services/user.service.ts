@@ -39,7 +39,6 @@ export class UserService {
 
   //Set user value
   public setUser(user: User) {
-    console.log('Updating user info.');
     this.user.next(user);
     this.storage.set('user', user);
   }

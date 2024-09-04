@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Camera, CameraResultType, PermissionStatus, Photo } from '@capacitor/camera';
-import { Directory, Filesystem } from '@capacitor/filesystem';
 
 @Injectable({
   providedIn: 'root'

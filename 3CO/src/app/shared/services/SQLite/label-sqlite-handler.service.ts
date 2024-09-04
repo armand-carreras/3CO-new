@@ -1,18 +1,111 @@
-import { Injectable } from '@angular/core';
-import { Directory, Filesystem } from '@capacitor/filesystem';
 import { SQLiteDBConnection } from '@capacitor-community/sqlite';
+import { Injectable} from '@angular/core';
 import { SQLiteService } from './sqlite.service';
-import { Platform } from '@ionic/angular';
-
-const DB_LABELS = 'assets/3COLabelDatabase/chinool.db';
+import { DbnameVersionService } from './dbname-version.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { User } from '../../models/user';
+import { UserUpgradeStatements } from './user.upgrade.statements';
+import { Label } from '../../models/label';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class LabelSQLiteHandlerService {
+    public allList: BehaviorSubject<Label[]> =
+                                new BehaviorSubject<Label[]>([]);
+    private databaseName: string = "";
+    private uUpdStmts: UserUpgradeStatements = new UserUpgradeStatements();
+    private versionUpgrades;
+    private loadToVersion;
+    private db!: SQLiteDBConnection;
+    private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+    constructor(private sqliteService: SQLiteService,
+                private dbVerService: DbnameVersionService) {
+        this.versionUpgrades = this.uUpdStmts.userUpgrades;
+        this.loadToVersion = this.versionUpgrades[this.versionUpgrades.length-1].toVersion;
+    }
+    async initializeDatabase(dbName: string) {
+        this.databaseName = dbName;
+        // create upgrade statements
+       /*  await this.sqliteService
+        .addUpgradeStatement({  database: this.databaseName,
+                                upgrade: this.versionUpgrades}); */
+        // create and/or open the database
+        this.db = await this.sqliteService.openDatabase(
+                                            this.databaseName,
+                                            false,
+                                            'no-encryption',
+                                            this.loadToVersion,
+                                            false
+        );
+        this.dbVerService.set(this.databaseName,this.loadToVersion);
+        await this.getAll();
+    }
+    
+    // Is Labels Get already done?
+    allState() {
+        return this.isAllReady.asObservable();
+    }
+    
+    // Labels Observable
+    fetchAll(): Observable<Label[]> {
+        return this.allList.asObservable();
+    }
+
+    //Query all Data
+    async loadAll() {
+      const results = (await this.db.query('SELECT * FROM "data"')).values as Label[];
+      this.allList.next(results);
+    }
+
+    // CRUD Operations
+    async getAll() {
+        await this.loadAll();
+        this.isAllReady.next(true);
+    }
+
+    async updateUserById(id: string, active: number) {
+        const sql = `UPDATE users SET active=${active} WHERE id=${id}`;
+        await this.db.run(sql);
+        await this.getAll();
+    }
+    async deleteUserById(id: string) {
+        const sql = `DELETE FROM users WHERE id=${id}`;
+        await this.db.run(sql);
+        await this.getAll();
+    }
+}
 
 
-  private initPlugin!: boolean;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* private initPlugin!: boolean;
   private conn!: SQLiteDBConnection;
   private connected = false;
 
@@ -43,7 +136,7 @@ export class LabelSQLiteHandlerService {
 
   async connectToDBFile() {
 
-    this.conn = await this._sqlite.retrieveConnection('ecolabel',false );
+    this.conn = await this._sqlite.('ecolabel.db',false );
     if(this.conn) { this.connected=true; }
  
   }
@@ -68,3 +161,4 @@ export class LabelSQLiteHandlerService {
 
 
 }
+ */
