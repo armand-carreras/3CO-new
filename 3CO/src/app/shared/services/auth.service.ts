@@ -74,9 +74,12 @@ export class AuthService {
      * @param password Password of the user
      */
   public login(email: string, password: string): Observable<string> {
+
     const URL = environment.paths.base_api+environment.paths.login;
-    const body = {'email': email, 'password':password};
+    const hashPassword = crypto.SHA256(password).toString();
+    const body = {'email': email, 'password': hashPassword};
     this.userService.setPassword(password);
+
     return this.http.post<{token: string}>(
       URL,
       JSON.stringify(body),
@@ -100,10 +103,11 @@ export class AuthService {
    */
   public register(user: string, email: string, password: string): Observable<any> {
     const URL = environment.paths.base_api+environment.paths.post_get_user;
+    const hashPassword = crypto.SHA256(password).toString();
     const body = {
       "name": user,
       "email": email,
-      "password": password
+      "password": hashPassword
     };
     
     console.log('Starting Registration');

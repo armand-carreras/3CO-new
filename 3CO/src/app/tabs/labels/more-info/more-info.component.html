@@ -1,0 +1,46 @@
+<div class="more-info-container">
+  <div class="header">
+    <ion-button (click)="goBack()" color="transparent" fill="clear">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-text><h3>{{label.name}}</h3></ion-text>
+  </div>
+
+  <div class="info-body">
+    <img src="assets/databases/No_Image_Available.jpg">
+
+    <ion-text><h3>Origin</h3></ion-text>
+    <ion-note>{{label.country}}</ion-note>
+
+    <ion-text><h3>Description</h3></ion-text>
+    <ion-note>{{label.description}}</ion-note>
+
+    <ion-text><h3>Colours</h3></ion-text>
+    <ion-note>{{label.mainColor}}</ion-note>
+
+    <ion-text><h3>Keywords</h3></ion-text>
+    <ion-note>{{label.keywords}}</ion-note>
+  </div>
+
+  <div class="ranking-container">
+    <div class="rank-box">
+      <ion-icon name="star"></ion-icon>
+      <ion-text>
+        {{ranking1}}
+      </ion-text>
+    </div>
+    <div class="rank-box">
+      <ion-icon name="star"></ion-icon>
+      <ion-text>
+        {{ranking2}}
+      </ion-text>
+    </div>
+    <div class="rank-box">
+      <ion-icon name="star"></ion-icon>
+      <ion-text>
+        {{ranking3}}
+      </ion-text>
+    </div>
+  </div>
+
+</div>

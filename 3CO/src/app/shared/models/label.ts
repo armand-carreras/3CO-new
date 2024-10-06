@@ -1,5 +1,5 @@
 export interface Label {
-  logo: Blob;
+  logo: string;
   name: string;
   establishmentYear: string;
   description: string;
@@ -14,7 +14,38 @@ export interface Label {
   managingOrganization: string;
   website: string;
   ranking: string;
-}
+};
+
+export type COLOR = (
+  'Brown' 
+  | 'Black' 
+  | 'White' 
+  | 'Green' 
+  | 'Blue' 
+  | 'Red' 
+  | 'Purple' 
+  | 'Turquoise' 
+  | 'Yellow' 
+  | 'Orange' 
+  | 'Gold' 
+  | 'Grey' 
+  | undefined
+);
+
+export const ColorList: string[] = [
+  'Brown' 
+  ,'Black' 
+  ,'White' 
+  ,'Green' 
+  ,'Blue' 
+  ,'Red' 
+  ,'Purple' 
+  ,'Turquoise' 
+  ,'Yellow' 
+  ,'Orange' 
+  ,'Gold' 
+  ,'Grey'
+];
 
 export type CATEGORIES = (
   'Food'

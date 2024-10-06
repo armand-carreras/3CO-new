@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {  NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -8,6 +8,7 @@ import { LabelsPageRoutingModule } from './labels-routing.module';
 
 import { LabelsPage } from './labels.page';
 import { LabelsListComponent } from './labels-list/labels-list.component';
+import { MoreInfoComponent } from './more-info/more-info.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { LabelsListComponent } from './labels-list/labels-list.component';
     IonicModule,
     LabelsPageRoutingModule
   ],
-  declarations: [LabelsPage, LabelsListComponent]
+  declarations: [LabelsPage, LabelsListComponent, MoreInfoComponent],
+  schemas: []
 })
 export class LabelsPageModule {}

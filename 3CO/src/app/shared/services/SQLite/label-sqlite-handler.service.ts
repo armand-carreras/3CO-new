@@ -3,7 +3,6 @@ import { Injectable} from '@angular/core';
 import { SQLiteService } from './sqlite.service';
 import { DbnameVersionService } from './dbname-version.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../../models/user';
 import { UserUpgradeStatements } from './user.upgrade.statements';
 import { Label } from '../../models/label';
 
@@ -56,8 +55,10 @@ export class LabelSQLiteHandlerService {
 
     //Query all Data
     async loadAll() {
-      const results = (await this.db.query('SELECT * FROM "data"')).values as Label[];
-      this.allList.next(results);
+      const results = (await this.db.query('SELECT * FROM "data"')).values;
+      const labels = results ? this.parseLabels(results) : [];
+      console.log('------------- Parsed Labels: ', JSON.stringify(labels));
+      this.allList.next(labels);
     }
 
     // CRUD Operations
@@ -75,6 +76,84 @@ export class LabelSQLiteHandlerService {
         const sql = `DELETE FROM users WHERE id=${id}`;
         await this.db.run(sql);
         await this.getAll();
+    }
+
+    async getFromNameString(name: string) {
+      const query = `SELECT * 
+        FROM "data" d 
+        WHERE "NAME" LIKE "%${name}%" OR "KEY WORDS" LIKE "%${name}%";
+      `;
+      const results = ( await this.db.query(query) ).values;
+      const labels = results ? this.parseLabels(results) : [];
+      return labels;
+    }
+    async getRandomLabels(): Promise<Label[]> {
+      const query = `SELECT * FROM "data" d ORDER BY random() LIMIT 5;`;
+      const results = ( await this.db.query(query) ).values;
+      const labels = results ? this.parseLabels(results) : [];
+      return labels;
+    }
+
+    async getFilteredLabels(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]) {
+      const query = this.generateSQLQuery(selectedShapes, selectedColours, selectedCategories);
+      const results = ( await this.db.query(query) ).values;
+      const labels = results ? this.parseLabels(results) : [];
+      return labels;
+    }
+
+    private generateSQLQuery(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]): string {
+      let conditions = [];
+
+      // Add shape conditions if any shapes are selected
+      if (selectedShapes.length > 0) {
+        let shapeConditions = selectedShapes.map(shape => `"SHAPE" LIKE '%${shape}%'`).join(' OR ');
+        conditions.push(`(${shapeConditions})`);
+      }
+
+      // Add color conditions if any colors are selected
+      if (selectedColours.length > 0) {
+        let colorConditions = selectedColours.map(color => `"MAIN COLOR" LIKE '%${color}%'`).join(' OR ');
+        conditions.push(`(${colorConditions})`);
+      }
+
+      // Add category conditions if any categories are selected
+      if (selectedCategories.length > 0) {
+        let categoryConditions = selectedCategories.map(category => `"CATEGORY" LIKE '%${category}%'`).join(' OR ');
+        conditions.push(`(${categoryConditions})`);
+      }
+
+      // Construct the final query
+      let sqlQuery = `
+        SELECT * 
+        FROM "data" d 
+        WHERE ${conditions.join(' AND ')};
+      `;
+
+      return sqlQuery;
+    }
+
+
+    private parseLabels(results: any[]) {
+      return results?.map<Label>(res=> {
+        const newLabel: Label = {
+          logo: res['LOGO'],
+          name: res['NAME'],
+          establishmentYear: res['YEAR OF EST.'],
+          description: res['DESCRIPTION'],
+          shortDescription: res['USER-FRIENDLY DESCRIPTION'],
+          category: res['CATEGORY'],
+          subCategory: res['SUB-CATEGORY'],
+          country: res['COUNTRY'],
+          keywords: res['KEY WORDS'],
+          mainColor: res['MAIN COLOR'],
+          shape: res['SHAPE'],
+          conformityAssesment: res['CONFORMITY ASSESSMENT'],
+          managingOrganization: res['MANAGING ORGANIZATION'],
+          website: res['WEBSITE'],
+          ranking: `${res['Startseite – Siegelklarheit']};${res['https://label-online.de/ ']};${res['https://www.commonshare.com/ratings/standard-owners-benchmark']}`
+        }
+        return newLabel;
+      });
     }
 }
 

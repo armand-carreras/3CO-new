@@ -39,33 +39,17 @@
         </div>
 
         <div class="labels-container">
-          <div class="label-info-box">
-            <img src="assets/databases/CERTIFIED.png">
-            <ion-text class="truncate-text" color="medium">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</ion-text>
-            <div class="rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star-half-outline"></ion-icon>
+          @for(label of fiveRandomLabels; track label){
+            <div class="label-info-box">
+              <img src="assets/databases/CERTIFIED.png">
+              <ion-text class="truncate-text" color="medium">{{label.description}}</ion-text>
+              <div class="rating">
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star-half-outline"></ion-icon>
+              </div>
             </div>
-          </div>
-          <div class="label-info-box">
-            <img src="assets/databases/fairtrade.png">
-            <ion-text class="truncate-text" color="medium">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</ion-text>
-            <div class="rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star-half-outline"></ion-icon>
-            </div>
-          </div>
-          <div class="label-info-box">
-            <img src="assets/databases/RAINFOREST.png">
-            <ion-text class="truncate-text" color="medium">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</ion-text>
-            <div class="rating">
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star"></ion-icon>
-              <ion-icon name="star-half-outline"></ion-icon>
-            </div>
-          </div>
+          }  
         </div>
 
 

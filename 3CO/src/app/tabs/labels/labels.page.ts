@@ -3,8 +3,10 @@ import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
 import { LoadingController, Platform } from '@ionic/angular';
 import { firstValueFrom, tap } from 'rxjs';
+import { Label } from 'src/app/shared/models/label';
 import { CameraService } from 'src/app/shared/services/camera.service';
 import { PhotoHandlingService } from 'src/app/shared/services/photo-handling.service';
+import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 
 
@@ -16,12 +18,14 @@ import { ToastService } from 'src/app/shared/services/toast.service';
   styleUrls: ['./labels.page.scss'],
 })
 export class LabelsPage implements OnInit {
-
+  
   private isModalOpen: boolean;
   private isResultModalOpen: boolean = false;
   private photo!: Photo;
   private base64Image: string = '';
   private receivedBase64Image: string = '';
+  private randomLabels: Label[] = [];
+
 
   constructor(
     private router: Router,
@@ -29,6 +33,7 @@ export class LabelsPage implements OnInit {
     private cameraService: CameraService,
     private photoService: PhotoHandlingService,
     private toastServ: ToastService,
+    private labelService: LabelSQLiteHandlerService,
     private loaderCntr: LoadingController
   ) {
     this.isModalOpen = false;
@@ -61,8 +66,13 @@ export class LabelsPage implements OnInit {
     return result;
   }
 
-  ngOnInit() {
+  get fiveRandomLabels() {
+    return this.randomLabels;
+  }
+
+  async ngOnInit() {
     console.log('Working Home component');
+    this.getRandomLabels();
   }
 
 
@@ -143,6 +153,11 @@ export class LabelsPage implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  private async getRandomLabels() {
+    const labels= await this.labelService.getRandomLabels();
+    this.randomLabels = labels;
   }
 
 
