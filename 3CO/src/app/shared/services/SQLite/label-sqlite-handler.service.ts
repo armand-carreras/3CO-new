@@ -19,12 +19,19 @@ export class LabelSQLiteHandlerService {
     private loadToVersion;
     private db!: SQLiteDBConnection;
     private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private randomLabel: BehaviorSubject<Label[]> = new BehaviorSubject([] as Label[]);
 
     constructor(private sqliteService: SQLiteService,
                 private dbVerService: DbnameVersionService) {
         this.versionUpgrades = this.uUpdStmts.userUpgrades;
         this.loadToVersion = this.versionUpgrades[this.versionUpgrades.length-1].toVersion;
     }
+
+
+    get featuredLabel() {
+      return this.randomLabel.value;
+    }
+
     async initializeDatabase(dbName: string) {
         this.databaseName = dbName;
         // create upgrade statements
@@ -40,6 +47,7 @@ export class LabelSQLiteHandlerService {
                                             false
         );
         this.dbVerService.set(this.databaseName,this.loadToVersion);
+        await this.getRandomLabel();
         await this.getAll();
     }
     
@@ -87,11 +95,14 @@ export class LabelSQLiteHandlerService {
       const labels = results ? this.parseLabels(results) : [];
       return labels;
     }
-    async getRandomLabels(): Promise<Label[]> {
-      const query = `SELECT * FROM "data" d ORDER BY random() LIMIT 5;`;
-      const results = ( await this.db.query(query) ).values;
+    private async getRandomLabel() {
+      const query = `SELECT * FROM "data" d ORDER BY random() LIMIT 1;`;
+      console.log('QUERY;', query);
+      const results = ( await this.db?.query(query) )?.values;
+      console.log('results:',results);
       const labels = results ? this.parseLabels(results) : [];
-      return labels;
+      console.log('labels: ',labels);
+      this.randomLabel.next(labels);
     }
 
     async getFilteredLabels(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]) {

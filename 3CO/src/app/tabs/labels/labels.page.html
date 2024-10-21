@@ -21,7 +21,7 @@
         
         <div class="scan-container">
           <div id="scan-banner">
-            <ion-text color="light">
+            <ion-text style="color: white;">
               <p><strong>Earn your badges by <br>scanning</strong></p>
             </ion-text>
             <ion-button (click)="scan()" shape="round" color="primary">Scan</ion-button>
@@ -38,18 +38,25 @@
           </ion-button>
         </div>
 
+        
         <div class="labels-container">
-          @for(label of fiveRandomLabels; track label){
+          <ng-container *ngIf="featuredLabel!=null else labelLoader">
+          <ion-text>
+            <h4>Featured Label</h4>
+          </ion-text>
             <div class="label-info-box">
-              <img src="assets/databases/CERTIFIED.png">
-              <ion-text class="truncate-text" color="medium">{{label.description}}</ion-text>
+              <ion-text>{{featuredLabel.name}}</ion-text>
+              <img [src]=featuredLabel.logo>
+              <ion-text class="truncate-text" color="medium">
+                {{featuredLabel.shortDescription}}
+              </ion-text>
               <div class="rating">
                 <ion-icon name="star"></ion-icon>
                 <ion-icon name="star"></ion-icon>
                 <ion-icon name="star-half-outline"></ion-icon>
               </div>
             </div>
-          }  
+          </ng-container>
         </div>
 
 
@@ -95,3 +102,20 @@
 </ion-content>
 
 
+<ng-template #labelLoader>
+  <ion-text>
+    <h4>Featured Label</h4>
+  </ion-text>
+    <div class="label-info-box">
+      <ion-text>No Label Found</ion-text>
+      <img src='/assets/databases/No_Image_Available.jpg'>
+      <ion-text class="truncate-text" color="medium">
+        There's no label DB connection or there are no labels on it try again later.
+      </ion-text>
+      <div class="rating">
+        <ion-icon name="star"></ion-icon>
+        <ion-icon name="star"></ion-icon>
+        <ion-icon name="star-half-outline"></ion-icon>
+      </div>
+    </div>
+</ng-template>

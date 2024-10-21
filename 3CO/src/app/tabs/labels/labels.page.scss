@@ -15,6 +15,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0 1rem;
+        margin-top: 5px;
         h1{
             margin:0;
         }
@@ -26,15 +27,16 @@
 
     #content{
         width: 100%;
-        height: 100%;
-        max-height: 85vh;
+        max-height: 88%;
         display: flex;
+        flex: 1;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
     }   
     #descriptive-container {
         width: 90%;
+        max-height: 100%;
         display: flex;
         flex: 1;
         flex-direction: column;
@@ -58,7 +60,7 @@
         background: rgb(2,114,122);
         background: linear-gradient(90deg, rgba(2,114,122,0.7510383702531646) 0%, rgba(138,189,13,1) 100%);
         margin: .75rem 0;
-        padding: .75rem;
+        padding: .5rem;
         display: flex;
         flex-direction: row;
         justify-content: space-around;
@@ -72,7 +74,7 @@
   
           p {
             margin: 0;
-            padding: 1rem 0;
+            padding: .5rem 0;
           }
         }
   
@@ -87,7 +89,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding-top: 2rem;
+        //margin-top: 1rem;
   
         ion-button {
           --background: white;
@@ -103,29 +105,30 @@
 
 
   .labels-container{
-    height: 100%;
+    width: 100%;
     display: flex;
     flex: 1;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     overflow-x: scroll;
-    padding-left:1rem;
+    
     .label-info-box{
-      width: 50%;
+      width: 90%;
       min-width: 50%;
-      height: 90%;
-      margin: 0 1rem;
+      height: 80%;
+      //margin: 1rem 1rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
       border-radius: 15px;
+      padding-top: 1rem;
       border: 1px solid var(--ion-color-secondary);
       img{
         width: auto;
         height: 30%;
-        padding: 1rem 0;
+        padding: .2rem 0;
       };
       ion-text {
           padding: 0 .75rem;

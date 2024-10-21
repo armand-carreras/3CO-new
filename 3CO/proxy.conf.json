@@ -1,0 +1,9 @@
+{
+    "/api": {
+      "target": "https://tnyaxy-ip-2-57-109-7.tunnelmole.net",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    }
+  }
+  

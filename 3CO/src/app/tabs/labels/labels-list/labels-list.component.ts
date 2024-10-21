@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular';
 import { firstValueFrom, Subscription, tap } from 'rxjs';
@@ -78,7 +78,8 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
   constructor(
     private labelsService: LabelSQLiteHandlerService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private zone: NgZone
   ) { 
   }
   
@@ -129,27 +130,29 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     //console.log('-----------Selected Label : ', JSON.stringify(label));
   }
 
-  public deselectLabel(event:any) {
+  public dismissMoreInfo(event: any) {
 
     console.log('------------ goBack', event);
-    this.isLabelSelected = false;
-    this.selectedLabel = {
-      logo: '',
-      name: '',
-      establishmentYear: '',
-      description: '',
-      shortDescription: '',
-      category: undefined,
-      subCategory: '',
-      country: '',
-      keywords: '',
-      mainColor: '',
-      shape: '',
-      conformityAssesment: '',
-      managingOrganization: '',
-      website: '',
-      ranking: ''
-    }
+    this.zone.run(()=> { 
+      this.isLabelSelected = false;
+      this.selectedLabel = {
+        logo: '',
+        name: '',
+        establishmentYear: '',
+        description: '',
+        shortDescription: '',
+        category: undefined,
+        subCategory: '',
+        country: '',
+        keywords: '',
+        mainColor: '',
+        shape: '',
+        conformityAssesment: '',
+        managingOrganization: '',
+        website: '',
+        ranking: ''
+      }
+    })
   }
 
   // Toggle selection of items

@@ -1,0 +1,81 @@
+.learn-list-container {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem 1rem;
+    .header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .main-img{
+            width: 15%;
+            height: auto;
+        }
+    }
+    .title-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        //margin: 0.5rem 1rem;
+        ion-text{
+            margin-right: auto;
+        }
+    }
+}
+
+.all-categories-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    .category-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        h3{
+            margin: .5rem 0;
+        }
+        .label-box-container{
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items:  stretch;
+            overflow-x: scroll;
+            .label-box {
+                width: 35%;
+                min-width: 35%;
+                min-height: 100%;
+                max-width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between; /* To stretch content */
+                align-items: center;
+                text-align: center;
+                border: 2.5px solid var(--ion-color-primary);
+                background: var(--ion-color-light);
+                border-radius: 15px;
+                padding: 0.5rem 1rem;
+                margin-right: 1rem;
+                ion-text {
+                    display: -webkit-box; /* Necessary for webkit line clamping */
+                    -webkit-line-clamp: 2; /* Limits to 2 lines */
+                    -webkit-box-orient: vertical;
+                    overflow: hidden; /* Hide the overflowed text */
+                    text-overflow: ellipsis; /* Add the ellipsis (...) for long text */
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

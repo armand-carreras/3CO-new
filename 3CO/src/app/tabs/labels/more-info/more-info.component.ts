@@ -28,7 +28,10 @@ export class MoreInfoComponent  implements OnInit {
   }
 
   public goBack() {
+    console.log('trying to back from more info');
     this.deselectLabel.emit(true);
+    console.log('after trying to back from more info');
+
   }
 
 }

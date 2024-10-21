@@ -16,16 +16,23 @@
     </div>
 
     <div class="title-container">
-      <ion-text>
+
+      <ion-button href="/tabs/labels" fill="clear">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+
+      <ion-text color="secondary">
         <h2>Explore Labels</h2>
       </ion-text>
+    
       <ion-button size="small" shape="round">
         <ion-icon slot="start" name="camera-outline"></ion-icon>
         <ion-text slot="end">Scan</ion-text>
       </ion-button>
+    
     </div>
 
-    <ng-container *ngIf="!isLabelSelected">
+    <ng-container *ngIf="!isLabelSelected else moreInfo">
 
       <div class="searchbar-filter">
       <ion-searchbar placeholder="Search by name or keyword" show-clear-button="always" [debounce]="1000" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
@@ -110,10 +117,6 @@
 
 </ion-content>
 
-<ng-template [ngIf]="isLabelSelected">
-  <app-more-info [label]="selectedLabel" (deselect)="deselectLabel($event)"></app-more-info>
+<ng-template #moreInfo>
+  <app-more-info [label]="selectedLabel" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
 </ng-template>
-
-
-
-

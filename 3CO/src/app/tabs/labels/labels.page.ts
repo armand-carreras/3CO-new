@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
-import { LoadingController, Platform } from '@ionic/angular';
+import { LoadingController, Platform, ViewWillEnter } from '@ionic/angular';
 import { firstValueFrom, tap } from 'rxjs';
 import { Label } from 'src/app/shared/models/label';
 import { CameraService } from 'src/app/shared/services/camera.service';
@@ -17,14 +17,14 @@ import { ToastService } from 'src/app/shared/services/toast.service';
   templateUrl: './labels.page.html',
   styleUrls: ['./labels.page.scss'],
 })
-export class LabelsPage implements OnInit {
+export class LabelsPage implements OnInit, ViewWillEnter {
   
   private isModalOpen: boolean;
   private isResultModalOpen: boolean = false;
   private photo!: Photo;
   private base64Image: string = '';
   private receivedBase64Image: string = '';
-  private randomLabels: Label[] = [];
+  private randomLabel!: Label;
 
 
   constructor(
@@ -66,13 +66,15 @@ export class LabelsPage implements OnInit {
     return result;
   }
 
-  get fiveRandomLabels() {
-    return this.randomLabels;
+  get featuredLabel(): Label {
+    return this.randomLabel;
   }
 
-  async ngOnInit() {
-    console.log('Working Home component');
-    this.getRandomLabels();
+  ngOnInit() {
+    console.log('Initializing labels page');
+  }
+  ionViewWillEnter(): void {
+    this.setRandomLabel()
   }
 
 
@@ -80,20 +82,67 @@ export class LabelsPage implements OnInit {
     this.isResultModalOpen = false;
   }
 
+
   public async sendImage() {
+    let base64String: string | undefined = '';
+
+    // Ensure that we have a valid base64 string before trying to sanitize
+    if (this.photo?.base64String) {
+        base64String = this.photo?.base64String?.includes(',') ? this.photo.base64String.split(',')[1] : this.photo.base64String;
+    } else if (this.base64Image) {
+        base64String = this.base64Image?.includes(',') ? this.base64Image.split(',')[1] : this.base64Image;
+    } else {
+
+    }
+
+    if (base64String) {
+        // Sanitize the base64 string if it's defined and non-empty
+        base64String = this.sanitizeBase64(base64String);
+
+        try {
+            const response = await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String));
+            this.receivedBase64Image = response.result_image;
+            console.log(JSON.stringify(response));
+
+            // loader.dismiss();
+            this.toastServ.presentAutoDismissToast('Image sent successfully!', 'success');
+            this.isModalOpen = false;
+            this.isResultModalOpen = true;
+        } catch (error) {
+            console.error('Error sending image:', error);
+            this.toastServ.presentAutoDismissToast('Error sending image. Please try again.', 'danger');
+        }
+    } else {
+        // Show an error message if no base64 string is available
+        this.toastServ.presentAutoDismissToast('Image could not be loaded!', 'danger');
+    }
+  }
+
+  // Helper to clean up Base64 string
+  private sanitizeBase64(base64String: string): string {
+      return base64String ? base64String.replace(/\s/g, '') : ''; // Only call replace if the string is valid
+  }
+
+
+
+
+
+  /* public async sendImage() {
     if(this.photo.base64String || this.base64Image!== '') {
-      const loader = await this.loaderCntr.create({message:'Sending image...'});
-      loader.present();
-      await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(this.photo.base64String ? this.photo.base64String.split(',')[1] : this.base64Image.split(',')[1])
-        .pipe(tap(response=>this.receivedBase64Image = response.result_image)));
-      loader.dismiss();
+      const base64String = this.photo.base64String ? this.photo.base64String.split(',')[1] : this.base64Image.split(',')[1];
+      await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String))
+       .then(response=>{
+        this.receivedBase64Image = response.result_image
+        console.log(JSON.stringify(response));
+      });
+      //loader.dismiss();
       this.toastServ.presentAutoDismissToast('Image sent successfully!','success');
       this.isModalOpen = false;
       this.isResultModalOpen = true;
     } else {
       this.toastServ.presentAutoDismissToast('Image could not be loaded!', 'danger');
     }
-  }
+  } */
 
   //modal controller
   public setModal(bool: boolean) {
@@ -123,12 +172,12 @@ export class LabelsPage implements OnInit {
       await this.cameraService
         .getPhoto()
         .then((photo: Photo) => {
-          console.log('photo done: ',photo);
+          console.log('photo done: ',JSON.stringify(photo));
           this.photo = photo;
           this.setModal(true);
         })
         .catch((error) =>
-          this.toastServ.presentAutoDismissToast(`Error when getting photo:  ${error}`, 'danger')
+          this.toastServ.presentAutoDismissToast(`Error when getting photo:  ${error}`, 'warning')
         );
     }
   }
@@ -155,12 +204,13 @@ export class LabelsPage implements OnInit {
     }
   }
 
-  private async getRandomLabels() {
-    const labels= await this.labelService.getRandomLabels();
-    this.randomLabels = labels;
+
+  private setRandomLabel() {
+    this.randomLabel = this.labelService.featuredLabel[0];
+    if(this.featuredLabel?.logo===null) {
+      this.featuredLabel.logo = '/assets/databases/No_Image_Available.jpg'
+    }
   }
-
-
 
 
   

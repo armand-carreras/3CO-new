@@ -20,6 +20,9 @@
         justify-content: space-between;
         align-items: center;
         //margin: 0.5rem 1rem;
+        ion-text{
+            margin-right: auto;
+        }
     }
     .searchbar-filter{
         width: 100%;
