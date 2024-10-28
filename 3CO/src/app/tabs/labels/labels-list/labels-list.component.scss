@@ -78,6 +78,10 @@
                     border-radius: 15px;
                     padding: 0.5rem 1rem;
                     margin-right: 1rem;
+                    img {
+                        max-height: 14vh;
+                        margin: auto;
+                    }
                     ion-text {
                         display: -webkit-box; /* Necessary for webkit line clamping */
                         -webkit-line-clamp: 2; /* Limits to 2 lines */

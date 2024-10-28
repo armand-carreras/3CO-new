@@ -8,43 +8,38 @@ import { Toast } from '@capacitor/toast';
 })
 export class InitializeAppService {
 
-  isAppInit: boolean = false;
-     platform!: string;
+    isAppInit: boolean = false;
+    platform!: string;
 
-     constructor(
-         private sqliteService: SQLiteService,
-         private storageService: LabelSQLiteHandlerService,
-         ) {
+    constructor(
+        private sqliteService: SQLiteService,
+        private storageService: LabelSQLiteHandlerService,
+        ) {
 
-     }
+    }
 
-     async initializeApp() {
-         await this.sqliteService.initializePlugin().then(async (ret) => {
-             this.platform = this.sqliteService.platform;
-             try {
-                 if( this.sqliteService.platform === 'web') {
-                     await this.sqliteService.initWebStore();
-                 }
-                 // Initialize the myuserdb database
-                 const DB = 'ecodatabase.db'
-                 await this.storageService.initializeDatabase(DB);
-                 // Here Initialize MOCK_DATA if required
+    async initializeApp() {
+        await this.sqliteService.initializePlugin().then(async (ret) => {
+            this.platform = this.sqliteService.platform;
+            try {
+                const DB = 'ecodatabase.db'
+                if( this.sqliteService.platform === 'web') {
+                    await this.sqliteService.initWebStore();
+                    await this.sqliteService.saveToStore(DB);
+                    await this.storageService.initializeDatabase(DB);
+                } else {
+                    await this.storageService.initializeDatabase(DB);
+                }
+                
+                this.isAppInit = true;
 
-                 // Initialize whatever database and/or MOCK_DATA you like
-
-                 if( this.sqliteService.platform === 'web') {
-                     await this.sqliteService.saveToStore(DB);
-                 }
-
-                 this.isAppInit = true;
-
-             } catch (error) {
-                 console.log(`initializeAppError: ${error}`);
-                 await Toast.show({
-                 text: `initializeAppError: ${error}`,
-                 duration: 'long'
-                 });
-             }
-         });
-     }
+            } catch (error) {
+                console.log(`initializeAppError: ${error}`);
+                await Toast.show({
+                text: `initializeAppError: ${error}`,
+                duration: 'long'
+                });
+            }
+        });
+    }
 }

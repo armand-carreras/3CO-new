@@ -61,13 +61,13 @@ export class LabelSQLiteHandlerService {
         return this.allList.asObservable();
     }
 
-    //Query all Data
     async loadAll() {
-      const results = (await this.db.query('SELECT * FROM "labels"')).values;
-      const labels = results ? this.parseLabels(results) : [];
+      const results = (await this.db.query('SELECT * FROM labels LIMIT 50')).values;
+      const labels = results ? await this.parseLabels(results) : [];
       console.log('------------- Parsed Labels: ', JSON.stringify(labels));
       this.allList.next(labels);
     }
+    
 
     // CRUD Operations
     async getAll() {
@@ -109,8 +109,8 @@ export class LabelSQLiteHandlerService {
       const query = `SELECT * FROM "labels" d ORDER BY random() LIMIT 1;`;
       console.log('QUERY;', query);
       const results = ( await this.db?.query(query) )?.values;
-      console.log('results:',results);
-      const labels = results ? this.parseLabels(results) : [];
+      console.log('results:',JSON.stringify(results));
+      const labels = results ? await this.parseLabels(results) : [];
       console.log('labels: ',JSON.stringify(labels));
       this.randomLabel.next(labels);
     }
@@ -154,10 +154,13 @@ export class LabelSQLiteHandlerService {
     }
 
 
-    private parseLabels(results: any[]) {
-      return results?.map<Label>(res=> {
+    private async parseLabels(results: any[]): Promise<Label[]> {
+      const labels = await Promise.all(results?.map(async (res) => {
+        const logoBlob = res['LOGO'];
+        const base64Logo = logoBlob ? await this.byteArrayToBase64(logoBlob) : 'assets/databases/No_Image_Available.jpg';
+    
         const newLabel: Label = {
-          logo: res['LOGO'],
+          logo: base64Logo,
           name: res['NAME'],
           establishmentYear: res['YEAR OF EST.'],
           description: res['DESCRIPTION'],
@@ -172,10 +175,28 @@ export class LabelSQLiteHandlerService {
           managingOrganization: res['MANAGING ORGANIZATION'],
           website: res['WEBSITE'],
           ranking: `${res['Startseite – Siegelklarheit']};${res['https://label-online.de/ ']};${res['https://www.commonshare.com/ratings/standard-owners-benchmark']}`
-        }
+        };
         return newLabel;
+      }));
+      return labels;
+    }
+    
+    private async byteArrayToBase64(byteArray: number[]): Promise<string> {
+      const blob = new Blob([new Uint8Array(byteArray)], { type: 'image/jpeg' });
+      return this.blobToBase64(blob);
+    }
+
+    // Helper to convert BLOB to base64
+    private blobToBase64(blob: Blob): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
       });
     }
+
+
 }
 
 

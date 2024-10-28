@@ -56,7 +56,7 @@ export class ProductsPage implements OnInit {
   }
 
   public isGroupCategoryEmpty(category: string) {
-    if(this.groupedProducts[category].length>0) {
+    if(this.groupedProducts && this.groupedProducts[category]?.length>0) {
       return false;
     }
     else return true;

@@ -106,6 +106,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   }
 
+
   public async handleSearchBarInput(ev: any) {
     if(ev!==''){
       const labels = await this.labelsService.getFromNameString(ev.detail.value);
@@ -136,7 +137,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     this.zone.run(()=> { 
       this.isLabelSelected = false;
       this.selectedLabel = {
-        logo: '',
+        logo: 'assets/databases/No_Image_Available.jpg',
         name: '',
         establishmentYear: '',
         description: '',
@@ -234,39 +235,30 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     labels.forEach((label, index)=>{      
         if(label.category?.toLowerCase().includes('electronics')) {
           this.groupedLabels.Electronics = [...this.groupedLabels.Electronics ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('cosmetics')) {
           this.groupedLabels.Cosmetics = [...this.groupedLabels.Cosmetics ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('industry')) {
           this.groupedLabels.Industry = [...this.groupedLabels.Industry ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('building')) {
           this.groupedLabels.Building = [...this.groupedLabels.Building ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('matresses')) {
           this.groupedLabels.Matresses = [...this.groupedLabels.Matresses ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('global')) {
           this.groupedLabels.Global = [...this.groupedLabels.Global ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('food')) {
           this.groupedLabels.Food = [...this.groupedLabels.Food ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('chemicals')) {
           this.groupedLabels.Chemicals = [...this.groupedLabels.Chemicals ?? [], label];
-          console.log('newItem Added');
         }
         else if(label.category?.toLowerCase().includes('energy')) {
           this.groupedLabels.Energy = [...this.groupedLabels.Energy ?? [], label];
-          console.log('newItem Added');
         }
         if(allLabels && index === labels.length-1) {
           this.allGroupedLabels = this.groupedLabels;

@@ -209,6 +209,8 @@ export class LabelsPage implements OnInit, ViewWillEnter {
     this.randomLabel = this.labelService.featuredLabel[0];
     if(this.featuredLabel?.logo===null) {
       this.featuredLabel.logo = '/assets/databases/No_Image_Available.jpg'
+    } else if(this.featuredLabel?.logo !== '/assets/databases/No_Image_Available.jpg') {
+      
     }
   }
 

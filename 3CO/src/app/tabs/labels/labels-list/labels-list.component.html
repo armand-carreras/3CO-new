@@ -49,7 +49,7 @@
           
             <div class="label-box-container">
               <div *ngFor="let label of groupedLabels[category.name]" (click)="selectForMoreInfo(label)" class="label-box">
-                <img src="assets/databases/No_Image_Available.jpg" alt="No Image Available">
+                <img *ngIf="label.logo" [src]="label.logo" alt="{{ label.name }}" />
                 <ion-text>
                   {{ label.name }}
                 </ion-text>
