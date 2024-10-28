@@ -63,7 +63,7 @@ export class LabelSQLiteHandlerService {
 
     //Query all Data
     async loadAll() {
-      const results = (await this.db.query('SELECT * FROM "data"')).values;
+      const results = (await this.db.query('SELECT * FROM "labels"')).values;
       const labels = results ? this.parseLabels(results) : [];
       console.log('------------- Parsed Labels: ', JSON.stringify(labels));
       this.allList.next(labels);
@@ -86,9 +86,19 @@ export class LabelSQLiteHandlerService {
         await this.getAll();
     }
 
+    async getImageById(id: number) {
+      const query = `SELECT LOGO FROM labels WHERE ID = ${id}`;
+      const result =  ( await this.db.query(query) ).values;
+      if (result && result?.length > 0) {
+        console.log('retrieved Image: ', result);
+        return `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(result[0])))}`;
+      }
+      return null;
+  }
+
     async getFromNameString(name: string) {
       const query = `SELECT * 
-        FROM "data" d 
+        FROM "labels" d 
         WHERE "NAME" LIKE "%${name}%" OR "KEY WORDS" LIKE "%${name}%";
       `;
       const results = ( await this.db.query(query) ).values;
@@ -96,12 +106,12 @@ export class LabelSQLiteHandlerService {
       return labels;
     }
     private async getRandomLabel() {
-      const query = `SELECT * FROM "data" d ORDER BY random() LIMIT 1;`;
+      const query = `SELECT * FROM "labels" d ORDER BY random() LIMIT 1;`;
       console.log('QUERY;', query);
       const results = ( await this.db?.query(query) )?.values;
       console.log('results:',results);
       const labels = results ? this.parseLabels(results) : [];
-      console.log('labels: ',labels);
+      console.log('labels: ',JSON.stringify(labels));
       this.randomLabel.next(labels);
     }
 
@@ -136,7 +146,7 @@ export class LabelSQLiteHandlerService {
       // Construct the final query
       let sqlQuery = `
         SELECT * 
-        FROM "data" d 
+        FROM "labels" d 
         WHERE ${conditions.join(' AND ')};
       `;
 
@@ -226,7 +236,7 @@ export class LabelSQLiteHandlerService {
 
   async connectToDBFile() {
 
-    this.conn = await this._sqlite.('ecolabel.db',false );
+    this.conn = await this._sqlite.('ecodatabase.db',false );
     if(this.conn) { this.connected=true; }
  
   }
@@ -234,7 +244,7 @@ export class LabelSQLiteHandlerService {
 
   // Function to copy the SQLite database file
   async getDatabaseFile() {
-    const sourcePath = 'assets/3COLabelDatabase/ecolabel.db'; // Path to your existing SQLite database file
+    const sourcePath = 'assets/3COLabelDatabase/ecodatabase.db'; // Path to your existing SQLite database file
 
     try {
         return await Filesystem.getUri({path: sourcePath, directory: Directory.Data});
@@ -245,7 +255,7 @@ export class LabelSQLiteHandlerService {
   }
 
   async getLabels() {
-    const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "data" d');
+    const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "labels" d');
     console.log(sqliteValues.values);
   }
 

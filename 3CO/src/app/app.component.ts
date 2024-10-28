@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeService } from './shared/services/theme.service';
 import { StorageService } from './shared/services/storage.service';
 import { InitializeAppService } from './shared/services/SQLite/initialize.app.service';
-import { register } from 'swiper/element/bundle';
 
-
-register();
 
 @Component({
   selector: 'app-root',

@@ -26,7 +26,7 @@ export class InitializeAppService {
                      await this.sqliteService.initWebStore();
                  }
                  // Initialize the myuserdb database
-                 const DB = 'ecolabel.db'
+                 const DB = 'ecodatabase.db'
                  await this.storageService.initializeDatabase(DB);
                  // Here Initialize MOCK_DATA if required
 

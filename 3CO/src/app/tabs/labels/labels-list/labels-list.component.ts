@@ -220,6 +220,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     .pipe(
       tap(labels=>{
         this.labels = labels;
+        console.log('label 1: ', labels[0]);
         this.groupLabelsByCategory(labels, true);
       })
     ).subscribe();

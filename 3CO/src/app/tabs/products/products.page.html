@@ -55,17 +55,17 @@
         <ion-text class="category-title"><h3>{{ category.name }}</h3></ion-text>
       
         <div class="label-box-container">
-          <div *ngFor="let product of groupedProducts[category.name]" (click)="selectForMoreInfo(label)" class="label-box">
+          <div *ngFor="let product of groupedProducts[category.name]" class="label-box">
             <img src="assets/databases/No_Image_Available.jpg" alt="No Image Available">
             <ion-text>
-              {{ label.name }}
+              {{ product.name }}
             </ion-text>
           </div>
         </div>
       </ng-container>
     </div>
     <!-- Display Spinner if No Categories are Available -->
-    <ion-spinner *ngIf="!groupedLabels" name="lines-sharp"></ion-spinner>
+    <ion-spinner *ngIf="!groupedProducts" name="lines-sharp"></ion-spinner>
   </div>
 
 

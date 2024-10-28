@@ -38,12 +38,12 @@ export class SQLiteService {
       let db: SQLiteDBConnection;
       if(this.native) await this.sqliteConnection.copyFromAssets();
       const retCC = (await this.sqliteConnection.checkConnectionsConsistency()).result;
-      let isConn = (await this.sqliteConnection.isConnection('ecolabel.db', readonly)).result;
+      let isConn = (await this.sqliteConnection.isConnection('ecodatabase.db', readonly)).result;
       if(retCC && isConn) {
-          db = await this.sqliteConnection.retrieveConnection('ecolabel.db', readonly);
+          db = await this.sqliteConnection.retrieveConnection('ecodatabase.db', readonly);
       } else {
           db = await this.sqliteConnection
-                  .createConnection('ecolabel.db', encrypted, mode, version, readonly);
+                  .createConnection('ecodatabase.db', encrypted, mode, version, readonly);
       }
       await db.open();
       
