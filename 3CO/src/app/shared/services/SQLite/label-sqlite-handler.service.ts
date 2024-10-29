@@ -98,7 +98,7 @@ export class LabelSQLiteHandlerService {
 
     async getFromNameString(name: string) {
       const query = `SELECT * 
-        FROM "labels" d 
+        FROM "labelsBase64" d 
         WHERE "NAME" LIKE "%${name}%" OR "KEY WORDS" LIKE "%${name}%";
       `;
       const results = ( await this.db.query(query) ).values;
@@ -106,7 +106,7 @@ export class LabelSQLiteHandlerService {
       return labels;
     }
     private async getRandomLabel() {
-      const query = `SELECT * FROM "labels" d ORDER BY random() LIMIT 1;`;
+      const query = `SELECT * FROM "labelsBase64" d ORDER BY random() LIMIT 1;`;
       console.log('QUERY;', query);
       const results = ( await this.db?.query(query) )?.values;
       console.log('results:',JSON.stringify(results));
@@ -146,7 +146,7 @@ export class LabelSQLiteHandlerService {
       // Construct the final query
       let sqlQuery = `
         SELECT * 
-        FROM "labels" d 
+        FROM "labelsBase64" d 
         WHERE ${conditions.join(' AND ')};
       `;
 
@@ -156,8 +156,9 @@ export class LabelSQLiteHandlerService {
 
     private async parseLabels(results: any[]): Promise<Label[]> {
       const labels = await Promise.all(results?.map(async (res) => {
-        const logoBlob = res['LOGO'];
-        const base64Logo = logoBlob ? await this.byteArrayToBase64(logoBlob) : 'assets/databases/No_Image_Available.jpg';
+        const base64Data = res['LOGO'];
+        //const base64Logo = logoBlob ? await this.byteArrayToBase64(logoBlob) : 'assets/databases/No_Image_Available.jpg';
+        const base64Logo = `data:image/png;base64,${base64Data}`
     
         const newLabel: Label = {
           logo: base64Logo,
@@ -276,7 +277,7 @@ export class LabelSQLiteHandlerService {
   }
 
   async getLabels() {
-    const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "labels" d');
+    const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "labelsBase64" d');
     console.log(sqliteValues.values);
   }
 
