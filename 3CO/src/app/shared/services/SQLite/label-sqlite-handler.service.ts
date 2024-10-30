@@ -29,9 +29,14 @@ export class LabelSQLiteHandlerService {
 
 
     get featuredLabel() {
-      return this.randomLabel.value;
+      return this.randomLabel.getValue();
+    }
+    // Labels Observable
+    get allLabels(): Label[] {
+        return this.allList.getValue();
     }
 
+    
     async initializeDatabase(dbName: string) {
         this.databaseName = dbName;
         // create upgrade statements
@@ -56,15 +61,11 @@ export class LabelSQLiteHandlerService {
         return this.isAllReady.asObservable();
     }
     
-    // Labels Observable
-    fetchAll(): Observable<Label[]> {
-        return this.allList.asObservable();
-    }
+    
 
     async loadAll() {
-      const results = (await this.db.query('SELECT * FROM labels LIMIT 50')).values;
+      const results = (await this.db.query('SELECT * FROM labelsBase64')).values;
       const labels = results ? await this.parseLabels(results) : [];
-      console.log('------------- Parsed Labels: ', JSON.stringify(labels));
       this.allList.next(labels);
     }
     
@@ -78,16 +79,14 @@ export class LabelSQLiteHandlerService {
     async updateUserById(id: string, active: number) {
         const sql = `UPDATE users SET active=${active} WHERE id=${id}`;
         await this.db.run(sql);
-        await this.getAll();
     }
     async deleteUserById(id: string) {
         const sql = `DELETE FROM users WHERE id=${id}`;
         await this.db.run(sql);
-        await this.getAll();
     }
 
     async getImageById(id: number) {
-      const query = `SELECT LOGO FROM labels WHERE ID = ${id}`;
+      const query = `SELECT LOGO FROM labelsBase64 WHERE ID = ${id}`;
       const result =  ( await this.db.query(query) ).values;
       if (result && result?.length > 0) {
         console.log('retrieved Image: ', result);

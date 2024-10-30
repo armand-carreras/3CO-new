@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeService } from './shared/services/theme.service';
 import { StorageService } from './shared/services/storage.service';
 import { InitializeAppService } from './shared/services/SQLite/initialize.app.service';
+import { LabelSQLiteHandlerService } from './shared/services/SQLite/label-sqlite-handler.service';
+import { tap } from 'rxjs';
 
 
 @Component({
@@ -13,7 +15,8 @@ export class AppComponent implements OnInit {
   
   constructor(private themeServ: ThemeService,
     private storageServ: StorageService,
-    private initStorage: InitializeAppService
+    private initStorage: InitializeAppService,
+    private labelsService: LabelSQLiteHandlerService
   ) { 
     
   }
@@ -27,5 +30,6 @@ export class AppComponent implements OnInit {
   }
 
 
- 
+
+
 }

@@ -84,6 +84,7 @@
                     }
                     ion-text {
                         display: -webkit-box; /* Necessary for webkit line clamping */
+                        line-clamp: 2;
                         -webkit-line-clamp: 2; /* Limits to 2 lines */
                         -webkit-box-orient: vertical;
                         overflow: hidden; /* Hide the overflowed text */

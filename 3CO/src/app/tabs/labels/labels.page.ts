@@ -71,10 +71,10 @@ export class LabelsPage implements OnInit, ViewWillEnter {
   }
 
   ngOnInit() {
-    console.log('Initializing labels page');
   }
+
   ionViewWillEnter(): void {
-    this.setRandomLabel()
+    this.setRandomLabel();
   }
 
 
@@ -206,12 +206,9 @@ export class LabelsPage implements OnInit, ViewWillEnter {
 
 
   private setRandomLabel() {
+    console.log('-----------> featuredLabel: ', JSON.stringify(this.labelService.featuredLabel[0]));
     this.randomLabel = this.labelService.featuredLabel[0];
-    if(this.featuredLabel?.logo===null) {
-      this.featuredLabel.logo = '/assets/databases/No_Image_Available.jpg'
-    } else if(this.featuredLabel?.logo !== '/assets/databases/No_Image_Available.jpg') {
-      
-    }
+    this.featuredLabel.logo = this.featuredLabel?.logo ?? '/assets/databases/No_Image_Available.jpg'
   }
 
 

@@ -217,16 +217,8 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
 
   private fetchAllLabels() {
-    const subscriber = this.labelsService.fetchAll()
-    .pipe(
-      tap(labels=>{
-        this.labels = labels;
-        console.log('label 1: ', labels[0]);
-        this.groupLabelsByCategory(labels, true);
-      })
-    ).subscribe();
-
-    this.subscribers.push(subscriber);
+    this.labels = this.labelsService.allLabels
+    this.groupLabelsByCategory(this.labels, true);
   }
 
   
