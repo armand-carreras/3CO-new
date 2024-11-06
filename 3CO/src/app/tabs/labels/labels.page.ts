@@ -18,6 +18,8 @@ import { ToastService } from 'src/app/shared/services/toast.service';
   styleUrls: ['./labels.page.scss'],
 })
 export class LabelsPage implements OnInit, ViewWillEnter {
+
+  public isLabelSelected = false;
   
   private isModalOpen: boolean;
   private isResultModalOpen: boolean = false;
@@ -71,10 +73,12 @@ export class LabelsPage implements OnInit, ViewWillEnter {
   }
 
   ngOnInit() {
+    console.log('Entering LabelsPage NgOnInit');
+    this.setRandomLabel();
   }
 
   ionViewWillEnter(): void {
-    this.setRandomLabel();
+    console.log('Entering LabelsPage ViewWillEnter');
   }
 
 
@@ -82,6 +86,12 @@ export class LabelsPage implements OnInit, ViewWillEnter {
     this.isResultModalOpen = false;
   }
 
+  public showMoreLabelInfo() {
+    this.isLabelSelected = true;
+  }
+  public dismissMoreInfo(ev: any) {
+    this.isLabelSelected = false;
+  }
 
   public async sendImage() {
     let base64String: string | undefined = '';
@@ -102,7 +112,7 @@ export class LabelsPage implements OnInit, ViewWillEnter {
         try {
             const response = await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String));
             this.receivedBase64Image = response.result_image;
-            console.log(JSON.stringify(response));
+            console.log('Sending image: ', JSON.stringify(response));
 
             // loader.dismiss();
             this.toastServ.presentAutoDismissToast('Image sent successfully!', 'success');
@@ -125,42 +135,22 @@ export class LabelsPage implements OnInit, ViewWillEnter {
 
 
 
-
-
-  /* public async sendImage() {
-    if(this.photo.base64String || this.base64Image!== '') {
-      const base64String = this.photo.base64String ? this.photo.base64String.split(',')[1] : this.base64Image.split(',')[1];
-      await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String))
-       .then(response=>{
-        this.receivedBase64Image = response.result_image
-        console.log(JSON.stringify(response));
-      });
-      //loader.dismiss();
-      this.toastServ.presentAutoDismissToast('Image sent successfully!','success');
-      this.isModalOpen = false;
-      this.isResultModalOpen = true;
-    } else {
-      this.toastServ.presentAutoDismissToast('Image could not be loaded!', 'danger');
-    }
-  } */
-
   //modal controller
   public setModal(bool: boolean) {
     this.isModalOpen = bool;
   }
 
+  public seeMoreLabels() {
+      this.router.navigate(['/tabs/labels/label-list']);
+    }
 
   public scan() {
-    console.log(this.platform.platforms())
+    console.log('---------> Scanning image: ',this.platform.platforms())
     if (this.platform.is('mobile')) {
       this.mobileScan();
     } else {
       this.webScan();
     }
-  }
-
-  public seeMoreLabels() {
-    this.router.navigate(['/tabs/labels/label-list']);
   }
 
   private async mobileScan() {
@@ -213,5 +203,25 @@ export class LabelsPage implements OnInit, ViewWillEnter {
 
 
   
+  
 
 }
+
+
+
+  /* public async sendImage() {
+    if(this.photo.base64String || this.base64Image!== '') {
+      const base64String = this.photo.base64String ? this.photo.base64String.split(',')[1] : this.base64Image.split(',')[1];
+      await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String))
+       .then(response=>{
+        this.receivedBase64Image = response.result_image
+        console.log(JSON.stringify(response));
+      });
+      //loader.dismiss();
+      this.toastServ.presentAutoDismissToast('Image sent successfully!','success');
+      this.isModalOpen = false;
+      this.isResultModalOpen = true;
+    } else {
+      this.toastServ.presentAutoDismissToast('Image could not be loaded!', 'danger');
+    }
+  } */

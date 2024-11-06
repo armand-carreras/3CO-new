@@ -12,61 +12,69 @@
     </ion-chip>
   </div>
 
-  <div class="title-container">
-    <ion-text color="secondary">
-      <h2>Engage</h2>
-    </ion-text>
-  </div>
-
-  <div class="scan-container">
-    <div id="scan-banner">
-      <ion-text style="color: white;">
-        <p>Search, post or review with 
-          3-CO environment</p>
+  <div class="products-scroll-content">
+  
+    <div class="title-container">
+      <ion-text color="secondary">
+        <h2>Engage</h2>
       </ion-text>
     </div>
-  </div>
 
-  <div class="serch-filter-container">
-    <div class="searchbar-filter">
-      <ion-searchbar placeholder="Search product" show-clear-button="always" [debounce]="1000" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
-      <ion-button size="small" fill="clear" id="open-modal">
-        <ion-icon name="filter-outline"></ion-icon>
+    <div class="scan-container">
+      <div id="scan-banner">
+        <ion-text style="color: white;">
+          <p>Search, post or review with 
+            <br>3-CO environment</p>
+        </ion-text>
+      </div>
+    </div>
+
+    <div class="serch-filter-container">
+      <div class="searchbar-filter">
+        <ion-searchbar placeholder="Search product" show-clear-button="always" [debounce]="1000" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
+        <ion-button size="small" fill="clear" id="open-modal">
+          <ion-icon name="filter-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <ion-button shape="round" fill="outline" [routerLink]="['/tabs/product/add-product']">Post</ion-button>
+    </div>
+
+    <div class="recently-added-container">
+      <ion-text>
+        <h5 class="no-padding">Recently added products</h5>
+      </ion-text>
+      <ion-button [disabled]="true" size="small" shape="round" fill="outline">
+        <ion-icon slot="start" name="storefront-outline"></ion-icon>
+        <ion-text>Find Shops</ion-text>
       </ion-button>
     </div>
-    <ion-button shape="round" fill="outline">Post</ion-button>
-  </div>
-
-  <div class="recently-added-container">
-    <ion-text>
-      <h5 class="no-padding">Recently added products</h5>
-    </ion-text>
-    <ion-button size="small" shape="round" fill="outline">
-      <ion-icon slot="start" name="storefront-outline"></ion-icon>
-      <ion-text>Find Shops</ion-text>
-    </ion-button>
-  </div>
 
 
-  <div class="all-categories-container">
-    <div *ngFor="let category of categories" class="category-container">
-      <!-- Check if groupedLabels[category.name] is defined before iterating -->
-      <ng-container *ngIf="!isGroupCategoryEmpty(category.name)">
-        <ion-text class="category-title"><h3>{{ category.name }}</h3></ion-text>
-      
-        <div class="label-box-container">
-          <div *ngFor="let product of groupedProducts[category.name]" class="label-box">
-            <img src="assets/databases/No_Image_Available.jpg" alt="No Image Available">
-            <ion-text>
-              {{ product.name }}
-            </ion-text>
+    <div class="all-categories-container">
+      <div *ngFor="let category of categories" class="category-container">
+        <!-- Check if groupedLabels[category.name] is defined before iterating -->
+        <ng-container *ngIf="isGroupCategoryEmpty(category.name)">
+          <div style="display: flex;">
+            <ion-icon style="padding-right:.5rem;" [name]="category.icon"></ion-icon>
+            <ion-text class="category-title"><p style="margin: 0; padding: 0; padding-bottom:.75rem;"><strong>{{ category.name }}</strong></p></ion-text>
           </div>
-        </div>
-      </ng-container>
-    </div>
-    <!-- Display Spinner if No Categories are Available -->
-    <ion-spinner *ngIf="!groupedProducts" name="lines-sharp"></ion-spinner>
-  </div>
+        
+          <div class="label-box-container">
+            <div *ngFor="let product of groupedProducts[category.name]" class="label-box" (click)="showProductInfo(product)">
+              <ion-text style="font-size: 0.75rem; margin-bottom: 0.5rem;">
+                {{ product.name }}
+              </ion-text>
+              <img [src]="product.image!='' ? product.image : '/assets/databases/No_Image_Available.jpg'" alt="No Image Available">
+              <app-rating style="width: 80%;" [rating]="product.rating"></app-rating>
 
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <!-- Display Spinner if No Categories are Available -->
+      <ion-spinner *ngIf="!groupedProducts" name="lines-sharp"></ion-spinner>
+    </div>
+
+  </div>
 
 </div>

@@ -36,13 +36,13 @@
       
         <div class="label-box-container" >
           <div *ngFor="let link of groupedLinks[category.name]" class="label-box">
-            <a [href]="link" target="_blank">
-              <iframe [src]="sanitizeUrl(link.url)" width="100px" height="100px" style="scrolling:no; overflow: hidden; border: none; pointer-events: none;"></iframe>
+            <a [href]="link.url" target="_blank">
+              <img [src]="link.image">
+              {{link.name | slice:0:15}}
             </a>
           </div>
         </div>
       </ng-container>
     </div>
-
-
+  </div>
 </div>

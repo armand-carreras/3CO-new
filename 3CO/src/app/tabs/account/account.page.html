@@ -1,6 +1,6 @@
 <ion-content>
 
-  <div class="profile-container">
+  <div class="profile-details-container">
     <div class="mini-info">
       <img [src]=user.avatarImg alt="Avatar" width="45%">
       <div>
@@ -22,8 +22,8 @@
       </div>
     </div>
 
-
-    <ion-list>
+    <div class="profile-menu-container">
+      <ion-list>
       <ion-item button detail="true" lines="none" (click)="checkPersonalInfo()">
         <ion-icon slot="start" color="primary" name="person-outline"></ion-icon>
         <ion-label>Personal Details</ion-label>
@@ -41,6 +41,8 @@
         <ion-label>Version</ion-label>
       </ion-item>
     </ion-list>
+    </div>
+    
 
   </div>
 </ion-content>

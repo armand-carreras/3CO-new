@@ -4,7 +4,7 @@ export const environment = {
   AESiv: '100a101000111101100101AFde',
   paths: {
     base_api: 'http://localhost:5000/v2/api/',
-    base_detection_api: 'https://uyrhlt-ip-2-57-109-7.tunnelmole.net/v2/api/',
+    base_detection_api: 'https://abyj5g-ip-2-57-109-7.tunnelmole.net/v2/api/',
     post_get_user: 'user',
     login: 'user/login',
     image_detection: 'detect'

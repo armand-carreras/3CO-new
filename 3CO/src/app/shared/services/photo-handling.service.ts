@@ -22,8 +22,7 @@ export class PhotoHandlingService {
     console.log('base64Data before conversion: ', base64File);
     const httpHeaders = new HttpHeaders({
       'Content-Type': 'multipart/form-data',
-      'Accept': 'application/json',
-      // Add any other headers you need here
+      'Accept': 'application/json'
     });
     
     try {
@@ -34,7 +33,7 @@ export class PhotoHandlingService {
         return throwError(() => new Error('Image processing error. Please try again.'));
     }
 
-    return this.http.post<any>(environment.paths.base_detection_api + environment.paths.image_detection, formData, {headers: httpHeaders})
+    return this.http.post<any>(environment.paths.base_detection_api + environment.paths.image_detection, formData)
         .pipe(
             tap((res) => {
                 console.log('HTTP response successful: ', res);

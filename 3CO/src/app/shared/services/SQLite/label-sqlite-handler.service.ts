@@ -11,15 +11,15 @@ import { Label } from '../../models/label';
 })
 
 export class LabelSQLiteHandlerService {
-    public allList: BehaviorSubject<Label[]> =
-                                new BehaviorSubject<Label[]>([]);
-    private databaseName: string = "";
-    private uUpdStmts: UserUpgradeStatements = new UserUpgradeStatements();
-    private versionUpgrades;
-    private loadToVersion;
-    private db!: SQLiteDBConnection;
-    private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    private randomLabel: BehaviorSubject<Label[]> = new BehaviorSubject([] as Label[]);
+  public allList: BehaviorSubject<Label[]> =
+  new BehaviorSubject<Label[]>([]);
+  private randomLabel: BehaviorSubject<Label[]> = new BehaviorSubject<Label[]>([]);
+  private databaseName: string = "";
+  private uUpdStmts: UserUpgradeStatements = new UserUpgradeStatements();
+  private versionUpgrades;
+  private loadToVersion;
+  private db!: SQLiteDBConnection;
+  private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(private sqliteService: SQLiteService,
                 private dbVerService: DbnameVersionService) {
@@ -157,8 +157,15 @@ export class LabelSQLiteHandlerService {
       const labels = await Promise.all(results?.map(async (res) => {
         const base64Data = res['LOGO'];
         //const base64Logo = logoBlob ? await this.byteArrayToBase64(logoBlob) : 'assets/databases/No_Image_Available.jpg';
-        const base64Logo = `data:image/png;base64,${base64Data}`
-    
+        const base64Logo = `data:image/png;base64,${base64Data}`;
+        // Very good choice,Credibility 3/3,Environment 3/3,Socio-Economic 0/3
+        let evaluation = 'N/A;N/A;N/A';
+        if(res['Siegelklarheit'] && res['Siegelklarheit'] !== 'Not assessed') {
+          const splitedRanking = res['Siegelklarheit'].split('\n');
+          evaluation = `${splitedRanking[1].split(' ')[1]};${splitedRanking[2].split(' ')[1]};${splitedRanking[3].split(' ')[1]}`;
+        }
+        console.log('---------> Evaluation: ', evaluation);
+        
         const newLabel: Label = {
           logo: base64Logo,
           name: res['NAME'],
@@ -174,7 +181,7 @@ export class LabelSQLiteHandlerService {
           conformityAssesment: res['CONFORMITY ASSESSMENT'],
           managingOrganization: res['MANAGING ORGANIZATION'],
           website: res['WEBSITE'],
-          ranking: `${res['Startseite – Siegelklarheit']};${res['https://label-online.de/ ']};${res['https://www.commonshare.com/ratings/standard-owners-benchmark']}`
+          ranking: evaluation
         };
         return newLabel;
       }));

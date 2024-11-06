@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Subscription, firstValueFrom, tap } from 'rxjs';
+import { CATEGORIES } from 'src/app/shared/models/label';
+import { Product } from 'src/app/shared/models/product';
 import { User } from 'src/app/shared/models/user';
+import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -25,15 +28,25 @@ export class ProductsPage implements OnInit {
     { name: 'Energy', icon: 'flash-outline' }
   ];
 
-  groupedProducts: {
-    [key: string]: {name:string, url:string}[]
-  } = {};
+  public groupedProducts: {
+    [key: string]: Product[]
+  } = {
+    'Electronics': [],
+    'Cosmetics':[],
+    'Industry':[],
+    'Building':[],
+    'Matresses': [],
+    'Global': [],
+    'Food': [],
+    'Chemicals': [],
+    'Energy': []
+  };
 
   private subscriptions: Subscription[] = [];
 
 
 
-  constructor(private router: Router, private userService: UserService, private sanitizer: DomSanitizer) { }
+  constructor(private router: Router, private userService: UserService, private productServ: ProductHandlerService, private sanitizer: DomSanitizer) { }
 
   async ngOnInit() {  
     await firstValueFrom(this.userService.getUser().pipe(tap(user=>this.user=user)));
@@ -41,32 +54,22 @@ export class ProductsPage implements OnInit {
 
   ionViewWillEnter() {
     this.subscribeToUser();
+    this.setToZero()
+    this.orderByCategory(this.productServ.getProducts);
   }
   ionViewWillLeave(): void {
     this.destroySubscriptions()
   }
 
-  public sanitizeUrl(url: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
-
-  // Example of setting sanitized URLs
-  public setIframeUrl(url: string) {
-    return this.sanitizeUrl(url);
-  }
-
   public isGroupCategoryEmpty(category: string) {
-    if(this.groupedProducts && this.groupedProducts[category]?.length>0) {
-      return false;
-    }
-    else return true;
-
+    return (this.groupedProducts && this.groupedProducts[category]?.length>0) ? true : false;
   }
+
   public goToProfile(){
     this.router.navigate(['/tabs/account']);
   }
   public goToMainPage() {
-    this.router.navigate(['/tabs/labels']);
+    this.router.navigate(['/tabs/products']);
   }
 
   public async handleSearchBarInput(ev: any) {
@@ -74,10 +77,20 @@ export class ProductsPage implements OnInit {
       console.log('Trying to search for:', ev.target);
     } else {
     }
-
   }
 
+  public showProductInfo(product: Product) {
+    
+  }
 
+  private orderByCategory(products: Product[]) {
+    products.forEach(product => {
+      const category = product.categories;
+      if (this.groupedProducts[category]) {
+        this.groupedProducts[category].push(product);
+      }
+    });
+  }
 
   private async subscribeToUser() {
     await this.userService.getUser().pipe(tap(user=>this.user=user)).subscribe();
@@ -88,5 +101,18 @@ export class ProductsPage implements OnInit {
   }
 
 
+  private setToZero() {
+    this.groupedProducts = {
+      'Electronics': [],
+      'Cosmetics':[],
+      'Industry':[],
+      'Building':[],
+      'Matresses': [],
+      'Global': [],
+      'Food': [],
+      'Chemicals': [],
+      'Energy': []
+    };
+  }
 
 }

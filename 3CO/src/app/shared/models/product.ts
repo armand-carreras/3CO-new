@@ -7,5 +7,6 @@ export interface Product {
     categories: 'Electronics' | 'Cosmetics' | 'Industry' | 'Building' | 'Matresses' | 'Global' | 'Food' | 'Chemicals' | 'Energy';
     description: string;
     rating: number;
+    reviews?: string[];
 }
 

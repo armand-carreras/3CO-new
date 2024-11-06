@@ -8,7 +8,7 @@
     color: var(--ion-color-primary);
 }
 
-.profile-container{
+.profile-details-container{
     width:100%;
     height: 100%;
     display: flex;
@@ -47,6 +47,10 @@
         align-items: center;
     }
 }
-ion-list{
-    width: 100%;
+
+.profile-menu-container{
+    ion-list{
+        width: 100%;
+        
+    }
 }

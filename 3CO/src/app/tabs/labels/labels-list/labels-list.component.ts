@@ -73,7 +73,6 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   private allGroupedLabels = this.groupedLabels;
 
-  private subscribers: Subscription[] = [];
 
   constructor(
     private labelsService: LabelSQLiteHandlerService,
@@ -90,12 +89,12 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
   
   async ngOnInit() {
     await firstValueFrom(this.userService.getUser().pipe(tap(user=>this.user=user)));
+    console.log('NgOnInit labels-init');
     this.fetchAllLabels();
     
   }
   
   ngOnDestroy() {
-    this.subscribers.forEach(subs=>subs.unsubscribe());
   }
   
   public isGroupCategoryEmpty(category: string) {
@@ -128,7 +127,6 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
   public selectForMoreInfo(label: Label) {
     this.selectedLabel = label;
     this.isLabelSelected = true;
-    //console.log('-----------Selected Label : ', JSON.stringify(label));
   }
 
   public dismissMoreInfo(event: any) {

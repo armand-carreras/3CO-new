@@ -13,7 +13,10 @@ export class MoreInfoComponent  implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('More info label ranking: ', this.label.ranking);
+    console.log('Splitted ranking: ', JSON.stringify(this.label.ranking.split(';')));
+  }
 
   get ranking1() {
     return this.label.ranking.split(';')[0];

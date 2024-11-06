@@ -8,6 +8,7 @@
       <img src="assets/3CO/3_CO_sin_letras.png">
     </div>
 
+    <ng-container *ngIf="!isLabelSelected else moreInfo">
 
     <div id="content">
 
@@ -44,7 +45,7 @@
           <ion-text>
             <h4>Featured Label</h4>
           </ion-text>
-            <div class="label-info-box">
+            <div class="label-info-box" (click)="showMoreLabelInfo()">
               <ion-text>{{featuredLabel.name}}</ion-text>
               <img [src]=featuredLabel.logo>
               <ion-text class="truncate-text" color="medium">
@@ -59,12 +60,10 @@
           </ng-container>
         </div>
 
-
       </div>
 
-
     </div>
-
+  </ng-container>
 
   </div>
 
@@ -84,6 +83,7 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+  
   <ion-modal [isOpen]="resultModalTrigger">
     <ng-template>
       <ion-header>
@@ -99,6 +99,7 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+
 </ion-content>
 
 
@@ -118,4 +119,10 @@
         <ion-icon name="star-half-outline"></ion-icon>
       </div>
     </div>
+</ng-template>
+
+
+
+<ng-template #moreInfo>
+  <app-more-info [label]="featuredLabel" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
 </ng-template>
