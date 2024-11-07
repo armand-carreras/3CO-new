@@ -24,15 +24,15 @@ export class RegisterPage implements OnInit {
   }
 
   get canRegister() {
-    return this.password.length>3 && this.password===this.repassword && this.name.length>3 && this.email.includes('@');
+    return this.password.length>3 && this.password===this.repassword && this.name.length>=3 && this.email.includes('@');
   }
 
   startAsGuest() {
     this.router.navigateByUrl('/tabs')
   }
 
-  public register() {
-    firstValueFrom(this.authServ.register(this.name, this.email, this.password));
+  public async register() {
+    await this.authServ.register(this.name, this.email, this.password);
   }
 
 }

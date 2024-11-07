@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, tap } from 'rxjs';
 import { User } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 import * as crypto from 'crypto-js';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,8 @@ export class AuthService {
     private toastServ: ToastService,
     private http: HttpClient,
     private storage: StorageService,
-    private userService: UserService
+    private userService: UserService,
+    private loadController: LoadingController
   ) {
     this.loadToken();
   }
@@ -101,7 +103,7 @@ export class AuthService {
    * @param email Email of the user
    * @param password Password of the user
    */
-  public register(user: string, email: string, password: string): Observable<any> {
+  public async register(user: string, email: string, password: string): Promise<any> {
     const URL = environment.paths.base_api+environment.paths.post_get_user;
     const hashPassword = crypto.SHA256(password).toString();
     const body = {
@@ -111,26 +113,26 @@ export class AuthService {
     };
     
     console.log('Starting Registration');
-    return this.http.post<User>(
+
+    const loader = await this.loadController.create({message:'Registering'});
+    loader.present();
+
+    return await firstValueFrom(this.http.post<User>(
       URL,
       JSON.stringify(body),
       { headers: this.postHeaders, observe: 'response' }
     ).pipe(
       tap(async (res)=>{
-        if(res.status === 201){
-          console.log('Successfull Registration');
+          console.log('Successfull Registration', res);
           // Redirect to login page after successful registration
-          (await (this.toastServ.setToast('Successfull registration','success',1200))).present();
+          (await (this.toastServ.setToast('Successfull registration','success',600))).present();
           this.router.navigate(['auth/login'], {queryParams: {email: email, password: password}});
-        } else {
-
-        }
       }),
       catchError(async error=>{
         console.error(error);
-        (await (this.toastServ.setToast('Error while trying to register try again','danger',1200))).present();
-      })
-    );
+        (await (this.toastServ.setToast('Error while trying to register try again','danger',600))).present();
+      }),
+    )).finally(()=>loader.dismiss());
   }
 
 }
