@@ -17,34 +17,51 @@ export class PhotoHandlingService {
   }
 
 
-  sendBase64ImageToEndpoint(base64File: string) {
-    const formData = new FormData();
+  sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string) {
+    let formData = new FormData();
     console.log('base64Data before conversion: ', base64File);
-    const httpHeaders = new HttpHeaders({
-      'Content-Type': 'multipart/form-data',
-      'Accept': 'application/json'
-    });
-    
+
+    // Optional guest field
+    if (isGuest) {
+        formData.append('guest', 'true');
+    }
+
     try {
+        // Convert base64 to Blob
         const blob = this.base64toBlob(base64File);
         formData.append('file', blob, 'file.jpg');
+        formData.forEach((res)=>{
+          console.log('formData resource: ', res.toString());
+        });
     } catch (error) {
         console.error('Error converting Base64 to Blob: ', error);
         return throwError(() => new Error('Image processing error. Please try again.'));
     }
 
-    return this.http.post<any>(environment.paths.base_detection_api + environment.paths.image_detection, formData)
+    // Set headers conditionally
+    let httpHeaders = new HttpHeaders({
+        'Accept': 'application/json'
+    });
+    if (!isGuest && jwtToken) {
+        httpHeaders = httpHeaders.set('Authorization', `Bearer ${jwtToken}`);
+    }
+
+    // Send the HTTP POST request
+    return this.http.post<any>(`${environment.paths.base_detection_api}${environment.paths.image_detection}`, formData, { headers: httpHeaders })
         .pipe(
             tap((res) => {
                 console.log('HTTP response successful: ', res);
             }),
             catchError((error) => {
+                console.error('Http form Data: ', JSON.stringify(formData));
+                console.error('HTTP Headers : ', JSON.stringify(httpHeaders));
                 console.error('HTTP request failed: ', JSON.stringify(error));
                 alert('An error occurred during the image detection process. Please try again.');
                 return throwError(() => new Error('Error during image detection API call.'));
             })
         );
 }
+
 
 
 

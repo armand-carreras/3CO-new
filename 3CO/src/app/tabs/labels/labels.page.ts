@@ -4,10 +4,12 @@ import { Photo } from '@capacitor/camera';
 import { LoadingController, Platform, ViewWillEnter } from '@ionic/angular';
 import { firstValueFrom, tap } from 'rxjs';
 import { Label } from 'src/app/shared/models/label';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { CameraService } from 'src/app/shared/services/camera.service';
 import { PhotoHandlingService } from 'src/app/shared/services/photo-handling.service';
 import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 
 
@@ -36,6 +38,8 @@ export class LabelsPage implements OnInit, ViewWillEnter {
     private photoService: PhotoHandlingService,
     private toastServ: ToastService,
     private labelService: LabelSQLiteHandlerService,
+    private authService: AuthService,
+    private userService: UserService,
     private loaderCntr: LoadingController
   ) {
     this.isModalOpen = false;
@@ -94,39 +98,44 @@ export class LabelsPage implements OnInit, ViewWillEnter {
   }
 
   public async sendImage() {
-    let base64String: string | undefined = '';
+    const token = this.authService.token;
+    const isGuest = this.authService.isUserGuest;
+    let base64String = this.extractBase64String();
 
-    // Ensure that we have a valid base64 string before trying to sanitize
-    if (this.photo?.base64String) {
-        base64String = this.photo?.base64String?.includes(',') ? this.photo.base64String.split(',')[1] : this.photo.base64String;
-    } else if (this.base64Image) {
-        base64String = this.base64Image?.includes(',') ? this.base64Image.split(',')[1] : this.base64Image;
-    } else {
-
-    }
-
-    if (base64String) {
-        // Sanitize the base64 string if it's defined and non-empty
-        base64String = this.sanitizeBase64(base64String);
-
-        try {
-            const response = await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String));
-            this.receivedBase64Image = response.result_image;
-            console.log('Sending image: ', JSON.stringify(response));
-
-            // loader.dismiss();
-            this.toastServ.presentAutoDismissToast('Image sent successfully!', 'success');
-            this.isModalOpen = false;
-            this.isResultModalOpen = true;
-        } catch (error) {
-            console.error('Error sending image:', error);
-            this.toastServ.presentAutoDismissToast('Error sending image. Please try again.', 'danger');
-        }
-    } else {
-        // Show an error message if no base64 string is available
+    if (!base64String) {
         this.toastServ.presentAutoDismissToast('Image could not be loaded!', 'danger');
+        return;
     }
-  }
+
+    try {
+        // Send the base64 image to the endpoint
+        const response = await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String, isGuest, token));
+        this.receivedBase64Image = response.result_image;
+        
+        console.log('Image sent successfully:', response);
+        this.toastServ.presentAutoDismissToast('Image sent successfully!', 'success');
+        this.isModalOpen = false;
+        this.isResultModalOpen = true;
+    } catch (error) {
+        console.error('Error sending image:', error);
+        this.toastServ.presentAutoDismissToast('Error sending image. Please try again.', 'danger');
+    }
+}
+
+/**
+ * Extracts the base64 string from available image sources and sanitizes it.
+ * @returns The sanitized base64 string if available, or undefined.
+ */
+private extractBase64String(): string | undefined {
+    const base64String = this.photo?.base64String || this.base64Image;
+    
+    // If a valid base64 string is found, sanitize and return it
+    if (base64String) {
+        return this.sanitizeBase64(base64String.includes(',') ? base64String.split(',')[1] : base64String);
+    }
+    return undefined;
+}
+
 
   // Helper to clean up Base64 string
   private sanitizeBase64(base64String: string): string {
@@ -200,10 +209,6 @@ export class LabelsPage implements OnInit, ViewWillEnter {
     this.randomLabel = this.labelService.featuredLabel[0];
     this.featuredLabel.logo = this.featuredLabel?.logo ?? '/assets/databases/No_Image_Available.jpg'
   }
-
-
-  
-  
 
 }
 

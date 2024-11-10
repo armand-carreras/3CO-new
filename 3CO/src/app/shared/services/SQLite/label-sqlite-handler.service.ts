@@ -188,7 +188,7 @@ export class LabelSQLiteHandlerService {
       return labels;
     }
     
-    private async byteArrayToBase64(byteArray: number[]): Promise<string> {
+    /* private async byteArrayToBase64(byteArray: number[]): Promise<string> {
       const blob = new Blob([new Uint8Array(byteArray)], { type: 'image/jpeg' });
       return this.blobToBase64(blob);
     }
@@ -200,8 +200,9 @@ export class LabelSQLiteHandlerService {
         reader.onloadend = () => resolve(reader.result as string);
         reader.onerror = reject;
         reader.readAsDataURL(blob);
-      });
+      }); 
     }
+    */
 
 
 }

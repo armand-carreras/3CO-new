@@ -24,9 +24,9 @@ export class AppComponent implements OnInit {
   async ngOnInit(){
     
     console.log('Initializing app.page, NgOnInit');
-    /* await this.initStorage.initializeApp();
+    await this.initStorage.initializeApp();
     
-    await this.storageServ.init(); */
+    await this.storageServ.init();
     await this.themeServ.initTheme();
   }
 

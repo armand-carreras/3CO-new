@@ -18,10 +18,9 @@ export class AuthService {
   private postHeaders: HttpHeaders = new HttpHeaders({
     'Accept': '*/*',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
   });
 
-  private token: BehaviorSubject<string> = new BehaviorSubject('');
+  private userToken: BehaviorSubject<string> = new BehaviorSubject('');
 
   private isGuest: boolean = true;
 
@@ -41,28 +40,25 @@ export class AuthService {
     return this.isGuest;
   }
 
-  get token$() {
-    return this.token.asObservable();
-  }
-  get tokenValue(): string {
-    return this.token.getValue();
+  get token() {
+    return this.userToken.getValue();
   }
 
   getToken() {
-    return this.token.value;
+    return this.userToken.value;
   }
 
   async loadToken() {
     const token = await this.storage.getToken() || '';
     if(token){
-      this.token.next(token);
+      this.userToken.next(token);
     }
   }
 
   async setToken(token: string) {
     if(token!==null && token!==undefined && token!== ''){
       console.log('Setting up Token', token);
-      this.token.next(token);
+      this.userToken.next(token);
       this.storage.storeToken(token);
     } else {
       console.log('Something went wrong, try again!');

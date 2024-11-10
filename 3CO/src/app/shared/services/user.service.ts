@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user';
 import { RequestsService } from './requests.service';
 import { StorageService } from './storage.service';
+import { UnlockedBadge } from '../models/unlockedBadge';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,14 @@ export class UserService {
       rewards: 0
     }
   );
+  
+  private userBadges: BehaviorSubject<UserBadgeInformation> =
+    new BehaviorSubject<UserBadgeInformation>(
+      {
+        numberOfScannedLabels: 0,
+        unlockedBadges: []
+      }
+    );
   private isGuest: boolean = true;
 
   private password: BehaviorSubject<string> = new BehaviorSubject<string>('');
@@ -29,11 +38,9 @@ export class UserService {
   get isUserGuest() {
     return this.isGuest;
   }
-
   set setUserNotGuest( toggle: boolean ) {
     this.isGuest = toggle;
   }
-
 
 
 
@@ -59,4 +66,17 @@ export class UserService {
   public setPassword(pass: string) {
     this.password.next(pass)
   }
+
+  public setUserBadges(userBadgeInfo: UserBadgeInformation) {
+    this.userBadges.next(userBadgeInfo);
+  }
+  public getUserBadges(): UserBadgeInformation {
+    return this.userBadges.getValue();
+  }
+
+}
+
+export type UserBadgeInformation = {
+  numberOfScannedLabels: number;
+  unlockedBadges: UnlockedBadge[]
 }
