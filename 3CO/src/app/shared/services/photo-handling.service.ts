@@ -4,6 +4,8 @@ import { ToastService } from './toast.service';
 import { LoadingController } from '@ionic/angular';
 import { catchError, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { CapacitorHttp, HttpResponse } from '@capacitor/core';
+import { log } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,72 @@ export class PhotoHandlingService {
   }
 
 
-  sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string) {
+  async sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string) {
+    // Initialize form data as an object for CapacitorHttp
+    const formData: any = {
+        guest: isGuest ? 'true' : undefined,
+    };
+
+    try {
+        // Convert base64 to Blob
+        const blob = this.base64toBlob(base64File);
+        formData['file'] = blob;
+        // Convert base64 to Blob
+        console.log('--------formData now: ', JSON.stringify(formData['file']));
+
+        let multiFormData = new FormData();
+        multiFormData.append('file', blob, 'file.jpg');
+
+        multiFormData.forEach((res)=>{
+          console.log('---------- formData before: ', res.valueOf());
+        });
+
+    } catch (error) {
+        console.error('Error converting Base64 to Blob: ', error);
+        throw new Error('Image processing error. Please try again.');
+    }
+
+    // Set headers conditionally
+    const headers: any = {
+        'Accept': 'application/json',
+    };
+    if (!isGuest && jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    }
+
+    // Construct HTTP options
+    const options = {
+        url: `${environment.paths.base_detection_api}${environment.paths.image_detection}`,
+        headers: headers,
+        data: formData,
+    };
+
+    try {
+        const response: HttpResponse = await CapacitorHttp.post(options);
+        console.log('HTTP response successful:', JSON.stringify(response.data));
+        return response.data;
+    } catch (error) {
+        console.error('Form Data:', JSON.stringify(formData));
+        console.error('HTTP Headers:', JSON.stringify(headers));
+        console.error('HTTP request failed:', JSON.stringify(error));
+        alert('An error occurred during the image detection process. Please try again.');
+        throw new Error('Error during image detection API call.');
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string) {
     let formData = new FormData();
     console.log('base64Data before conversion: ', base64File);
 
@@ -60,7 +127,7 @@ export class PhotoHandlingService {
                 return throwError(() => new Error('Error during image detection API call.'));
             })
         );
-}
+} */
 
 
 
@@ -103,7 +170,8 @@ export class PhotoHandlingService {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
         const byteArray = new Uint8Array(byteNumbers);
-
+        console.log('nnnnnnnnnnnnnnnnnn');
+        
         return new Blob([byteArray], { type: 'application/octet-stream' });
     } catch (error) {
         console.error('Failed to convert Base64 to Blob: ', error);

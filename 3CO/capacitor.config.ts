@@ -23,7 +23,10 @@ const config: CapacitorConfig = {
       electronWindowsLocation: "C:\\ProgramData\\CapacitorDatabases",
       electronMacLocation: "/Volumes/Development_Lacie/Development/Databases",
       electronLinuxLocation: "Databases"
-    }
+    },
+    CapacitorHttp: {
+      enabled: true,
+    },
   }
 };
 

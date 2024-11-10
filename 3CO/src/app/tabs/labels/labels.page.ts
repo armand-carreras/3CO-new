@@ -109,7 +109,7 @@ export class LabelsPage implements OnInit, ViewWillEnter {
 
     try {
         // Send the base64 image to the endpoint
-        const response = await firstValueFrom(this.photoService.sendBase64ImageToEndpoint(base64String, isGuest, token));
+        const response = await this.photoService.sendBase64ImageToEndpoint(base64String, isGuest, token);
         this.receivedBase64Image = response.result_image;
         
         console.log('Image sent successfully:', response);
