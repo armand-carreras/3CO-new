@@ -63,36 +63,36 @@ export class LabelSQLiteHandlerService {
     
     
 
-    async loadAll() {
-      const results = (await this.db.query('SELECT * FROM labelsBase64')).values;
-      const labels = results ? await this.parseLabels(results) : [];
-      this.allList.next(labels);
-    }
-    
+  async loadAll() {
+    const results = (await this.db.query('SELECT * FROM labelsBase64')).values;
+    const labels = results ? await this.parseLabels(results) : [];
+    this.allList.next(labels);
+  }
+  
 
-    // CRUD Operations
-    async getAll() {
-        await this.loadAll();
-        this.isAllReady.next(true);
-    }
+  // CRUD Operations
+  async getAll() {
+      await this.loadAll();
+      this.isAllReady.next(true);
+  }
 
-    async updateUserById(id: string, active: number) {
-        const sql = `UPDATE users SET active=${active} WHERE id=${id}`;
-        await this.db.run(sql);
-    }
-    async deleteUserById(id: string) {
-        const sql = `DELETE FROM users WHERE id=${id}`;
-        await this.db.run(sql);
-    }
+  async updateUserById(id: string, active: number) {
+      const sql = `UPDATE users SET active=${active} WHERE id=${id}`;
+      await this.db.run(sql);
+  }
+  async deleteUserById(id: string) {
+      const sql = `DELETE FROM users WHERE id=${id}`;
+      await this.db.run(sql);
+  }
 
-    async getImageById(id: number) {
-      const query = `SELECT LOGO FROM labelsBase64 WHERE ID = ${id}`;
-      const result =  ( await this.db.query(query) ).values;
-      if (result && result?.length > 0) {
-        console.log('retrieved Image: ', result);
-        return `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(result[0])))}`;
-      }
-      return null;
+  async getImageById(id: number) {
+    const query = `SELECT LOGO FROM labelsBase64 WHERE ID = ${id}`;
+    const result =  ( await this.db.query(query) ).values;
+    if (result && result?.length > 0) {
+      console.log('retrieved Image: ', result);
+      return `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(result[0])))}`;
+    }
+    return null;
   }
 
     async getFromNameString(name: string) {
@@ -104,13 +104,34 @@ export class LabelSQLiteHandlerService {
       const labels = results ? this.parseLabels(results) : [];
       return labels;
     }
+
+    async getFromNamesArray(names: string[]) {
+      // Build the query with multiple LIKE conditions for "NAME" only
+      const conditions = names.map(() => `"NAME" LIKE ?`).join(' OR ');
+  
+      // Construct the final query
+      const query = `SELECT * FROM "labelsBase64" WHERE ${conditions}`;
+  
+      // Prepare parameters: each name needs one entry in the array (for NAME)
+      const params = names.map(name => `%${name}%`);
+  
+      // Execute the query
+      const results = (await this.db.query(query, params)).values;
+  
+      // Parse the results
+      const labels = results ? this.parseLabels(results) : [];
+      return labels;
+  }
+  
+  
+  
+
+
     private async getRandomLabel() {
       const query = `SELECT * FROM "labelsBase64" d ORDER BY random() LIMIT 1;`;
       console.log('QUERY;', query);
       const results = ( await this.db?.query(query) )?.values;
-      console.log('results:',JSON.stringify(results));
       const labels = results ? await this.parseLabels(results) : [];
-      console.log('labels: ',JSON.stringify(labels));
       this.randomLabel.next(labels);
     }
 
@@ -125,19 +146,19 @@ export class LabelSQLiteHandlerService {
       let conditions = [];
 
       // Add shape conditions if any shapes are selected
-      if (selectedShapes.length > 0) {
+      if (selectedShapes?.length > 0) {
         let shapeConditions = selectedShapes.map(shape => `"SHAPE" LIKE '%${shape}%'`).join(' OR ');
         conditions.push(`(${shapeConditions})`);
       }
 
       // Add color conditions if any colors are selected
-      if (selectedColours.length > 0) {
+      if (selectedColours?.length > 0) {
         let colorConditions = selectedColours.map(color => `"MAIN COLOR" LIKE '%${color}%'`).join(' OR ');
         conditions.push(`(${colorConditions})`);
       }
 
       // Add category conditions if any categories are selected
-      if (selectedCategories.length > 0) {
+      if (selectedCategories?.length > 0) {
         let categoryConditions = selectedCategories.map(category => `"CATEGORY" LIKE '%${category}%'`).join(' OR ');
         conditions.push(`(${categoryConditions})`);
       }
@@ -157,7 +178,7 @@ export class LabelSQLiteHandlerService {
       const labels = await Promise.all(results?.map(async (res) => {
         const base64Data = res['LOGO'];
         //const base64Logo = logoBlob ? await this.byteArrayToBase64(logoBlob) : 'assets/databases/No_Image_Available.jpg';
-        const base64Logo = `data:image/png;base64,${base64Data}`;
+        const base64Logo = `data:image/*;base64,${base64Data}`;
         // Very good choice,Credibility 3/3,Environment 3/3,Socio-Economic 0/3
         let evaluation = 'N/A;N/A;N/A';
         if(res['Siegelklarheit'] && res['Siegelklarheit'] !== 'Not assessed') {

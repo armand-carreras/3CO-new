@@ -1,12 +1,12 @@
+import { identifierName } from '@angular/compiler';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
 import { Platform } from '@ionic/angular';
-import { firstValueFrom } from 'rxjs';
-import { Product } from 'src/app/shared/models/product';
 import { CameraService } from 'src/app/shared/services/camera.service';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
+import { StorageService } from 'src/app/shared/services/storage.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -18,13 +18,14 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class ProductFormComponent {
   //@Output() addProduct = new EventEmitter<any>(); // Event emitter to send the product data back to parent component
   productForm: FormGroup;
-  private base64Image: string = '';
-  private photo!: Photo;
-  categories = [
-    'Electronics', 'Cosmetics', 'Industry', 'Building', 
-    'Mattresses', 'Global', 'Food', 'Chemicals', 'Energy'
+  possibleCategories = [
+    'Electronics', 'Cosmetics', 'Industry', 'Building', 'Textile',
+    'Mattresses', 'Global', 'Food', 'Chemicals', 'Energy', 'Other'
   ];
   imagePreview: string | undefined;
+  
+  private base64Image: string = '';
+  private photo!: Photo;
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +34,8 @@ export class ProductFormComponent {
     private toastServ: ToastService,
     private productService: ProductHandlerService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private storageServ: StorageService
   ) {
     // Initialize the form
     this.productForm = this.fb.group({
@@ -49,11 +51,12 @@ export class ProductFormComponent {
   }
 
   async onSubmit() {
-    const userID = await firstValueFrom(this.userService.getUser());
+    const userID = this.userService.getUserValue();
     if (this.productForm.valid) {
       const newProduct = {
+        id: crypto.randomUUID(),
         name: this.productForm.value.name,
-        creatorID: userID.email,
+        creatorID: userID.name,
         image: this.productForm.value.image,
         shopName: this.productForm.value.shopName,
         shopLocation: this.productForm.value.shopLocation,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, firstValueFrom, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, map, Observable, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
@@ -59,6 +59,8 @@ export class AuthService {
     if(token!==null && token!==undefined && token!== ''){
       console.log('Setting up Token', token);
       this.userToken.next(token);
+      this.userService.setToken(token);
+      this.userService.setUserNotGuest(false);
       this.storage.storeToken(token);
     } else {
       console.log('Something went wrong, try again!');
@@ -72,26 +74,29 @@ export class AuthService {
      * @param password Password of the user
      */
   public login(email: string, password: string): Observable<string> {
-
-    const URL = environment.paths.base_api+environment.paths.login;
+    const URL = `${environment.paths.base_api}${environment.paths.login}`;
     const hashPassword = crypto.SHA256(password).toString();
-    const body = {'email': email, 'password': hashPassword};
+    const body = { email: email, password: hashPassword };
     this.userService.setPassword(password);
 
-    return this.http.post<{token: string}>(
+    return this.http.post<{ token: string }>(
       URL,
-      JSON.stringify(body),
+      body,
       { headers: this.postHeaders }
     ).pipe(
-      tap((res)=> {
-        console.log("Resource from login: ",res);
+      tap(async (res) => {
+        console.log("Resource from login: ", res);
         this.setToken(res.token);
+        await this.userService.loadUser(res.token);
         this.isGuest = false;
       }),
-      map((res)=> res.token)
+      map((res) => res.token),
+      catchError((error) => {
+        console.error("Login request failed", error);
+        return throwError(() => new Error('Login failed, please try again.'));
+      })
     );
-  }
-
+}
   /**
    * @description  Register for users
    * @method POST
@@ -99,7 +104,7 @@ export class AuthService {
    * @param email Email of the user
    * @param password Password of the user
    */
-  public async register(user: string, email: string, password: string): Promise<any> {
+  public async register(user: string, email: string, password: string, gender: string): Promise<any> {
     const URL = environment.paths.base_api+environment.paths.post_get_user;
     const hashPassword = crypto.SHA256(password).toString();
     const body = {
@@ -113,16 +118,17 @@ export class AuthService {
     const loader = await this.loadController.create({message:'Registering'});
     loader.present();
 
-    return await firstValueFrom(this.http.post<User>(
+    return await firstValueFrom(this.http.post(
       URL,
       JSON.stringify(body),
       { headers: this.postHeaders, observe: 'response' }
     ).pipe(
       tap(async (res)=>{
-          console.log('Successfull Registration', res);
           // Redirect to login page after successful registration
+          console.log(res);
           (await (this.toastServ.setToast('Successfull registration','success',600))).present();
           this.router.navigate(['auth/login'], {queryParams: {email: email, password: password}});
+          this.setUserIntoStorage(user, email, password, gender);
       }),
       catchError(async error=>{
         console.error(error);
@@ -130,6 +136,35 @@ export class AuthService {
       }),
     )).finally(()=>loader.dismiss());
   }
+
+
+  private setUserIntoStorage(user: string, email: string, password: string, gender: string) {
+    
+    let avatarImagePath: string = '/assets/avatar/3_CO_sin_letras.png';
+    switch(gender) {
+      case 'man':
+        avatarImagePath = 'assets/avatar/male-avatar.png'
+        break;
+      case 'woman':
+        avatarImagePath = 'assets/avatar/female-avatar.png'
+        break;
+      default:
+        avatarImagePath = 'assets/avatar/3_CO_sin_letras.png';
+        break;
+    }
+
+    this.userService.setUser(
+      {
+        name: user,
+        email: email,
+        password: password,
+        avatarImg: avatarImagePath,
+        rewards: 0,
+        scans: 0
+      }
+    )
+  }
+
 
 }
 

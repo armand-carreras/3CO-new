@@ -1,11 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastService } from './toast.service';
 import { LoadingController } from '@ionic/angular';
-import { catchError, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CapacitorHttp, HttpResponse } from '@capacitor/core';
-import { log } from 'console';
+import { CapacitorHttp, HttpOptions, HttpResponse } from '@capacitor/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,57 +19,108 @@ export class PhotoHandlingService {
 
 
   async sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string) {
-    // Initialize form data as an object for CapacitorHttp
-    const formData: any = {
-        guest: isGuest ? 'true' : undefined,
-    };
-
-    try {
-        // Convert base64 to Blob
-        const blob = this.base64toBlob(base64File);
-        formData['file'] = blob;
-        // Convert base64 to Blob
-        console.log('--------formData now: ', JSON.stringify(formData['file']));
-
-        let multiFormData = new FormData();
-        multiFormData.append('file', blob, 'file.jpg');
-
-        multiFormData.forEach((res)=>{
-          console.log('---------- formData before: ', res.valueOf());
-        });
-
-    } catch (error) {
-        console.error('Error converting Base64 to Blob: ', error);
-        throw new Error('Image processing error. Please try again.');
+    const formData = new FormData();
+    const blob = await this.base64toBlob(base64File);
+    formData.append('file', blob, 'file.jpg');
+    if (isGuest) {
+        formData.append('guest', 'true');
     }
 
-    // Set headers conditionally
     const headers: any = {
-        'Accept': 'application/json',
+        'Accept': 'application/json'
     };
     if (!isGuest && jwtToken) {
         headers['Authorization'] = `Bearer ${jwtToken}`;
     }
 
-    // Construct HTTP options
-    const options = {
-        url: `${environment.paths.base_detection_api}${environment.paths.image_detection}`,
-        headers: headers,
-        data: formData,
-    };
+    /*const response = await firstValueFrom(this.http.post(`${environment.paths.base_detection_api}${environment.paths.image_detection}`,
+      formData, {headers:headers}
+    ))*/
+    
+    const response = await fetch(`${environment.paths.base_detection_api}${environment.paths.image_detection}`, {
+      method: 'POST',
+      headers: headers,
+      body: formData,
 
-    try {
-        const response: HttpResponse = await CapacitorHttp.post(options);
-        console.log('HTTP response successful:', JSON.stringify(response.data));
-        return response.data;
-    } catch (error) {
-        console.error('Form Data:', JSON.stringify(formData));
-        console.error('HTTP Headers:', JSON.stringify(headers));
-        console.error('HTTP request failed:', JSON.stringify(error));
-        alert('An error occurred during the image detection process. Please try again.');
-        throw new Error('Error during image detection API call.');
-    }
+    }).then(async (response)=>{
+      const data = await response.json();
+      console.log('HTTP response successful:', JSON.stringify(data));
+      return data;
+    }).catch((error)=>{
+      console.log('Fetch request failed:', JSON.stringify(error));
+      alert('An error occurred during the image detection process. Please try again.');
+      throw new Error(JSON.stringify(error));
+    });
+    return response;
   }
+
+
+
+  private async base64toBlob(base64Data: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+        try {
+            // Remove any Base64 headers if present (e.g., "data:image/jpeg;base64,")
+            const base64String = base64Data.replace(/^data:([A-Za-z-+/]+);base64,/, '');
+
+            // Sanitize and decode the Base64 string
+            const byteCharacters = this.decodeBase64(base64String);
+
+            const byteNumbers = new Array(byteCharacters?.length);
+            for (let i = 0; i < byteCharacters?.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+
+            resolve(new Blob([byteArray], { type: 'image/jpeg' }));
+        } catch (error) {
+            console.error('Failed to convert Base64 to Blob: ', error);
+            reject(new Error('Error converting Base64 to Blob.'));
+        }
+    });
+}
+
+
+  private decodeBase64(base64String: string): string {
+      try {
+          // Try using atob() for decoding
+          return atob(base64String);
+      } catch (e) {
+          // Fallback to polyfill or manual decoding if atob() fails
+          console.warn('atob() failed, using fallback: ', e);
+          return this.base64DecodePolyfill(base64String);
+      }
+  }
+
+  private base64DecodePolyfill(base64: string): string {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+      let str = '';
+
+      for (let i = 0; i < base64?.length; i += 4) {
+          const encoded1 = chars.indexOf(base64[i]);
+          const encoded2 = chars.indexOf(base64[i + 1]);
+          const encoded3 = chars.indexOf(base64[i + 2]);
+          const encoded4 = chars.indexOf(base64[i + 3]);
+
+          const char1 = (encoded1 << 2) | (encoded2 >> 4);
+          const char2 = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+          const char3 = ((encoded3 & 3) << 6) | encoded4;
+
+          str += String.fromCharCode(char1);
+          if (encoded3 !== 64) {
+              str += String.fromCharCode(char2);
+          }
+          if (encoded4 !== 64) {
+              str += String.fromCharCode(char3);
+          }
+      }
+
+      return str;
+  }
+
+
+
+
+
 
 
 
@@ -157,64 +207,13 @@ export class PhotoHandlingService {
       );
   } */
 
-  private base64toBlob(base64Data: string): Blob {
-    try {
-        // Remove any Base64 headers if present (e.g., "data:image/jpeg;base64,")
-        const base64String = base64Data.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-        
-        // Sanitize and decode the Base64 string
-        const byteCharacters = this.decodeBase64(base64String);
-        
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        console.log('nnnnnnnnnnnnnnnnnn');
-        
-        return new Blob([byteArray], { type: 'application/octet-stream' });
-    } catch (error) {
-        console.error('Failed to convert Base64 to Blob: ', error);
-        throw new Error('Error converting Base64 to Blob.');
-    }
-  }
 
-  private decodeBase64(base64String: string): string {
-      try {
-          // Try using atob() for decoding
-          return atob(base64String);
-      } catch (e) {
-          // Fallback to polyfill or manual decoding if atob() fails
-          console.warn('atob() failed, using fallback: ', e);
-          return this.base64DecodePolyfill(base64String);
-      }
-  }
 
-  private base64DecodePolyfill(base64: string): string {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-      let str = '';
 
-      for (let i = 0; i < base64.length; i += 4) {
-          const encoded1 = chars.indexOf(base64[i]);
-          const encoded2 = chars.indexOf(base64[i + 1]);
-          const encoded3 = chars.indexOf(base64[i + 2]);
-          const encoded4 = chars.indexOf(base64[i + 3]);
 
-          const char1 = (encoded1 << 2) | (encoded2 >> 4);
-          const char2 = ((encoded2 & 15) << 4) | (encoded3 >> 2);
-          const char3 = ((encoded3 & 3) << 6) | encoded4;
 
-          str += String.fromCharCode(char1);
-          if (encoded3 !== 64) {
-              str += String.fromCharCode(char2);
-          }
-          if (encoded4 !== 64) {
-              str += String.fromCharCode(char3);
-          }
-      }
 
-      return str;
-  }
+
 
   /* private base64toBlob(base64Data: string) {
     console.log('base64Data atob not parsed: ',base64Data);

@@ -1,4 +1,4 @@
-<div class="product-list-container">
+<div class="product-list-container" *ngIf="!wantMoreInfo else moreProductInfo">
 
   <div class="header">
     <img (click)="goToMainPage()" class="main-img" src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
@@ -78,3 +78,9 @@
   </div>
 
 </div>
+
+
+
+<ng-template #moreProductInfo>
+  <app-product-info [product]="selectedProduct" [currentUser]="user" (wannaGoBack)="closeMoreInfo()"></app-product-info>
+</ng-template>

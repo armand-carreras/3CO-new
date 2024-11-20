@@ -1,0 +1,65 @@
+.header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .main-img{
+            width: 15%;
+            height: auto;
+        }
+    }
+.product-container {
+    width: 94%;
+    height: max-content;
+    min-height: 86%;
+    max-height: 86%;
+    padding: 0.5rem 1rem;
+    margin: 3%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 1rem;
+    background-color: var(--ion-card-background);
+    overflow: scroll;
+
+    .top-info{
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        ion-text {
+            position: absolute;
+            left: 43%;
+        }
+        app-rating {
+            width: 5rem;
+        }
+    }
+    img {
+        width: 80%;
+    }
+
+    .shop-category-info {
+        width: 90%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .reviews-title {
+        width: 90%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+}
+

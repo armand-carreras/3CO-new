@@ -55,14 +55,17 @@ export class LearnPage implements OnInit, ViewWillEnter, ViewWillLeave {
 
 
 
-  constructor(private router: Router, private userService: UserService, private sanitizer: DomSanitizer) { }
+  constructor(private router: Router,
+    private userService: UserService,
+    private sanitizer: DomSanitizer) {
+      this.user=this.userService.getUserValue()
+  }
 
-  async ngOnInit() {  
-    await firstValueFrom(this.userService.getUser().pipe(tap(user=>this.user=user)));
+  ngOnInit() {
   }
 
   ionViewWillEnter() {
-    this.subscribeToUser();
+    this.user=this.userService.getUserValue()
   }
   ionViewWillLeave(): void {
     this.destroySubscriptions()
@@ -78,7 +81,7 @@ export class LearnPage implements OnInit, ViewWillEnter, ViewWillLeave {
   }
 
   public isGroupCategoryEmpty(category: string) {
-    if(this.groupedLinks[category].length>0) {
+    if(this.groupedLinks[category]?.length>0) {
       return false;
     }
     else return true;
@@ -91,11 +94,6 @@ export class LearnPage implements OnInit, ViewWillEnter, ViewWillLeave {
     this.router.navigate(['/tabs/labels']);
   }
 
-
-
-  private async subscribeToUser() {
-    await this.userService.getUser().pipe(tap(user=>this.user=user)).subscribe();
-  }
 
   private destroySubscriptions() {
     this.subscriptions.forEach((sub)=>sub.unsubscribe());

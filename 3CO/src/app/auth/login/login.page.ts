@@ -49,13 +49,15 @@ export class LoginPage implements OnInit {
 
     //Navigate to home
     if ( token ) {
-      this.router.navigate(['tabs']);
+      this.router.navigate(['/tabs/labels']);
     } else {
       this.toastServ.setToast('Not able to login try again!', 'danger');
     }
   }
 
-
+  public startAsGuest() {
+    this.router.navigateByUrl('/tabs')
+  }
 
 
 
@@ -69,8 +71,8 @@ export class LoginPage implements OnInit {
     } else {
     }
   }
-  startAsGuest() {
-    this.router.navigateByUrl('/tabs')
-  }
+
+
+  
 
 }

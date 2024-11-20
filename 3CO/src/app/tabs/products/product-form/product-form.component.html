@@ -4,7 +4,7 @@
   flex-direction: column; align-items: center; justify-content: center;">
 
   
-    <div style="width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
+    <div style="margin-top: 1rem; width: 100%; display: flex; flex-direction: row; justify-content: flex-start; align-items: center;">
       <ion-button (click)="goToMainPage()" fill="clear">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
@@ -25,8 +25,11 @@
       </ion-item>
 
       <ion-item>
-        <ion-select label="Categories" labelPlacement="start" formControlName="categories">
-          <ion-select-option *ngFor="let category of categories" [value]="category">
+        <ion-select
+          label="Categories"
+          labelPlacement="start"
+          formControlName="categories">
+          <ion-select-option *ngFor="let category of possibleCategories" [value]="category">
             {{ category }}
           </ion-select-option>
         </ion-select>

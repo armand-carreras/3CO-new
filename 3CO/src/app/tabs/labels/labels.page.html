@@ -3,14 +3,14 @@
     
     <div id="title">
       <ion-text color="secondary">
-        <h1>Discover the<br>eco-environment!</h1>
+        <h1>Discover the eco-environment!</h1>
       </ion-text>
       <img src="assets/3CO/3_CO_sin_letras.png">
     </div>
 
-    <ng-container *ngIf="!isLabelSelected else moreInfo">
-
+    
     <div id="content">
+      <ng-container *ngIf="!isLabelSelected else moreInfo">
 
       <div id="descriptive-container">
         <div id="description">
@@ -45,7 +45,7 @@
           <ion-text>
             <h4>Featured Label</h4>
           </ion-text>
-            <div class="label-info-box" (click)="showMoreLabelInfo()">
+            <div class="label-info-box" (click)="showMoreLabelInfo(featuredLabel)">
               <ion-text>{{featuredLabel.name}}</ion-text>
               <img [src]=featuredLabel.logo>
               <ion-text class="truncate-text" color="medium">
@@ -62,8 +62,8 @@
 
       </div>
 
+    </ng-container>
     </div>
-  </ng-container>
 
   </div>
 
@@ -83,6 +83,9 @@
       </ion-content>
     </ng-template>
   </ion-modal>
+
+
+
   
   <ion-modal [isOpen]="resultModalTrigger">
     <ng-template>
@@ -94,13 +97,42 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
+
       <ion-content class="ion-padding">
-        <img [src]="resultImage" alt="Your photo could not be load properly.">
+        <img style="margin-bottom: 1rem;" [src]="resultImage" alt="Detection data could not be loaded properly.">
+        
+        <ion-text style="width: 100%; text-align: center;" *ngIf="unlockedBadgesNow && unlockedBadgesNow.length>0"><h5 style="margin: 0;padding: 0;">Rewards</h5></ion-text>
+        <div class="unlocked-badges-container" *ngIf="!isGuest else register">
+          <ng-container *ngFor="let badge of unlockedBadgesNow">
+            <div class="badge-container">
+              <img [src]="badge.rewardImage" alt="reward image">
+            </div>
+          </ng-container>
+        </div>
+
+        <ng-template #register>
+          <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+            <ion-text>Register as a 3CO user to get rewards</ion-text>
+            <ion-button shape="round" fill="outline" color="warning" href="/auth/register">Register</ion-button>
+          </div>
+        </ng-template>
+        
+        <ng-container *ngFor="let label of detectedLabels">
+          <div class="boxed-label" (click)="showMoreLabelDetectedInfo(label)">
+            <img [src]="label.logo" [alt]="label?.name">
+            <div class="label-text-box">
+              <ion-text style="margin-bottom: 0.5rem;"><h5 style="margin: 0; padding: 0;">{{label.name}}</h5></ion-text>
+              <ion-note class="truncate-text" style="font-size: 0.7rem;">{{label.shortDescription}}</ion-note>
+            </div>
+          </div>
+        </ng-container>
       </ion-content>
     </ng-template>
   </ion-modal>
 
 </ion-content>
+
+
 
 
 <ng-template #labelLoader>
@@ -124,5 +156,5 @@
 
 
 <ng-template #moreInfo>
-  <app-more-info [label]="featuredLabel" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
+  <app-more-info style="margin: auto" [label]="selectedLabelForMoreInfo" [isScanInfo]="isScanInfo" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
 </ng-template>

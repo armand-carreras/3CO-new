@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ViewWillEnter } from '@ionic/angular';
 import { User } from 'src/app/shared/models/user';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -8,7 +9,7 @@ import { UserService } from 'src/app/shared/services/user.service';
   templateUrl: './account.page.html',
   styleUrls: ['./account.page.scss'],
 })
-export class AccountPage implements OnInit {
+export class AccountPage implements OnInit, ViewWillEnter {
 
   public user: User = {
     name: 'Guest User',
@@ -23,7 +24,9 @@ export class AccountPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.updateUser()
+  }
+  ionViewWillEnter(): void {
+    this.updateUser();
   }
 
   public checkPersonalInfo() {
@@ -42,13 +45,10 @@ export class AccountPage implements OnInit {
     this.router.navigate(['tabs/account/version']);
   }
 
-  private updateUser() {
-    this.userServ.getUser().subscribe(user =>
-      {
-        console.log(user);
-        this.user = user
-      }
-    );
+  private async updateUser() {
+    await this.userServ.fetchUser();
+    this.user = this.userServ.getUserValue();
+    console.log('------------ User from account: ', JSON.stringify(this.user));
   }
 
 

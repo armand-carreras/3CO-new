@@ -1,12 +1,11 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonModal } from '@ionic/angular';
-import { firstValueFrom, Subscription, tap } from 'rxjs';
+import { IonModal, ViewWillEnter } from '@ionic/angular';
 import { CATEGORIES, ColorList, Label } from 'src/app/shared/models/label';
 import { User } from 'src/app/shared/models/user';
 import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
 import { UserService } from 'src/app/shared/services/user.service';
-
+import { OverlayEventDetail } from '@ionic/core/components';
 
 
 @Component({
@@ -15,11 +14,12 @@ import { UserService } from 'src/app/shared/services/user.service';
   styleUrls: ['./labels-list.component.scss'],
   
 })
-export class LabelsListComponent  implements OnInit, OnDestroy {
+export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
   @ViewChild(IonModal) modal!: IonModal;
 
   public user!: User;
   public labelsReady: boolean = false;
+  public isModalOpen: boolean = false;
   public shapes: string[] = ['square', 'rectangle', 'circle', 'triangle', 'hexagon', 'octagon'];
   public colours: string[] = ColorList;
   public categories = [
@@ -29,9 +29,11 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     { name: 'Building', icon: 'business-outline' },
     { name: 'Matresses', icon: 'bed-outline' },
     { name: 'Global', icon: 'globe-outline' },
+    { name: 'Textile', icon: 'shirt-outline' },
     { name: 'Food', icon: 'fast-food-outline' },
     { name: 'Chemicals', icon: 'flask-outline' },
-    { name: 'Energy', icon: 'flash-outline' }
+    { name: 'Energy', icon: 'flash-outline' },
+    { name: 'Other', icon: 'balloon-outline' }
   ];
 
   // Arrays to store selected items
@@ -52,6 +54,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     Matresses: Label[];
     Global: Label[];
     Food: Label[];
+    Textile: Label[];
     Chemicals: Label[];
     Energy: Label[];
     Others: Label[];
@@ -63,6 +66,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     Matresses: [],
     Global: [],
     Food: [],
+    Textile:[],
     Chemicals: [],
     Energy: [],
     Others: []
@@ -80,6 +84,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
     private router: Router,
     private zone: NgZone
   ) { 
+    
   }
   
   get allLabels() {
@@ -87,18 +92,34 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
   }
 
   
-  async ngOnInit() {
-    await firstValueFrom(this.userService.getUser().pipe(tap(user=>this.user=user)));
+  ngOnInit() {
     console.log('NgOnInit labels-init');
     this.fetchAllLabels();
-    
+    this.user = this.userService.getUserValue();
+    console.log('--------- User from label list: ', JSON.stringify(this.user));
+  }
+  ionViewWillEnter(): void {
+    this.user = this.userService.getUserValue();
+  }
+  ionViewDidEnter() {
+    this.modal.dismiss();
+    this.modal.willDismiss.subscribe(()=>{this.isModalOpen=false})
   }
   
   ngOnDestroy() {
   }
+
+  toggleFilter() {
+    this.isModalOpen = true;
+  }
+
+  onWillDismiss(event: Event) {
+    this.isModalOpen = false;
+    console.log('dismissing filter', JSON.stringify(event));
+  }
   
   public isGroupCategoryEmpty(category: string) {
-    if(this.groupedLabels[category].length>0) {
+    if(this.groupedLabels[category]?.length>0) {
       return false;
     }
     else return true;
@@ -181,7 +202,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   // Apply filters and close modal
   public async applyFilters() {
-    if(this.selectedCategories.length>0 || this.selectedColours.length>0 || this.selectedShapes.length>0) {
+    if(this.selectedCategories?.length>0 || this.selectedColours?.length>0 || this.selectedShapes?.length>0) {
       const labels = await this.labelsService.getFilteredLabels(this.selectedShapes, this.selectedColours, this.selectedCategories);
       this.emptyGroupedLabels()
       this.groupLabelsByCategory(labels, false);
@@ -215,8 +236,10 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
 
   private fetchAllLabels() {
-    this.labels = this.labelsService.allLabels
+    this.labels = this.labelsService.allLabels;
+    console.log('--------- Labels List before grouping labels: ');
     this.groupLabelsByCategory(this.labels, true);
+    console.log('--------- Labels List after grouping labels: ');
   }
 
   
@@ -243,14 +266,19 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
         }
         else if(label.category?.toLowerCase().includes('food')) {
           this.groupedLabels.Food = [...this.groupedLabels.Food ?? [], label];
+        } 
+        else if(label.category?.toLowerCase().includes('textile')) {
+          this.groupedLabels.Textile = [...this.groupedLabels.Textile ?? [], label];
         }
         else if(label.category?.toLowerCase().includes('chemicals')) {
           this.groupedLabels.Chemicals = [...this.groupedLabels.Chemicals ?? [], label];
         }
         else if(label.category?.toLowerCase().includes('energy')) {
           this.groupedLabels.Energy = [...this.groupedLabels.Energy ?? [], label];
+        } else {
+          this.groupedLabels.Others = [...this.groupedLabels.Others ?? [], label];
         }
-        if(allLabels && index === labels.length-1) {
+        if(allLabels && index === labels?.length-1) {
           this.allGroupedLabels = this.groupedLabels;
         }
     });
@@ -266,6 +294,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
       Matresses: [],
       Global: [],
       Food: [],
+      Textile: [],
       Chemicals: [],
       Energy: [],
       Others: []

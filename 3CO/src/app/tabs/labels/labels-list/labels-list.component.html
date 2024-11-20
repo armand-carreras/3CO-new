@@ -25,18 +25,14 @@
         <h2>Explore Labels</h2>
       </ion-text>
     
-      <ion-button size="small" shape="round">
-        <ion-icon slot="start" name="camera-outline"></ion-icon>
-        <ion-text slot="end">Scan</ion-text>
-      </ion-button>
     
     </div>
 
     <ng-container *ngIf="!isLabelSelected else moreInfo">
 
       <div class="searchbar-filter">
-      <ion-searchbar placeholder="Search by name or keyword" show-clear-button="always" [debounce]="1000" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
-        <ion-button size="small" shape="outline" fill="transparent" id="open-modal">
+      <ion-searchbar placeholder="Search by name or keyword" show-clear-button="always" [debounce]="600" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
+        <ion-button size="small" shape="outline" fill="transparent" (click)="toggleFilter()">
           <ion-icon name="filter-outline"></ion-icon>
         </ion-button>
       </div>
@@ -49,7 +45,7 @@
           
             <div class="label-box-container">
               <div *ngFor="let label of groupedLabels[category.name]" (click)="selectForMoreInfo(label)" class="label-box">
-                <img *ngIf="label.logo" [src]="label.logo" alt="{{ label.name }}" />
+                <img *ngIf="label.logo" [src]="label.logo" [alt]="label.name" />
                 <ion-text>
                   {{ label.name }}
                 </ion-text>
@@ -65,7 +61,7 @@
 
   </div>
 
-  <ion-modal #modal trigger="open-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <ion-modal #modal [isOpen]="isModalOpen" (ionModalDidDismiss)="onWillDismiss($event)" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
     <ng-template>
         
         <div class="ion-modal-block">

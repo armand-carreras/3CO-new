@@ -1,0 +1,37 @@
+.rewards-page-container {
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    .badge-box {
+        width: 95%;
+        height: auto;
+        max-height: max-content;
+        margin: 0 auto;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        border-radius: 1rem;
+        border: 2px solid var(--ion-color-secondary);
+        img {
+            width: 25%;
+            height: auto;
+            margin: 0 1rem;
+        }
+        .badge-info {
+            width: 75%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+    }
+}

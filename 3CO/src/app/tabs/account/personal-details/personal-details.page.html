@@ -4,9 +4,7 @@
   <ng-container *ngIf="!editMode else editTemplate">
     
     <div class="top-toolbar">
-      <ion-buttons>
-        <ion-back-button defaultHref="tabs/account/"></ion-back-button>
-      </ion-buttons>
+      <ion-button fill="clear" (click)="goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
       <ion-title color="primary">Profile</ion-title>
       <ion-fab-button size="small" color="transparent" (click)="edit()">
         <ion-icon color="tertiary" name="create-outline"></ion-icon>
@@ -34,7 +32,7 @@
         <ion-button href="auth/" shape="round" color="tertiary">
           <ion-icon name="log-out-outline"></ion-icon>
         </ion-button>
-        <ion-button href="auth/" shape="round" color="danger">
+        <ion-button [disabled]="true" href="auth/" shape="round" color="danger">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
       </div>
@@ -51,9 +49,7 @@
 <ng-template #editTemplate>
 
   <div class="top-toolbar">
-    <ion-buttons>
-      <ion-back-button defaultHref="/tabs/account"></ion-back-button>
-    </ion-buttons>
+    <ion-button fill="clear" (click)="editMode = !editMode"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     <ion-title color="primary">Edit Profile</ion-title>
     <ion-button size="small" color="tertiary" fill="clear" (click)="edit()">
       Done
@@ -71,7 +67,7 @@
         <ion-input fill="outline" shape="round" type="text" labelPlacement="stacked" label="Name" [(ngModel)]="newName"></ion-input>
       </div>
       <div class="info-piece">
-        <ion-input fill="outline" shape="round" type="email" labelPlacement="stacked" label="Email" [(ngModel)]="newEmail"></ion-input>
+        <ion-input [disabled]="true" fill="outline" shape="round" type="email" labelPlacement="stacked" label="Email" [(ngModel)]="newEmail"></ion-input>
       </div>
       <div class="info-piece">
         <ion-input fill="outline" shape="round" type="password" labelPlacement="stacked" label="Password" [(ngModel)]="newPassword">

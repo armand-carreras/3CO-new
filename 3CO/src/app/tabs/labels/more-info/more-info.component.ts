@@ -9,11 +9,15 @@ import { Label } from 'src/app/shared/models/label';
 export class MoreInfoComponent  implements OnInit {
 
   @Input() label!: Label;
-  @Output() deselectLabel = new EventEmitter<boolean>();
+  @Input() isScanInfo?: boolean = false;
+  @Output() deselectLabel = new EventEmitter<{
+    deselectLabel: boolean,
+    backToScanInfo: boolean}>();
 
   constructor() { }
 
   ngOnInit() {
+    
     console.log('More info label ranking: ', this.label.ranking);
     console.log('Splitted ranking: ', JSON.stringify(this.label.ranking.split(';')));
   }
@@ -31,9 +35,11 @@ export class MoreInfoComponent  implements OnInit {
   }
 
   public goBack() {
-    console.log('trying to back from more info');
-    this.deselectLabel.emit(true);
-    console.log('after trying to back from more info');
+    if(this.isScanInfo) {
+      this.deselectLabel.emit({deselectLabel:true,backToScanInfo:true});
+    } else{
+      this.deselectLabel.emit({deselectLabel:true,backToScanInfo:false});
+    }
 
   }
 

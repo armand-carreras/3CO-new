@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Subscription, firstValueFrom, tap } from 'rxjs';
-import { CATEGORIES } from 'src/app/shared/models/label';
+import { Subscription } from 'rxjs';
 import { Product } from 'src/app/shared/models/product';
 import { User } from 'src/app/shared/models/user';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
@@ -15,6 +14,8 @@ import { UserService } from 'src/app/shared/services/user.service';
 })
 export class ProductsPage implements OnInit {
 
+  public wantMoreInfo: boolean = false;
+  public selectedProduct!: Product;
   public user!: User;
   public categories = [
     { name: 'Electronics', icon: 'hardware-chip-outline' },
@@ -24,37 +25,47 @@ export class ProductsPage implements OnInit {
     { name: 'Matresses', icon: 'bed-outline' },
     { name: 'Global', icon: 'globe-outline' },
     { name: 'Food', icon: 'fast-food-outline' },
+    { name: 'Textile', icon: 'shirt-outline'},
     { name: 'Chemicals', icon: 'flask-outline' },
-    { name: 'Energy', icon: 'flash-outline' }
+    { name: 'Energy', icon: 'flash-outline' },
+    { name: 'Other', icon: 'balloon-outline'}
   ];
 
   public groupedProducts: {
     [key: string]: Product[]
   } = {
     'Electronics': [],
-    'Cosmetics':[],
-    'Industry':[],
-    'Building':[],
+    'Cosmetics': [],
+    'Industry': [],
+    'Building': [],
     'Matresses': [],
     'Global': [],
     'Food': [],
+    'Textile': [],
     'Chemicals': [],
-    'Energy': []
+    'Energy': [],
+    'Other': []
   };
 
   private subscriptions: Subscription[] = [];
 
 
 
-  constructor(private router: Router, private userService: UserService, private productServ: ProductHandlerService, private sanitizer: DomSanitizer) { }
-
-  async ngOnInit() {  
-    await firstValueFrom(this.userService.getUser().pipe(tap(user=>this.user=user)));
+  constructor(private router: Router,
+    private userService: UserService,
+    private productServ: ProductHandlerService,
+    private sanitizer: DomSanitizer) {
+  
   }
 
-  ionViewWillEnter() {
-    this.subscribeToUser();
+  ngOnInit() { 
+    this.user=this.userService.getUserValue();
+  }
+
+  async ionViewWillEnter() {
+    this.user=this.userService.getUserValue();
     this.setToZero()
+    await this.productServ.loadProducts();
     this.orderByCategory(this.productServ.getProducts);
   }
   ionViewWillLeave(): void {
@@ -71,6 +82,9 @@ export class ProductsPage implements OnInit {
   public goToMainPage() {
     this.router.navigate(['/tabs/products']);
   }
+  public closeMoreInfo() {
+    this.wantMoreInfo = false;
+  }
 
   public async handleSearchBarInput(ev: any) {
     if(ev!==''){
@@ -80,7 +94,8 @@ export class ProductsPage implements OnInit {
   }
 
   public showProductInfo(product: Product) {
-    
+    this.selectedProduct = product;
+    this.wantMoreInfo = true;
   }
 
   private orderByCategory(products: Product[]) {
@@ -90,10 +105,6 @@ export class ProductsPage implements OnInit {
         this.groupedProducts[category].push(product);
       }
     });
-  }
-
-  private async subscribeToUser() {
-    await this.userService.getUser().pipe(tap(user=>this.user=user)).subscribe();
   }
 
   private destroySubscriptions() {
@@ -110,8 +121,10 @@ export class ProductsPage implements OnInit {
       'Matresses': [],
       'Global': [],
       'Food': [],
+      'Textile': [],
       'Chemicals': [],
-      'Energy': []
+      'Energy': [],
+      'Other': []
     };
   }
 

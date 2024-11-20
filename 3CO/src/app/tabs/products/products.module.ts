@@ -9,6 +9,7 @@ import { ProductsPageRoutingModule } from './products-routing.module';
 import { ProductsPage } from './products.page';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { RatingComponent } from './rating/rating.component';
+import { ProductInfoComponent } from './product-info/product-info.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import { RatingComponent } from './rating/rating.component';
     IonicModule,
     ProductsPageRoutingModule
   ],
-  declarations: [ProductsPage, ProductFormComponent, RatingComponent]
+  declarations: [ProductsPage, ProductFormComponent, ProductInfoComponent, RatingComponent]
 })
 export class ProductsPageModule {}

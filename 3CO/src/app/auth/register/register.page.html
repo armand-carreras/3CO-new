@@ -19,6 +19,13 @@
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
       <br>
+      <ion-text style="font-size: 0.8rem; margin: 0.5rem;">How do you identify yourself?</ion-text>
+      <ion-radio-group style="margin: auto;" [(ngModel)]="gender" [value]="gender">
+        <ion-radio value="man" labelPlacement="stacked">Man</ion-radio>
+        <ion-radio value="woman" labelPlacement="stacked">Woman</ion-radio>
+        <ion-radio value="none" labelPlacement="stacked">Not Specified</ion-radio>
+      </ion-radio-group>
+      <br>
       <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="register()">Sign Up</ion-button>
       <br>
       <div class="links-container">

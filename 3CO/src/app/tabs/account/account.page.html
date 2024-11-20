@@ -32,11 +32,11 @@
         <ion-icon slot="start" color="primary" name="pricetag-outline"></ion-icon>
         <ion-label>Rewards</ion-label>
       </ion-item>
-      <ion-item button detail="true" lines="none" (click)="checkSettings()">
+      <ion-item button [disabled]="true" detail="true" lines="none" (click)="checkSettings()">
         <ion-icon slot="start" color="primary" name="settings-outline"></ion-icon>
         <ion-label>Settings</ion-label>
       </ion-item>
-      <ion-item button detail="true" lines="none" (click)="checkVersion()">
+      <ion-item button [disabled]="true" detail="true" lines="none" (click)="checkVersion()">
         <ion-icon slot="start" color="primary" name="extension-puzzle-outline"></ion-icon>
         <ion-label>Version</ion-label>
       </ion-item>
