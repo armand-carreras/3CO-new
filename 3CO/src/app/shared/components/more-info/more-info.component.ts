@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Label } from 'src/app/shared/models/label';
 
 @Component({
@@ -14,7 +15,9 @@ export class MoreInfoComponent  implements OnInit {
     deselectLabel: boolean,
     backToScanInfo: boolean}>();
 
-  constructor() { }
+  constructor(
+    private modalController: ModalController
+  ) { }
 
   ngOnInit() {
     
@@ -35,12 +38,10 @@ export class MoreInfoComponent  implements OnInit {
   }
 
   public goBack() {
-    if(this.isScanInfo) {
-      this.deselectLabel.emit({deselectLabel:true,backToScanInfo:true});
-    } else{
-      this.deselectLabel.emit({deselectLabel:true,backToScanInfo:false});
-    }
-
+    this.modalController.dismiss({
+      deselectLabel: true,
+      backToScanInfo: this.isScanInfo || false,
+    });
   }
 
 }

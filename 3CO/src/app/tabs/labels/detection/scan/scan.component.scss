@@ -1,0 +1,16 @@
+.scan-box {
+    width: 100%;
+    height: max-content;
+    border-radius: 1.5rem;
+    border: .5rem dashed var(--ion-color-secondary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    margin: auto;
+    ion-icon {
+        color: var(--ion-color-primary);
+    }
+}

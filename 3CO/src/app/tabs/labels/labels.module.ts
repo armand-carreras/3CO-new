@@ -8,16 +8,17 @@ import { LabelsPageRoutingModule } from './labels-routing.module';
 
 import { LabelsPage } from './labels.page';
 import { LabelsListComponent } from './labels-list/labels-list.component';
-import { MoreInfoComponent } from './more-info/more-info.component';
+import { MoreInfoLabelsModule } from 'src/app/shared/modules/more-info-labels.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LabelsPageRoutingModule
+    LabelsPageRoutingModule,
+    MoreInfoLabelsModule
   ],
-  declarations: [LabelsPage, LabelsListComponent, MoreInfoComponent],
+  declarations: [LabelsPage, LabelsListComponent],
   schemas: []
 })
 export class LabelsPageModule {}

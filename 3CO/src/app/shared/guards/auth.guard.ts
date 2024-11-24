@@ -1,17 +1,16 @@
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service'; // Example service to check authentication
+import { inject } from '@angular/core';
 
 export const authGuard: CanActivateFn = (route, state) => {
-    // Reconstruct the current URL from route.url
-    const currentUrl = state.url;
-    console.log('-------0 State:', JSON.stringify(state.url));
-    console.log('-------0 Route:', route.toString());
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-    // Check if the user is already in /tabs
-    if (currentUrl.startsWith('/tabs')) {
-      // Prevent navigation to /auth by returning false
-      return false;
-    }
-  
-    // Allow navigation if not in /tabs
-    return true;
-  };
+  if (authService.token !== '') { // Replace with your actual login check logic
+    // Redirect to the default tabs route
+    router.navigate(['/tabs/labels']);
+    return false;
+  }
+
+  return true;
+};

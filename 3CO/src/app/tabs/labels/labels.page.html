@@ -67,69 +67,6 @@
 
   </div>
 
-  <ion-modal [isOpen]="modalIsOpen">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar mode="ios">
-          <ion-title>Send Image</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="setModal(false)">Close</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <img [src]="imgEncodedPhotoBase64" alt="Your photo could not be load properly.">
-        <ion-button (click)="sendImage()" expand="block" shape="round" [disabled]="imgEncodedPhotoBase64===''">Send Image</ion-button>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
-
-
-
-  
-  <ion-modal [isOpen]="resultModalTrigger">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar mode="ios">
-          <ion-title>Processed Image</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="dismissResultModal()">Close</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-content class="ion-padding">
-        <img style="margin-bottom: 1rem;" [src]="resultImage" alt="Detection data could not be loaded properly.">
-        
-        <ion-text style="width: 100%; text-align: center;" *ngIf="unlockedBadgesNow && unlockedBadgesNow.length>0"><h5 style="margin: 0;padding: 0;">Rewards</h5></ion-text>
-        <div class="unlocked-badges-container" *ngIf="!isGuest else register">
-          <ng-container *ngFor="let badge of unlockedBadgesNow">
-            <div class="badge-container">
-              <img [src]="badge.rewardImage" alt="reward image">
-            </div>
-          </ng-container>
-        </div>
-
-        <ng-template #register>
-          <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
-            <ion-text>Register as a 3CO user to get rewards</ion-text>
-            <ion-button shape="round" fill="outline" color="warning" href="/auth/register">Register</ion-button>
-          </div>
-        </ng-template>
-        
-        <ng-container *ngFor="let label of detectedLabels">
-          <div class="boxed-label" (click)="showMoreLabelDetectedInfo(label)">
-            <img [src]="label.logo" [alt]="label?.name">
-            <div class="label-text-box">
-              <ion-text style="margin-bottom: 0.5rem;"><h5 style="margin: 0; padding: 0;">{{label.name}}</h5></ion-text>
-              <ion-note class="truncate-text" style="font-size: 0.7rem;">{{label.shortDescription}}</ion-note>
-            </div>
-          </div>
-        </ng-container>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
-
 </ion-content>
 
 

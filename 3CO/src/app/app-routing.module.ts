@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { authGuard } from './shared/guards/auth.guard';
 import { tabsDeactivateGuard } from './shared/guards/tabs-deactivate.guard';
 
 const routes: Routes = [
@@ -15,8 +14,31 @@ const routes: Routes = [
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule),
-    //canActivate: [authGuard]
+    children: [
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full',
+      },
+      {
+        path: 'login',
+        loadChildren: () =>
+          import('./auth/login/login.module').then(m => m.LoginPageModule),
+      },
+      {
+        path: 'register',
+        loadChildren: () =>
+          import('./auth/register/register.module').then(m => m.RegisterPageModule),
+      },
+      {
+        path: 'password-recovery',
+        loadChildren: () =>
+          import('./auth/password-recovery/password-recovery.module').then(
+            m => m.PasswordRecoveryPageModule,
+          ),
+      },
+    ],
+
   }
 ];
 @NgModule({

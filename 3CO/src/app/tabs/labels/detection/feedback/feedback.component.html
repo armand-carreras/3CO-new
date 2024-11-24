@@ -1,0 +1,49 @@
+
+<ion-header>
+  <ion-toolbar mode="ios">
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="backToLabels()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Processed Image</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="outline" shape="round" (click)="scan()">
+        <ion-icon name="camera-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <img style="margin-bottom: 1rem;" [src]="feedback.resultImage" alt="Detection data could not be loaded properly.">
+  
+  <ion-text style="width: 100%; text-align: center;" *ngIf="feedback.badges && feedback.badges.length>0"><h5 style="margin: 0;padding: 0;">Rewards</h5></ion-text>
+  <div class="unlocked-badges-container">
+    <ng-container *ngIf="!isGuest else register">
+      <ng-container *ngFor="let badge of feedback.badges">
+      <div class="badge-container">
+        <img [src]="badge.rewardImage" alt="reward image">
+      </div>
+    </ng-container>
+    </ng-container>
+    
+  </div>
+
+  <ng-template #register>
+    <div style="width: 90%; height: auto; flex-wrap: nowrap; display: flex; flex-direction: row; justify-content: center; align-items: center;">
+      <ion-text>Register as a 3CO user to get rewards</ion-text>
+      <ion-button shape="round" fill="outline" color="warning" href="/auth/register">Register</ion-button>
+    </div>
+  </ng-template>
+  
+  <ng-container *ngFor="let label of feedback.labels">
+    <div class="boxed-label" (click)="showMoreLabelDetectedInfo(label)">
+      <img [src]="label.logo" [alt]="label?.name">
+      <div class="label-text-box">
+        <ion-text style="margin-bottom: 0.5rem;"><h5 style="margin: 0; padding: 0;">{{label.name}}</h5></ion-text>
+        <ion-note class="truncate-text" style="font-size: 0.7rem;">{{label.shortDescription}}</ion-note>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

@@ -1,8 +1,11 @@
-import { CanActivateChildFn } from '@angular/router';
+import { CanDeactivateFn } from '@angular/router';
 
-export const tabsDeactivateGuard: CanActivateChildFn = (childRoute, state) => {
-  if(!childRoute) {
-    return false;
+export const tabsDeactivateGuard: CanDeactivateFn<any> = (component, currentRoute, currentState, nextState) => {
+  // Allow navigation if moving away from /tabs
+  if (nextState?.url && !nextState.url.startsWith('/tabs')) {
+    return true;
   }
-  return true;
+
+  // Block navigation if no valid route is provided
+  return currentState && nextState ? false : true;
 };

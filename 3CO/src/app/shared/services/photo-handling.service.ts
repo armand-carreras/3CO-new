@@ -18,41 +18,57 @@ export class PhotoHandlingService {
   }
 
 
-  async sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string) {
+  async sendBase64ImageToEndpoint(base64File: string, isGuest: boolean = true, jwtToken?: string): Promise<any> {
     const formData = new FormData();
     const blob = await this.base64toBlob(base64File);
     formData.append('file', blob, 'file.jpg');
     if (isGuest) {
-        formData.append('guest', 'true');
+      formData.append('guest', 'true');
     }
-
+  
     const headers: any = {
-        'Accept': 'application/json'
+      'Accept': 'application/json',
     };
     if (!isGuest && jwtToken) {
-        headers['Authorization'] = `Bearer ${jwtToken}`;
+      headers['Authorization'] = `Bearer ${jwtToken}`;
     }
+  
+    try {
+      const response = await fetch(
+        `${environment.paths.base_detection_api}${environment.paths.image_detection}`,
+        {
+          method: 'POST',
+          headers: headers,
+          body: formData,
+        }
+      );
 
-    /*const response = await firstValueFrom(this.http.post(`${environment.paths.base_detection_api}${environment.paths.image_detection}`,
-      formData, {headers:headers}
-    ))*/
-    
-    const response = await fetch(`${environment.paths.base_detection_api}${environment.paths.image_detection}`, {
-      method: 'POST',
-      headers: headers,
-      body: formData,
-
-    }).then(async (response)=>{
+      const httpResp = await firstValueFrom(this.http.post(
+        `${environment.paths.base_detection_api}${environment.paths.image_detection}`,
+        formData, {headers: headers, observe: 'response'}
+      ));
+      console.log(httpResp);
+  
+      if (!response.ok) {
+        // Explicitly handle HTTP error status codes
+        const errorMessage = await response.text();
+        console.error(`HTTP ${response.status}: ${response.type}`);
+        if(response.status === 500){
+          throw new Error(`Error: HTTP ${response.status} - Internal Server Error`);  
+        }
+        throw new Error(`Error: HTTP ${response.status} - ${response.statusText}`);
+      }
+  
       const data = await response.json();
       console.log('HTTP response successful:', JSON.stringify(data));
       return data;
-    }).catch((error)=>{
-      console.log('Fetch request failed:', JSON.stringify(error));
-      alert('An error occurred during the image detection process. Please try again.');
-      throw new Error(JSON.stringify(error));
-    });
-    return response;
+  
+    } catch (error) {
+      console.error('Fetch request failed:', error);
+      throw error; // Rethrow the error to handle it in the calling function
+    }
   }
+  
 
 
 

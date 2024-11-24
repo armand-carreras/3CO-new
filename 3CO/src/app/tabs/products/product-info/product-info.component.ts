@@ -25,6 +25,7 @@ export class ProductInfoComponent  implements OnInit {
   public reviewForm: FormGroup
   public imagePreview: string = '';
   public createdReview: Review = {
+    id: crypto.randomUUID(),
     creatorID: '',
     title: '',
     description: '',

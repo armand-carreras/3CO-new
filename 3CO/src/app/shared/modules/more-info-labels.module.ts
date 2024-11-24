@@ -1,20 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MoreInfoComponent } from 'src/app/shared/components/more-info/more-info.component';
 import { FormsModule } from '@angular/forms';
-
 import { IonicModule } from '@ionic/angular';
 
-import { AuthPageRoutingModule } from './auth-routing.module';
 
-import { AuthPage } from './auth.page';
 
 @NgModule({
+  declarations: [
+    MoreInfoComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AuthPageRoutingModule
   ],
-  declarations: [AuthPage]
+  exports: [
+    MoreInfoComponent
+  ]
 })
-export class AuthPageModule {}
+export class MoreInfoLabelsModule { }

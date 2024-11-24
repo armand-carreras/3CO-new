@@ -13,7 +13,7 @@ export class StartScreenPage implements OnInit {
   ngOnInit() {
   }
   navigateToAuth() {
-    this.router.navigate(['auth']);
+    this.router.navigate(['/auth']);
   }
 
 }
