@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Photo } from '@capacitor/camera';
 import { Label } from 'src/app/shared/models/label';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Badge, BadgeService } from 'src/app/shared/services/badge.service';
@@ -15,7 +14,7 @@ import { ToastService } from 'src/app/shared/services/toast.service';
 export class SendImageComponent  implements OnInit {
 
   @Input() base64String!: string;
-  @Output() feedbackFromDetection = new EventEmitter<{labels: Label[], feedbackImg: string, unlockedBadges: Badge[]}>();
+  @Output() feedbackFromDetection = new EventEmitter<{labels: Label[], resultImage: string, badges: {badgeCategory: string, badgeType: string, rewardImage: string}[]}>();
   @Output() back = new EventEmitter<void>();
   
   public unlockedBadgesNow: {badgeCategory: string, badgeType: string, rewardImage: string}[] = [];
@@ -44,6 +43,9 @@ export class SendImageComponent  implements OnInit {
   }
 
 
+
+  
+
   public async sendImage() {
     const token = this.authService.token;
     const isGuest = this.authService.isUserGuest;
@@ -59,11 +61,12 @@ export class SendImageComponent  implements OnInit {
     try {
       // Send the base64 image to the endpoint
       response = await this.photoService.sendBase64ImageToEndpoint(base64String, isGuest, token);
-      console.log('----------Labels page response from photo service: ', response);
+      console.log('----------Labels page response from photo service: ', JSON.stringify(response));
   
       // Process the response if successful
       if (response) {
-        this.receivedBase64Image = response?.result_image ?? '';
+        console.log(response?.['result_image']);
+        this.receivedBase64Image = response?.['result_image'] ?? '';
         const detectedNameLabels: string[] = response?.labels?.map((res: string) =>
           res.split('_').join(' ')
         );
@@ -87,7 +90,7 @@ export class SendImageComponent  implements OnInit {
           });
           console.log('Unlocked badges', JSON.stringify(this.unlockedBadgesNow));
         }
-        this.feedbackFromDetection.emit({labels: this.detectedLabels, feedbackImg: this.receivedBase64Image, unlockedBadges: this.unlockedBadges})
+        this.feedbackFromDetection.emit({labels: this.detectedLabels, resultImage: this.receivedBase64Image, badges: this.unlockedBadgesNow})
       }
 
     } catch (error: any) {

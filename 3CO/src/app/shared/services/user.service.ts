@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, firstValueFrom, map, Observable, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
-import { RequestsService } from './requests.service';
+import * as crypto from 'crypto-js';
 import { StorageService } from './storage.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -14,7 +14,7 @@ export class UserService {
 
   private user: BehaviorSubject<User> = new BehaviorSubject<User>(
     {
-      avatarImg: '/assets/avatar/3_CO_sin_letras.png',
+      avatarImg: '/assets/avatar/unisex_avatar.png',
       email: 'guest@3co.com',
       name: 'Guest User',
       password: '',
@@ -31,10 +31,11 @@ export class UserService {
 
   constructor(private storage: StorageService, private http: HttpClient) {  }
 
-  
-  get isUserGuest() {
+
+  get isGuestUser() {
     return this.isGuest;
   }
+
 
   //Set user value
   public setUser(user: User) {
@@ -49,12 +50,15 @@ export class UserService {
 
   public async loadUser(token: string) {
     this.token.next(token);
-    const fetchedUser = await this.fetchUser();
-    this.setUser(fetchedUser);
-    console.log('--------- Fetching User:', fetchedUser);
+    try {
+      const fetchedUser = await this.fetchUser();
+      this.setUser(fetchedUser);
+      if(fetchedUser) {this.userLoaded.next(true)} else {this.userLoaded.next(false)}
+      return fetchedUser;
 
-    if(fetchedUser) {this.userLoaded.next(true)} else {this.userLoaded.next(false)}
-    return fetchedUser;
+    } catch (error) {
+      throw error;
+    }
 }
 
   
@@ -67,9 +71,14 @@ export class UserService {
     this.token.next(token);
   }
 
-  public setUserNotGuest(bool: boolean) {
-    this.isGuest = bool;
+  
+  public setAsGuest() {
+    this.isGuest = true;
   }
+  public setAsNoGuest() {
+    this.isGuest = false;
+  }
+
 
   public storeGender(gender: string) {
     this.storage.set('user_gender', gender);
@@ -110,7 +119,7 @@ export class UserService {
     return firstValueFrom(this.http.get<UserResponse>(`${environment.paths.base_api}${environment.paths.post_get_user}`, {headers: heads})
       .pipe(
         tap((res)=>{
-          console.log('-------- Result fetching user', JSON.stringify(res));
+          //console.log('-------- Result fetching user', JSON.stringify(res));
           //setUser
           this.setUserBadges(res.badges);
         }),
@@ -121,7 +130,7 @@ export class UserService {
         }),
         catchError((error: HttpErrorResponse) => {
           console.error('--------- Error while fetching Users:', error.status, error.statusText);
-          return throwError(() => new Error(`Error while fetching Users: ${error.status} ${error.statusText}`));
+          return throwError(() => new Error(`Error while fetching Users: ${error.status} ${error.error.statusText}`));
         })
       )
     )
@@ -141,62 +150,19 @@ export class UserService {
     const body: { name?: string; email?: string; password?: string } = {};
     if (name) body.name = name;
     if (email) body.email = email;
-    if (password && password !== '') body.password = password;
+    if (password && password !== '') body.password = crypto.SHA256(password).toString();
 
     // Perform the PUT request
     await firstValueFrom(this.http.put(`${environment.paths.base_api}${environment.paths.post_get_user}`, body, { headers: heads })
     .pipe(
-        tap(async (res) => {
-          console.log('Update Response:', res)
-        })/* ,
-        catchError((error: HttpErrorResponse) => {
-            console.error('Error updating user details:', error);
-            return throwError(() => new Error(' Failed to update user: ${error.statusText}' ));
-        }) */
+      catchError((error: HttpErrorResponse) => {
+          console.error('Error updating user details:', error);
+          return throwError(() => new Error(`Failed to update user: ${error.error.message}`));
+      })
     ));
     const fetchedUser = await this.fetchUser();
     this.setUser(fetchedUser);
-}
-
-  /* public fetchBadges(): Promise<Badge[]> {
-    const heads = new HttpHeaders().append('Authorization', `Bearer ${this.token.getValue()}`);
-    return firstValueFrom(
-      this.http.get<{ badges: Badge[] }>(`${environment.paths.base_api}${environment.paths.user_badges}`, { headers: heads }).pipe(
-        tap((result) => {
-          console.log('-------- Result fetching Badges', JSON.stringify(result));
-          if(result?.badges){
-            this.userBadges.next(result.badges);
-          } else {
-            this.userBadges.next([]);
-          }
-        }),
-        map((res) => res.badges),
-        catchError((error: HttpErrorResponse) => {
-          console.error('--------- Error while fetching Badges:', error.status, error.statusText);
-          return throwError(() => new Error(`Error while fetching Badges: ${error.status} ${error.statusText}`));
-        })
-      )
-    );
-  } */
-
-  /* public fetchScans() {
-    const heads = new HttpHeaders().append('Authorization', `Bearer ${this.token.getValue()}`);
-    return firstValueFrom(
-      this.http.get<UserScanInfo>(`${environment.paths.base_api}${environment.paths.user_scans}`, { headers: heads }).pipe(
-        tap((result) => {
-          console.log('-------- Result fetching Scans', JSON.stringify(result));
-          this.userScans.next(result);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          console.error('--------- Error while fetching Scans:', error.status, error.statusText);
-          if(error.status === 404){
-            this.userScans.next({scans:[], count:0})
-          }
-          return throwError(() => new Error(`Error while fetching Scans: ${error.status} ${error.statusText}`));
-        })
-      )
-    );
-  } */
+  }
 
 }
 

@@ -12,7 +12,6 @@ import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
 export class PhotoHandlingService {
 
   constructor( private toast: ToastService,
-    private http: HttpClient,
     private loader: LoadingController) {
     console.log('Photo Handling Service Initialized');
   }
@@ -42,32 +41,32 @@ export class PhotoHandlingService {
           body: formData,
         }
       );
-
-      const httpResp = await firstValueFrom(this.http.post(
-        `${environment.paths.base_detection_api}${environment.paths.image_detection}`,
-        formData, {headers: headers, observe: 'response'}
-      ));
-      console.log(httpResp);
   
-      if (!response.ok) {
-        // Explicitly handle HTTP error status codes
-        const errorMessage = await response.text();
-        console.error(`HTTP ${response.status}: ${response.type}`);
-        if(response.status === 500){
-          throw new Error(`Error: HTTP ${response.status} - Internal Server Error`);  
+      if (response.status === 401) {
+        this.toast.presentAutoDismissToast('Error: Unauthorized. Please check your token or authentication.', 'danger');
+        throw new Error('Unauthorized access. Check token or authentication.');
+      } else if (response.status === 200 || response.status === 201) {
+        const data = await response.json();
+        if (data.message === 'No labels could be detected in the image') {
+          this.toast.presentAutoDismissToast('No labels detected in the provided image.', 'warning');
+        } else {
+          this.toast.presentAutoDismissToast('Image recognizion successful', 'success');
         }
-        throw new Error(`Error: HTTP ${response.status} - ${response.statusText}`);
+        return data;
+      } else if (response.status === 500) {
+        this.toast.presentAutoDismissToast('Error: Server encountered an issue. Please try again later.', 'danger');
+        throw new Error('Internal Server Error.');
+      } else {
+        this.toast.presentAutoDismissToast(`Unhandled response status: ${response.status}`, 'danger');
+        const data = await response.json();
+        return data;
       }
-  
-      const data = await response.json();
-      console.log('HTTP response successful:', JSON.stringify(data));
-      return data;
-  
     } catch (error) {
-      console.error('Fetch request failed:', error);
+      console.error('Fetch request failed:', JSON.stringify(error));
       throw error; // Rethrow the error to handle it in the calling function
     }
   }
+  
   
 
 

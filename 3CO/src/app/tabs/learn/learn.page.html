@@ -5,7 +5,7 @@
   
     <ion-chip (click)="goToProfile()">
       <ion-avatar >
-        <img src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
+        <img [src]="user.avatarImg" alt="3-CO">
       </ion-avatar>
       <ion-text>
         {{user.name}}

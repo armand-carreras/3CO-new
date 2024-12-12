@@ -37,8 +37,8 @@ export class MoreInfoComponent  implements OnInit {
     return this.label.ranking.split(';')[2];
   }
 
-  public goBack() {
-    this.modalController.dismiss({
+  public async goBack() {
+    (await this.modalController.getTop())?.dismiss({
       deselectLabel: true,
       backToScanInfo: this.isScanInfo || false,
     });

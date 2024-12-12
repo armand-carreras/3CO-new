@@ -8,6 +8,7 @@ import { AccountPageRoutingModule } from './account-routing.module';
 
 import { AccountPage } from './account.page';
 import { RewardsComponent } from './rewards/rewards.component';
+import { VersionComponent } from './version/version.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,6 @@ import { RewardsComponent } from './rewards/rewards.component';
     IonicModule,
     AccountPageRoutingModule
   ],
-  declarations: [AccountPage, RewardsComponent]
+  declarations: [AccountPage, RewardsComponent, VersionComponent]
 })
 export class AccountPageModule {}

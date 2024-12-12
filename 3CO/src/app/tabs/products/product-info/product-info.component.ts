@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
-import { Platform } from '@ionic/angular';
+import { AlertController, LoadingController, Platform, ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { Product, Review } from 'src/app/shared/models/product';
 import { User } from 'src/app/shared/models/user';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { CameraService } from 'src/app/shared/services/camera.service';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
@@ -16,7 +17,7 @@ import { UserService } from 'src/app/shared/services/user.service';
   templateUrl: './product-info.component.html',
   styleUrls: ['./product-info.component.scss'],
 })
-export class ProductInfoComponent  implements OnInit {
+export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnter {
 
   @Input() product!: Product;
   @Input() currentUser!: User;
@@ -25,50 +26,109 @@ export class ProductInfoComponent  implements OnInit {
   public reviewForm: FormGroup
   public imagePreview: string = '';
   public createdReview: Review = {
-    id: crypto.randomUUID(),
-    creatorID: '',
     title: '',
     description: '',
     rating: 0
   };
   public isCreateReview: boolean = false;
+  public productReviews: Review[] = [];
+  public reviewsFetched: boolean = false;
   
-
   private photo!: Photo;
-
-
+  
+  private currentPage: number = 1;
+  private totalPages: number = 1;
+  private perPage: number = 10;
 
   constructor(
     private productServ: ProductHandlerService,
+    private authService: AuthService,
     private userServ: UserService,
     private fb: FormBuilder,
     private platform: Platform,
+    private alertController: AlertController,
     private cameraService: CameraService,
     private toastServ: ToastService,
-    public router: Router
+    private loaderService: LoadingController,
+    private router: Router,
   ) {
     this.currentUser = this.userServ.getUserValue();
 
     this.reviewForm = this.fb.group({
       title: ['', Validators.required],
-      creatorID: [''],
       image: [''],
-      description: ['', Validators.required],
+      description: [''],
       rating: [0, [Validators.required, Validators.min(0), Validators.max(5)]]
     });
    }
 
   ngOnInit() {
     this.currentUser = this.userServ.getUserValue();
+    console.log('loading reviews for productID: ',this.product.id);
+    //await this.loadAllReviews();
+    this.loadReviews();
   }
 
-  postReview() {
-    this.toastServ.presentAutoDismissToast('Under Development', 'warning', 500);
-    /* this.productServ.addProductReview(this.product.id, this.createdReview);
-    console.log('working'); */
+  ionViewWillEnter() {
+  }
+  
+  ionViewWillLeave(): void {
+    console.log('leaving review page: setting everything to 0');
+    this.productReviews = [];
+    this.currentPage = 1;
+    this.totalPages = 1;
+    this.reviewsFetched = false;
   }
 
-  goBack() {
+
+
+  public loadMore(event: any) {
+    this.loadReviews(event);
+  }
+
+
+
+  async onSubmit() {
+    const review: Review = {
+      title: this.reviewForm.value.title,
+      description: this.reviewForm.value.description,
+      rating: this.reviewForm.value.rating,
+      image: this.reviewForm.value.image
+    }
+    const productID = Number(this.product.id);
+    const loader = await this.loaderService.create({
+      message: 'Posting product...',
+      animated: true,
+      showBackdrop: true,
+    });
+    await loader.present();
+    try {
+      await this.productServ.addProductReview(productID, review);
+      await this.loadReviews();
+      this.isCreateReview = false;
+      //await this.loadAllReviews();
+    } catch (error) {
+      console.error('Error posting review or loading reviews:', error);
+      // Optionally notify the user of the error here
+    } finally {
+      await loader.dismiss();
+    }
+
+  }
+
+
+  editReview() {
+    if(!this.authService.isUserGuest){
+      this.isCreateReview = true;
+    } else {
+      this.presentAlert();
+    }
+  }
+  quitReview() {
+    this.isCreateReview = false;
+  }
+
+  public goBack() {
     this.wannaGoBack.emit(true);
   }
 
@@ -76,10 +136,29 @@ export class ProductInfoComponent  implements OnInit {
     this.router.navigate(['/tabs/account']);
   }
   public goToMainPage() {
-    this.router.navigate(['/tabs/products']);
+    this.router.navigate(['/tabs/product']);
   }
 
+  private goToRegister() {
+    this.router.navigate(['/auth/register']);
+  }
 
+  private async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Become a user?',
+      message: 'To benefit of all features from 3CO please register as user.',
+      buttons: [{
+        text: 'Register',
+        handler: (()=>{
+          this.goToRegister();
+        })
+      }],
+    });
+
+    await alert.present();
+  }
+
+  
 
 
   public scan() {
@@ -134,4 +213,71 @@ export class ProductInfoComponent  implements OnInit {
 
 
 
+
+
+
+
+
+
+
+  async loadReviews(event?: any) {
+    // Avoid fetching beyond total pages
+    if (this.currentPage > this.totalPages) {
+      if (event) {
+        event.target.complete();
+      }
+      return;
+    }
+
+    try {
+      const response: reviewGET = await this.productServ.loadReviewsForProduct(this.product.id, this.currentPage, this.perPage);
+      // Append the new reviews to the list
+      this.productReviews = [...this.productReviews, ...response.reviews];
+      
+      if(!this.reviewsFetched) {
+        this.reviewsFetched = true;
+      }
+
+      if(response.reviews.length===0){
+        const toast = await this.toastServ.setAnimatedToast('Be the first reviewing this product!', 'primary', 700);
+        toast.present();
+      }
+
+      // Update pagination info
+      this.totalPages = response.pages;
+      this.currentPage++;
+
+      // Complete infinite scroll if applicable
+      if (event) {
+        event.target.complete();
+      }
+
+      // Disable infinite scroll if no more data
+      if (this.currentPage > this.totalPages) {
+        event.target.disabled = true;
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      if (event) {
+        event.target.complete();
+      }
+    }
+  }
+
+ 
+
+
+
+
+
+
+}
+
+
+interface reviewGET {
+  page: number;
+  pages: number;
+  per_page: number;
+  reviews: Review[];
+  total: number;
 }

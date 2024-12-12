@@ -13,7 +13,13 @@
 
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()" style="width: 90%; height: 100%; margin: 0 auto;">
       <ion-item>
-        <ion-input label="Product Name" labelPlacement="floating" formControlName="name" type="text"></ion-input>
+        <ion-input
+          label="Product Name"
+          helperText="Used in online search by users."
+          placeholder="Brand, model or product name"
+          labelPlacement="floating"
+          formControlName="name"
+          type="text"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -36,10 +42,10 @@
       </ion-item>
 
       <ion-item>
-        <ion-textarea labelPlacement="floating" label="Description" formControlName="description"></ion-textarea>
+        <ion-textarea [counter]="true" maxlength="500" labelPlacement="floating" label="Description" formControlName="description"></ion-textarea>
       </ion-item>
 
-      <ion-item>
+      <!-- <ion-item>
         <ion-range labelPlacement="stacked" label="Rating" formControlName="rating" min="0" max="5" step="0.5" snaps="true" ticks="true">
           <ion-icon slot="start" name="star-outline"></ion-icon>
           <ion-icon slot="end" name="star"></ion-icon>
@@ -47,7 +53,7 @@
         <div style="text-align: center; font-weight: bold; margin-top: 5px;">
           Rating: {{ productForm.get('rating')?.value || 0 }}
         </div>
-      </ion-item>
+      </ion-item> -->
       
 
       <ion-item>

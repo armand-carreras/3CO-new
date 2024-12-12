@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Product } from 'src/app/shared/models/product';
 import { User } from 'src/app/shared/models/user';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -54,23 +56,31 @@ export class ProductsPage implements OnInit {
   constructor(private router: Router,
     private userService: UserService,
     private productServ: ProductHandlerService,
-    private sanitizer: DomSanitizer) {
+    private alertController: AlertController,
+    private authServ: AuthService) {
   
   }
 
   ngOnInit() { 
     this.user=this.userService.getUserValue();
+    this.setToZero();
   }
 
   async ionViewWillEnter() {
     this.user=this.userService.getUserValue();
-    this.setToZero()
+    this.setToZero();
     await this.productServ.loadProducts();
     this.orderByCategory(this.productServ.getProducts);
   }
   ionViewWillLeave(): void {
     this.destroySubscriptions()
   }
+
+
+  get isThereAnyProduct() {
+    return Object.keys(this.groupedProducts).some(category => this.isGroupCategoryEmpty(category));
+  }
+
 
   public isGroupCategoryEmpty(category: string) {
     return (this.groupedProducts && this.groupedProducts[category]?.length>0) ? true : false;
@@ -80,10 +90,17 @@ export class ProductsPage implements OnInit {
     this.router.navigate(['/tabs/account']);
   }
   public goToMainPage() {
-    this.router.navigate(['/tabs/products']);
+    this.router.navigate(['/tabs/product']);
   }
   public closeMoreInfo() {
     this.wantMoreInfo = false;
+  }
+  public postNewProduct() {
+    if(!this.authServ.isUserGuest) {
+      this.router.navigate(['/tabs/product/add-product']);
+    } else {
+      this.presentAlert();
+    }
   }
 
   public async handleSearchBarInput(ev: any) {
@@ -101,14 +118,33 @@ export class ProductsPage implements OnInit {
   private orderByCategory(products: Product[]) {
     products.forEach(product => {
       const category = product.categories;
-      if (this.groupedProducts[category]) {
-        this.groupedProducts[category].push(product);
+      if (this.groupedProducts[category[0]]) {
+        this.groupedProducts[category[0]].push(product);
       }
     });
   }
 
   private destroySubscriptions() {
     this.subscriptions.forEach((sub)=>sub.unsubscribe());
+  }
+
+  private goToRegister() {
+    this.router.navigate(['/auth/register']);
+  }
+
+  private async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Become a user?',
+      message: 'To benefit of all features from 3CO please register as user.',
+      buttons: [{
+        text: 'Register',
+        handler: (()=>{
+          this.goToRegister();
+        })
+      }],
+    });
+
+    await alert.present();
   }
 
 

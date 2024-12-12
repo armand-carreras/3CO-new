@@ -4,7 +4,7 @@ import { User } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { ToastService } from './toast.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 import * as crypto from 'crypto-js';
@@ -55,17 +55,34 @@ export class AuthService {
     }
   }
 
-  async setToken(token: string) {
+  public setAsGuest() {
+    this.isGuest = true;
+    this.storage.storeKeepMeLoggedIn(false);
+  }
+  public setAsRegularUser() {
+    this.isGuest = false;
+  }
+
+
+
+  public setToken(token: string) {
     if(token!==null && token!==undefined && token!== ''){
       console.log('Setting up Token', token);
       this.userToken.next(token);
+      this.isGuest=false;
       this.userService.setToken(token);
-      this.userService.setUserNotGuest(false);
       this.storage.storeToken(token);
     } else {
       console.log('Something went wrong, try again!');
     }
   }
+
+
+
+
+
+
+
 
   /**
      * @description  Login for users
@@ -88,15 +105,43 @@ export class AuthService {
         console.log("Resource from login: ", res);
         this.setToken(res.token);
         await this.userService.loadUser(res.token);
+        this.userService.setAsNoGuest();
         this.isGuest = false;
       }),
       map((res) => res.token),
-      catchError((error) => {
-        console.error("Login request failed", error);
-        return throwError(() => new Error('Login failed, please try again.'));
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          this.toastServ.presentAutoDismissToast('Unauthorized access. Please log in again.', 'danger');
+        } else if (error.status === 500) {
+          this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+        } else {
+          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+        }
+        // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+        return throwError(() => new Error(error.error.message));
       })
     );
-}
+  }
+
+  public async autoLoginKeepMeSignedInUser(token: string) {
+    try {
+      console.log('trying to log in loading users');
+      const user = await this.userService.loadUser(token);
+      this.setToken(token);
+      console.log('proceeding');
+      return user;
+    } catch(error) {
+      console.error('gets an error', error);
+      throw error;
+    }
+  }
+
+
+
+
+
+
+
   /**
    * @description  Register for users
    * @method POST
@@ -127,20 +172,32 @@ export class AuthService {
           // Redirect to login page after successful registration
           console.log(res);
           (await (this.toastServ.setToast('Successfull registration','success',600))).present();
-          this.router.navigate(['auth/login'], {queryParams: {email: email, password: password}});
           this.setUserIntoStorage(user, email, password, gender);
+          this.router.navigate(['auth/login'], {queryParams: {email: email, password: password}});
       }),
-      catchError(async error=>{
-        console.error(error);
-        (await (this.toastServ.setToast('Error while trying to register try again','danger',600))).present();
-      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          this.toastServ.presentAutoDismissToast('Unauthorized access. Please log in again.', 'danger');
+        } else if (error.status === 500) {
+          this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+        } else {
+          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+        }
+        // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+        return throwError(() => new Error(error.error.message));
+      })
     )).finally(()=>loader.dismiss());
   }
 
 
+
+
+
+
+
   private setUserIntoStorage(user: string, email: string, password: string, gender: string) {
     
-    let avatarImagePath: string = '/assets/avatar/3_CO_sin_letras.png';
+    let avatarImagePath: string = '/assets/avatar/unisex_avatar.png';
     switch(gender) {
       case 'man':
         avatarImagePath = 'assets/avatar/male-avatar.png'
@@ -149,7 +206,7 @@ export class AuthService {
         avatarImagePath = 'assets/avatar/female-avatar.png'
         break;
       default:
-        avatarImagePath = 'assets/avatar/3_CO_sin_letras.png';
+        avatarImagePath = 'assets/avatar/unisex_avatar.png';
         break;
     }
 

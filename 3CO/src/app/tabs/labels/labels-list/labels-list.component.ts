@@ -1,11 +1,12 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonModal, ViewWillEnter } from '@ionic/angular';
+import { IonModal, ModalController, ViewWillEnter } from '@ionic/angular';
 import { CATEGORIES, ColorList, Label } from 'src/app/shared/models/label';
 import { User } from 'src/app/shared/models/user';
 import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { MoreInfoComponent } from 'src/app/shared/components/more-info/more-info.component';
 
 
 @Component({
@@ -82,7 +83,8 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
     private labelsService: LabelSQLiteHandlerService,
     private userService: UserService,
     private router: Router,
-    private zone: NgZone
+    private zone: NgZone,
+    private modalController: ModalController
   ) { 
     
   }
@@ -145,10 +147,18 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
     this.router.navigate(['/tabs/labels']);
   }
 
-  public selectForMoreInfo(label: Label) {
-    this.selectedLabel = label;
-    this.isLabelSelected = true;
-  }
+  public async showMoreLabelInfo(label: Label) {
+    const modal = await this.modalController.create({
+      component: MoreInfoComponent,
+      componentProps: {
+        label: label
+      },
+      showBackdrop: true,
+      backdropDismiss: true
+    });
+
+    await modal.present();
+}
 
   public dismissMoreInfo(event: any) {
 

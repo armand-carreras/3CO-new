@@ -41,6 +41,13 @@ export class StorageService {
     return this._storage?.get('token');
   }
 
+  public storeKeepMeLoggedIn(keepMeLogged: boolean) {
+    this._storage?.set('keepMeLoggedIn', keepMeLogged);
+  }
+  public getKeepMeLogged() {
+    return this._storage?.get('keepMeLoggedIn');
+  }
+
   public async setProductToStore(product: Product) {
     console.log('Setting up new product to store', product);
     const prods = await this.getStoredProducts();

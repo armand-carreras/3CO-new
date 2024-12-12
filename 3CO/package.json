@@ -36,12 +36,12 @@
     "@ionic/storage-angular": "^4.0.0",
     "@types/crypto-js": "^4.2.2",
     "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
     "ionicons": "^7.0.0",
     "jeep-sqlite": "^2.7.2",
     "rxjs": "~7.8.0",
     "sha.js": "^2.4.11",
     "sql.js": "1.10.3",
-    "": "^11.1.12",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
   },

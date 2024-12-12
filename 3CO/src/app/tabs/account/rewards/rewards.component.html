@@ -1,14 +1,29 @@
-<div class="rewards-page-container">
-  <ion-button (click)="goBack()" style="position: absolute; top: 0.5rem;left: 1rem;" fill="clear"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
-  <ion-text style="margin-bottom: 1rem;"><h4>Rewards</h4></ion-text>
-  
-  <ng-container *ngFor="let badgeInfo of userBadges">
-    <div class="badge-box">
-      <img [src]="badgeInfo.imgSRC" alt="Badge image">
-      <div class="badge-info">
-        <ion-text style="margin: 1rem 0;"><ion-note>Category: </ion-note>{{badgeInfo.badge.badge_category}} - {{badgeInfo.badge.badge_type}}</ion-text>
-        <ion-text style="margin: 1rem 0;"><ion-note>Unlocked: </ion-note>{{badgeInfo.badge.unlocked_at | date:"d/M/yy, H:mm"}}</ion-text>
-      </div>
-    </div>
-  </ng-container>
-</div>
+<ion-toolbar>
+  <ion-buttons slot="start">
+    <ion-button (click)="goBack()" fill="clear"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+  </ion-buttons>
+  <ion-title>Rewards</ion-title>
+</ion-toolbar>
+
+<ion-content>
+  <div class="rewards-page-container">
+    <ng-container *ngIf="!isGuest else isGuestTemplate">
+      @for(badgeInfo of userBadges; track badgeInfo.badge.unlocked_at) {
+        <div class="badge-box">
+          <img [src]="badgeInfo.imgSRC" alt="Badge image">
+          <div class="badge-info">
+            <ion-text style="margin: 1rem 0;"><ion-note>Category: </ion-note>{{badgeInfo.badge.badge_category}} - {{badgeInfo.badge.badge_type}}</ion-text>
+            <ion-text style="margin: 1rem 0;"><ion-note>Unlocked: </ion-note>{{badgeInfo.badge.unlocked_at}}</ion-text>
+          </div>
+        </div>
+      }
+    </ng-container>
+  </div>
+</ion-content>
+
+<ng-template #isGuestTemplate>
+  <div style="width: 100%; height:100%; display:flex; flex-direction: column; align-items: center; justify-content: center;">
+    <ion-text style="margin-bottom: 1rem">Register to benefit from rewards</ion-text>
+    <ion-button routerLink="/auth/register">Register</ion-button>
+  </div>
+</ng-template>

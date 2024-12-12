@@ -1,9 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController, ViewWillEnter } from '@ionic/angular';
-import { firstValueFrom } from 'rxjs';
+import { LoadingController, ViewWillEnter } from '@ionic/angular';
 import { User } from 'src/app/shared/models/user';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -22,9 +22,10 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
   public editMode: boolean = false;
 
   constructor(
-    public userServ: UserService,
+    private userServ: UserService,
     private loaderServ: LoadingController,
-    private toasServ: ToastService,
+    private toastService: ToastService,
+    private authServ: AuthService,
     private router: Router) { }
 
   ngOnInit() {
@@ -36,24 +37,28 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
 
   public async edit() {
 
-    if(!this.editMode){
+    if(!this.editMode && !this.authServ.isUserGuest){
       this.editMode = !this.editMode;
-    } else { 
-      const loader = await this.loaderServ.create({ message:'Updating user' });
-      loader.onDidDismiss().then(()=>{this.editMode = !this.editMode;})
-      
-      await loader.present();
-      await this.userServ.updateUserDetails(this.newName, this.newEmail, this.newPassword)
-      .finally(()=>{
-        loader.dismiss();
-        this.user = this.userServ.getUserValue();
-      });
-      
-      
-      
+    } else if(this.authServ.isUserGuest){ 
+      this.toastService.presentAutoDismissToast('As a guest user you cannot edit user information', 'warning', 700);
     }
 
   }
+
+  public async done() {
+
+    const loader = await this.loaderServ.create({ message:'Updating user' });
+    loader.onDidDismiss().then(()=>{this.editMode = !this.editMode;})
+    
+    await loader.present();
+    await this.userServ.updateUserDetails(this.newName, this.newEmail, this.newPassword)
+    .finally(()=>{
+      loader.dismiss();
+      this.user = this.userServ.getUserValue();
+    });
+
+  }
+
 
   public goBack() {
     this.router.navigate(['/tabs/account']);

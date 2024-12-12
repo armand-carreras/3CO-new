@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
-import { LoadingController, Platform, ViewWillEnter } from '@ionic/angular';
-import { firstValueFrom, tap } from 'rxjs';
+import { ModalController, ViewWillEnter } from '@ionic/angular';
+import { MoreInfoComponent } from 'src/app/shared/components/more-info/more-info.component';
 import { Label } from 'src/app/shared/models/label';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { BadgeService } from 'src/app/shared/services/badge.service';
-import { CameraService } from 'src/app/shared/services/camera.service';
-import { PhotoHandlingService } from 'src/app/shared/services/photo-handling.service';
 import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
-import { ToastService } from 'src/app/shared/services/toast.service';
 
 
 
@@ -40,6 +36,7 @@ export class LabelsPage implements OnInit, ViewWillEnter {
     private router: Router,
     private labelService: LabelSQLiteHandlerService,
     private authService: AuthService,
+    private modalController: ModalController
   ) {
     this.isModalOpen = false;
     this.photo = {format:'', saved:false};
@@ -105,20 +102,29 @@ export class LabelsPage implements OnInit, ViewWillEnter {
     this.isResultModalOpen = false;
   }
 
-  public showMoreLabelInfo(label: Label) {
-    this.selectedLabelForMoreInfo = label;
-    this.isLabelSelected = true;
+  public async showMoreLabelInfo(label: Label) {
+      const modal = await this.modalController.create({
+        component: MoreInfoComponent,
+        componentProps: {
+          label: label
+        },
+        showBackdrop: true,
+        backdropDismiss: true
+      });
+  
+      await modal.present();
   }
 
-  public showMoreLabelDetectedInfo(label: Label) {
+ /*  public showMoreLabelDetectedInfo(label: Label) {
     this.selectedLabelForMoreInfo = label;
     this.isResultModalOpen = false;
     this.isLabelSelected = true;
     this.isScanInfo = true;
-  }
+  } */
 
   public dismissMoreInfo(ev: any) {
     this.isLabelSelected = false;
+    console.log('------------- trying to dissmiss modal:',JSON.stringify(ev))
     if(ev.backToScanInfo){
       this.isScanInfo = true;
       this.isResultModalOpen = true;

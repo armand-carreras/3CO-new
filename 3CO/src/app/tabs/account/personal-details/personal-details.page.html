@@ -29,7 +29,7 @@
       </div>
 
       <div class="account-management-container">
-        <ion-button href="auth/" shape="round" color="tertiary">
+        <ion-button href="auth/login?logout=true" shape="round" color="tertiary">
           <ion-icon name="log-out-outline"></ion-icon>
         </ion-button>
         <ion-button [disabled]="true" href="auth/" shape="round" color="danger">
@@ -51,7 +51,7 @@
   <div class="top-toolbar">
     <ion-button fill="clear" (click)="editMode = !editMode"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     <ion-title color="primary">Edit Profile</ion-title>
-    <ion-button size="small" color="tertiary" fill="clear" (click)="edit()">
+    <ion-button size="small" color="tertiary" fill="clear" (click)="done()">
       Done
     </ion-button>
   </div>

@@ -1,10 +1,12 @@
+<ion-content>
+
 <div class="product-list-container" *ngIf="!wantMoreInfo else moreProductInfo">
 
   <div class="header">
     <img (click)="goToMainPage()" class="main-img" src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
     <ion-chip (click)="goToProfile()">
       <ion-avatar >
-        <img src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
+        <img [src]="user.avatarImg" alt="3-CO">
       </ion-avatar>
       <ion-text>
         {{user.name}}
@@ -31,12 +33,12 @@
 
     <div class="serch-filter-container">
       <div class="searchbar-filter">
-        <ion-searchbar placeholder="Search product" show-clear-button="always" [debounce]="1000" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
+        <ion-searchbar placeholder="Search product" show-clear-button="always" [debounce]="700" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
         <ion-button size="small" fill="clear" id="open-modal">
           <ion-icon name="filter-outline"></ion-icon>
         </ion-button>
       </div>
-      <ion-button shape="round" fill="outline" [routerLink]="['/tabs/product/add-product']">Post</ion-button>
+      <ion-button shape="round" fill="outline" (click)="postNewProduct()">Post</ion-button>
     </div>
 
     <div class="recently-added-container">
@@ -51,34 +53,71 @@
 
 
     <div class="all-categories-container">
-      <div *ngFor="let category of categories" class="category-container">
-        <!-- Check if groupedLabels[category.name] is defined before iterating -->
-        <ng-container *ngIf="isGroupCategoryEmpty(category.name)">
-          <div style="display: flex;">
-            <ion-icon style="padding-right:.5rem;" [name]="category.icon"></ion-icon>
-            <ion-text class="category-title"><p style="margin: 0; padding: 0; padding-bottom:.75rem;"><strong>{{ category.name }}</strong></p></ion-text>
-          </div>
-        
-          <div class="label-box-container">
-            <div *ngFor="let product of groupedProducts[category.name]" class="label-box" (click)="showProductInfo(product)">
-              <ion-text style="font-size: 0.75rem; margin-bottom: 0.5rem;">
-                {{ product.name }}
-              </ion-text>
-              <img [src]="product.image!='' ? product.image : '/assets/databases/No_Image_Available.jpg'" alt="No Image Available">
-              <app-rating style="width: 80%;" [rating]="product.rating"></app-rating>
+      
+      
+      <ng-container *ngFor="let category of categories">
+        <div class="category-container">
 
+          <!-- SKELETON -->
+          <ng-container *ngIf="!isThereAnyProduct">
+              <div style="width: 100%; display: flex; justify-content: flex-start; align-items:center; padding-bottom:.75rem;">
+                <ion-avatar style="width: 1rem; height: 1rem; margin-right: 1rem;" slot="start">
+                  <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                </ion-avatar>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 5rem; height:1rem; "
+                ></ion-skeleton-text>
+              </div>
+            
+              <div class="label-box-container">
+                <div *ngFor="let product of [1,2,3,4,5]" class="label-box">
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 3rem;"
+                ></ion-skeleton-text>
+                <ion-thumbnail slot="start">
+                  <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+                </ion-thumbnail>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 3rem;"
+                ></ion-skeleton-text>
+                </div>
+              </div>
+          </ng-container>
+          <!-- SKELETON -->
+
+        <!-- Check if groupedLabels[category.name] is defined before iterating -->
+          <ng-container *ngIf="isGroupCategoryEmpty(category.name)">
+            <div style="display: flex;">
+              <ion-icon style="padding-right:.5rem;" [name]="category.icon"></ion-icon>
+              <ion-text class="category-title"><p style="margin: 0; padding: 0; padding-bottom:.75rem;"><strong>{{ category.name }}</strong></p></ion-text>
             </div>
-          </div>
-        </ng-container>
-      </div>
+          
+            <div class="label-box-container">
+              <div *ngFor="let product of groupedProducts[category.name]" class="label-box" (click)="showProductInfo(product)">
+                <ion-text style="font-size: 0.75rem; margin-bottom: 0.5rem;">
+                  {{ product.name }}
+                </ion-text>
+                <img [src]="product.image!='' ? product.image : '/assets/databases/No_Image_Available.jpg'" alt="No Image Available">
+                <app-rating style="width: 80%;" [rating]="product.rating"></app-rating>
+
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      
       <!-- Display Spinner if No Categories are Available -->
-      <ion-spinner *ngIf="!groupedProducts" name="lines-sharp"></ion-spinner>
+      
     </div>
 
   </div>
 
 </div>
-
+  
+</ion-content>
 
 
 <ng-template #moreProductInfo>

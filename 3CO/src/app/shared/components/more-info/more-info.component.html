@@ -1,4 +1,5 @@
 <div class="more-info-container">
+  
   <div class="header">
     <ion-button (click)="goBack()" color="transparent" fill="clear">
       <ion-icon name="arrow-back-outline"></ion-icon>
@@ -23,23 +24,33 @@
   </div>
 
   <div class="ranking-container">
-    <div class="rank-box">
-      <ion-icon name="star"></ion-icon>
-      <ion-text>
-        {{ranking1}}
-      </ion-text>
+    
+    <div class="info-rank-box">
+      <ion-note style="font-size: 0.45rem;">Credibility</ion-note>
+      <div class="rank-box">
+        <ion-icon name="star"></ion-icon>
+        <ion-text>
+          {{ranking1}}
+        </ion-text>
+      </div>
     </div>
-    <div class="rank-box">
-      <ion-icon name="star"></ion-icon>
-      <ion-text>
-        {{ranking2}}
-      </ion-text>
+    <div class="info-rank-box">
+      <ion-note style="font-size: 0.45rem;">Environment</ion-note>
+      <div class="rank-box">
+        <ion-icon name="star"></ion-icon>
+        <ion-text>
+          {{ranking2}}
+        </ion-text>
+      </div>
     </div>
-    <div class="rank-box">
-      <ion-icon name="star"></ion-icon>
-      <ion-text>
-        {{ranking3}}
-      </ion-text>
+    <div class="info-rank-box">
+      <ion-note style="font-size: 0.45rem;">Socio-Economic</ion-note>
+      <div class="rank-box">
+        <ion-icon name="star"></ion-icon>
+        <ion-text>
+          {{ranking3}}
+        </ion-text>
+      </div>
     </div>
   </div>
 

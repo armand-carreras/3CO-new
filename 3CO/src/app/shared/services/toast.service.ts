@@ -11,7 +11,7 @@ export class ToastService {
   public async setToast(message: string, color?: PredefinedColors, duration?: number): Promise<HTMLIonToastElement> {
     const toast = await this.toast.create({
       color: color ?? 'danger',
-      duration: duration ?? 2000,
+      duration: duration ?? 1000,
       message: message,
     });
     return toast;
@@ -20,7 +20,7 @@ export class ToastService {
   public async setAnimatedToast(message: string, color?: PredefinedColors, duration?: number): Promise<HTMLIonToastElement> {
     const toast = await this.toast.create({
       color: color ?? 'danger',
-      duration: duration ?? 2000,
+      duration: duration ?? 1000,
       message: message,
       animated: true,
     });
@@ -32,7 +32,7 @@ export class ToastService {
       color: color ?? 'danger',
       duration: duration ?? 1500,
       message: message,
-      animated: true,
+      animated: true
     });
     toast.present();
   }

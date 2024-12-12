@@ -7,7 +7,7 @@
     
       <ion-chip (click)="goToProfile()">
         <ion-avatar >
-          <img src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
+          <img [src]="user.avatarImg" alt="3-CO">
         </ion-avatar>
         <ion-text>
           {{user.name}}
@@ -28,7 +28,7 @@
     
     </div>
 
-    <ng-container *ngIf="!isLabelSelected else moreInfo">
+    <!-- <ng-container *ngIf="!isLabelSelected else moreInfo"> -->
 
       <div class="searchbar-filter">
       <ion-searchbar placeholder="Search by name or keyword" show-clear-button="always" [debounce]="600" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
@@ -44,7 +44,7 @@
             <ion-text class="category-title"><h3>{{ category.name }}</h3></ion-text>
           
             <div class="label-box-container">
-              <div *ngFor="let label of groupedLabels[category.name]" (click)="selectForMoreInfo(label)" class="label-box">
+              <div *ngFor="let label of groupedLabels[category.name]" (click)="showMoreLabelInfo(label)" class="label-box">
                 <img *ngIf="label.logo" [src]="label.logo" [alt]="label.name" />
                 <ion-text>
                   {{ label.name }}
@@ -57,7 +57,7 @@
         <ion-spinner *ngIf="!groupedLabels" name="lines-sharp"></ion-spinner>
       </div>
     
-    </ng-container>
+    <!-- </ng-container> -->
 
   </div>
 
@@ -113,6 +113,6 @@
 
 </ion-content>
 
-<ng-template #moreInfo>
+<!-- <ng-template #moreInfo>
   <app-more-info [label]="selectedLabel" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
-</ng-template>
+</ng-template> -->

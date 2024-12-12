@@ -26,6 +26,11 @@
       "node_modules/@types",
       "src/types"
     ],
+    "paths": {
+      "crypto": [
+        "node_modules/crypto-js"
+      ]
+    },
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

@@ -13,7 +13,9 @@ export const environment = {
     login: 'user/login',
     image_detection: 'detect',
     user_badges:'user/badges',
-    user_scans: 'user/scans'
+    user_scans: 'user/scans',
+    products: 'products',
+    reviews: 'reviews'
   }
 };
 

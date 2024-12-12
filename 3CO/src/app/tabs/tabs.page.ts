@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { map } from 'rxjs';
 import { UserService } from '../shared/services/user.service';
 import { StorageService } from '../shared/services/storage.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-tabs',
@@ -15,7 +16,8 @@ export class TabsPage implements OnInit {
 
   constructor(private router: Router,
     private userService: UserService,
-    private storage: StorageService
+    private storage: StorageService,
+    private authServ: AuthService
   ) {
     this.router.events.pipe(map(ev=>{if(ev.type===1)return ev;else {return;}})).subscribe(ev=>{
       if(ev !== undefined) {
@@ -32,13 +34,35 @@ export class TabsPage implements OnInit {
       await this.storage.init();
     }
     const token = await this.storage.getToken();
-    console.log('retrieving Token:', token);
-    if(token) {
+    const wantsTo = await this.checkIfUserWantsToBeLoggedInAutomatically();
+
+    if(token && wantsTo && this.authServ.isUserGuest) {
       this.userService.loadUser(token);
+    } else if(this.authServ.isUserGuest) {
+      console.info('Guest USer');
     } else {
       this.router.navigate(['auth']);
     }
   }
 
 
+  private async checkIfUserWantsToBeLoggedInAutomatically() {
+    const keepMeSignedIn = (await this.storage.getKeepMeLogged()) ?? false;
+    const isGuest = this.authServ.isUserGuest;
+    const token = await this.storage.getToken();
+    if (isGuest && keepMeSignedIn && token) {
+      try{
+        await this.authServ.autoLoginKeepMeSignedInUser(token);
+        this.authServ.setAsRegularUser();
+        return true
+      } catch(error) {
+        return false;
+      }
+    } else if(keepMeSignedIn && !token) {
+      //this.toastServ.presentAutoDismissToast('No token was found, log in with your credentials', 'danger');
+      return false;
+    } else {
+      return false;
+    }
+  }
 }

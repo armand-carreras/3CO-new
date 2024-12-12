@@ -7,14 +7,16 @@
     <div class="input-container">
       <ion-text><h3><strong>Sign In</strong></h3></ion-text>
       <br>
-      <ion-input [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
+      <ion-input mode="md" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
       <br>
-      <ion-input [(ngModel)]="password" type="password" label="Password" shape="round" label-placement="stacked" fill="outline" placeholder="Enter password"></ion-input>
+      <ion-input mode="md" [(ngModel)]="password" type="password" label="Password" shape="round" label-placement="stacked" fill="outline" placeholder="Enter password"></ion-input>
       <br>
       <ion-button expand="full" shape="round" (click)="login()">Sign In</ion-button>
       <br>
+
       <div class="links-container">
         <a href="auth/register">Register</a> 
+        <ion-checkbox style="width: 90%; margin: auto;" [checked]="keepMeSignedIn" justify="end" labelPlacement="start" (ionChange)="checkBoxChanges($event)">Keep me logged in</ion-checkbox>
         <!-- <a href="auth/password-recovery">Forgot Password?</a> -->
       </div>
     </div>

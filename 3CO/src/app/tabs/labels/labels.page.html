@@ -10,7 +10,7 @@
 
     
     <div id="content">
-      <ng-container *ngIf="!isLabelSelected else moreInfo">
+      <!-- <ng-container *ngIf="!isLabelSelected else moreInfo"> -->
 
       <div id="descriptive-container">
         <div id="description">
@@ -62,7 +62,7 @@
 
       </div>
 
-    </ng-container>
+    <!-- </ng-container> -->
     </div>
 
   </div>
@@ -92,6 +92,6 @@
 
 
 
-<ng-template #moreInfo>
+<!-- <ng-template #moreInfo>
   <app-more-info style="margin: auto" [label]="selectedLabelForMoreInfo" [isScanInfo]="isScanInfo" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
-</ng-template>
+</ng-template> -->

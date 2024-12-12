@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
 import { User } from 'src/app/shared/models/user';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -13,13 +14,14 @@ export class AccountPage implements OnInit, ViewWillEnter {
 
   public user: User = {
     name: 'Guest User',
-    email: 'guest@3co.none',
-    avatarImg: '/assets/avatar/male-avatar.png',
+    email: 'guest@3co.com',
+    avatarImg: 'assets/avatar/unisex_avatar.png',
     scans: 0,
     rewards: 0
   }
 
   constructor(private router: Router,
+    private authServ: AuthService,
     private userServ: UserService
   ) { }
 
@@ -46,9 +48,11 @@ export class AccountPage implements OnInit, ViewWillEnter {
   }
 
   private async updateUser() {
-    await this.userServ.fetchUser();
-    this.user = this.userServ.getUserValue();
-    console.log('------------ User from account: ', JSON.stringify(this.user));
+    if(!this.authServ.isUserGuest) {
+      await this.userServ.fetchUser();
+      this.user = this.userServ.getUserValue();
+      console.log('------------ User from account: ', JSON.stringify(this.user));
+    }
   }
 
 

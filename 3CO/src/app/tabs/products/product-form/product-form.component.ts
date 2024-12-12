@@ -1,9 +1,8 @@
-import { identifierName } from '@angular/compiler';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Photo } from '@capacitor/camera';
-import { Platform } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
 import { CameraService } from 'src/app/shared/services/camera.service';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
 import { StorageService } from 'src/app/shared/services/storage.service';
@@ -32,21 +31,19 @@ export class ProductFormComponent {
     private platform: Platform,
     private cameraService: CameraService,
     private toastServ: ToastService,
+    private loaderService: LoadingController,
     private productService: ProductHandlerService,
     private userService: UserService,
     private router: Router,
-    private storageServ: StorageService
   ) {
     // Initialize the form
     this.productForm = this.fb.group({
       name: ['', Validators.required],
-      creatorID: [''],
       image: ['', Validators.required],
       shopName: ['', Validators.required],
       shopLocation: ['', Validators.required],
       categories: ['', Validators.required],
-      description: [''],
-      rating: [0, [Validators.required, Validators.min(0), Validators.max(5)]]
+      description: ['']
     });
   }
 
@@ -54,24 +51,27 @@ export class ProductFormComponent {
     const userID = this.userService.getUserValue();
     if (this.productForm.valid) {
       const newProduct = {
-        id: crypto.randomUUID(),
         name: this.productForm.value.name,
-        creatorID: userID.name,
         image: this.productForm.value.image,
         shopName: this.productForm.value.shopName,
         shopLocation: this.productForm.value.shopLocation,
-        categories: this.productForm.value.categories,
-        description: this.productForm.value.description,
-        rating: this.productForm.value.rating
+        categories: [this.productForm.value.categories],
+        description: this.productForm.value.description
       };
-      this.productService.addNewProduct(newProduct);
+      const loader = await this.loaderService.create({
+        message: 'Posting product...',
+        animated: true,
+        showBackdrop: true,
+      });
+      await loader.present();
+      await this.productService.addNewProduct(newProduct).finally(()=>loader.dismiss());
       this.productForm.reset(); // Reset form after submission
       this.goToMainPage();
     }
   }
 
   public goToMainPage() {
-    this.router.navigate(['tabs', 'product'])
+    this.router.navigate(['/tabs/product'])
   }
 
   public scan() {
