@@ -7,6 +7,7 @@ import { Product } from 'src/app/shared/models/product';
 import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -56,6 +57,7 @@ export class ProductsPage implements OnInit {
   constructor(private router: Router,
     private userService: UserService,
     private productServ: ProductHandlerService,
+    private toastServ: ToastService,
     private alertController: AlertController,
     private authServ: AuthService) {
   
@@ -115,6 +117,14 @@ export class ProductsPage implements OnInit {
     this.wantMoreInfo = true;
   }
 
+
+  public stillInDevelopment() {
+    this.toastServ.presentAutoDismissToast('This feature is under development', 'warning');
+  }
+
+
+
+
   private orderByCategory(products: Product[]) {
     products.forEach(product => {
       const category = product.categories;
@@ -163,5 +173,8 @@ export class ProductsPage implements OnInit {
       'Other': []
     };
   }
+
+
+
 
 }

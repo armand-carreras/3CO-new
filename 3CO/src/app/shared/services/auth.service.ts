@@ -150,7 +150,7 @@ export class AuthService {
    * @param password Password of the user
    */
   public async register(user: string, email: string, password: string, gender: string): Promise<any> {
-    const URL = environment.paths.base_api+environment.paths.post_get_user;
+    const URL = environment.paths.base_api+environment.paths.register;
     const hashPassword = crypto.SHA256(password).toString();
     const body = {
       "name": user,
@@ -189,6 +189,46 @@ export class AuthService {
     )).finally(()=>loader.dismiss());
   }
 
+
+
+
+
+
+  public async recover(email: string) {
+    
+    const URL = environment.paths.base_api+environment.paths.recover;
+    const body = {
+      "email":email
+    };
+    console.log('body',JSON.stringify(body));
+    console.log('Starting recovering');
+
+    const loader = await this.loadController.create({message:'Recovering'});
+    loader.present();
+
+    return await firstValueFrom(this.http.post(
+      URL,
+      JSON.stringify(body),
+      { headers: new HttpHeaders().append('Content-Type', 'application/json'), observe: 'response' }
+    ).pipe(
+      tap(async (res)=>{
+        console.log('recovering response: ',res);
+          // Redirect to login page after successful registration
+          (await (this.toastServ.setToast('Check your email inbox!','success',700))).present();
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 404) {
+          this.toastServ.presentAutoDismissToast('User not found', 'danger');
+        } else if (error.status === 500) {
+          this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+        } else {
+          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+        }
+        // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+        return throwError(() => new Error(error.error.message));
+      })
+    )).finally(()=>loader.dismiss());
+  }
 
 
 

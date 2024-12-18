@@ -10,12 +10,14 @@ export const environment = {
     base_api: 'https://3coapp.click/v2/api/',
     base_detection_api: 'https://3coapp.click/v2/api/',
     post_get_user: 'user',
+    register:'user/register',
     login: 'user/login',
     image_detection: 'detect',
     user_badges:'user/badges',
     user_scans: 'user/scans',
     products: 'products',
-    reviews: 'reviews'
+    reviews: 'reviews',
+    recover: 'user/password_recovery'
   }
 };
 

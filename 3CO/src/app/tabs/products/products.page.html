@@ -33,7 +33,7 @@
 
     <div class="serch-filter-container">
       <div class="searchbar-filter">
-        <ion-searchbar placeholder="Search product" show-clear-button="always" [debounce]="700" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
+        <ion-searchbar placeholder="Search product" [debounce]="700" (ionFocus)="stillInDevelopment()" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
         <ion-button size="small" fill="clear" id="open-modal">
           <ion-icon name="filter-outline"></ion-icon>
         </ion-button>

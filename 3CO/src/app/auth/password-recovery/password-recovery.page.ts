@@ -1,4 +1,10 @@
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
+import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { ToastService } from 'src/app/shared/services/toast.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-password-recovery',
@@ -7,9 +13,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PasswordRecoveryPage implements OnInit {
 
-  constructor() { }
+  public email: string = '';
+
+  constructor(private authServ: AuthService
+  ) { }
 
   ngOnInit() {
+  }
+
+  public async recover() {
+    
+    this.authServ.recover(this.email);
   }
 
 }
