@@ -20,12 +20,12 @@ PODS:
     - Capacitor
   - CapacitorToast (6.0.3):
     - Capacitor
-  - SQLCipher (4.5.6):
-    - SQLCipher/standard (= 4.5.6)
-  - SQLCipher/common (4.5.6)
-  - SQLCipher/standard (4.5.6):
+  - SQLCipher (4.6.1):
+    - SQLCipher/standard (= 4.6.1)
+  - SQLCipher/common (4.6.1)
+  - SQLCipher/standard (4.6.1):
     - SQLCipher/common
-  - ZIPFoundation (0.9.16)
+  - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -67,19 +67,19 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/toast"
 
 SPEC CHECKSUMS:
-  Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
-  CapacitorApp: 0bc633b4eae40a1f32cd2834788fad3bc42da6a1
-  CapacitorCamera: b9904b48258a91a48930e72a400638a5fc223b27
-  CapacitorCommunitySqlite: 47dab3a2d9a9581a0fe7642cf9cffd34c5d5b358
+  Capacitor: 69c7f687aabb8d85e543497411e40638b5cc08c0
+  CapacitorApp: f51c08c64df914fc934239fd1b3fc809d62a02f6
+  CapacitorCamera: fc099c42b3cbb1e8e945bc945114ff830fa82dfd
+  CapacitorCommunitySqlite: 0299d20f4b00c2e6aa485a1d8932656753937b9b
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
-  CapacitorFilesystem: c832a3f6d4870c3872688e782ae8e33665e6ecbf
-  CapacitorHaptics: fe689ade56ef20ec9b041a753c6da70c5d8ec9a9
-  CapacitorKeyboard: 2700f9b18687be021e28b5a09b59eb151a46d5e0
-  CapacitorStatusBar: b81d4fb5d4e0064c712018071b3ab4b810b39a63
-  CapacitorToast: 048d8cbefa6651509ed29c3e7262e9e64abe251d
-  SQLCipher: 838309284f29953a28ad2e81d87d55ea6b7c74fd
-  ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
+  CapacitorFilesystem: a6b43788d8f9489fc95fb761f3d0d37d0bceaddf
+  CapacitorHaptics: 05d33e20e394b1977dfd2a00a2621e04098164c1
+  CapacitorKeyboard: 5bf4458dd989b56a60ea15c92cbca5fbfae6e9f9
+  CapacitorStatusBar: 9ed7f06318fd436917072a9bf60fda56d12c8bdb
+  CapacitorToast: 325d1815e2c2b556257909df7ef1e25eb96cd0c5
+  SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
+  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
 PODFILE CHECKSUM: 1f04679c206232f662e1296dc725d57a940da6a5
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
