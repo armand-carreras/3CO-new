@@ -34,12 +34,18 @@ const routes: Routes = [
         path: 'password-recovery',
         loadChildren: () =>
           import('./auth/password-recovery/password-recovery.module').then(
-            m => m.PasswordRecoveryPageModule,
-          ),
+            m => m.PasswordRecoveryPageModule),
       },
+      {
+        path: 'account-validator',
+        loadChildren: () => 
+          import('./auth/account-validator/account-validator.module').then(
+            m => m.AccountValidatorPageModule)
+      }
     ],
 
-  }
+  },
+
 ];
 @NgModule({
   imports: [

@@ -26,6 +26,12 @@
           <img [src]="product.image">
         </div>
         <br>
+        <ion-button [href]="getGoogleSearchUrl(product.name, product.shopName)" 
+        target="_blank" expand="block" fill="outline" shape="round">
+          <ion-icon style="padding-right: 1rem;" name="logo-google"></ion-icon>
+          <ion-text slot="end">Search in Google</ion-text>
+        </ion-button>
+        <br>
         <div class="shop-category-info">
           <ion-text><ion-note>Category: </ion-note>{{product.categories}}</ion-text>
           <ion-text><ion-note>Shop: </ion-note>{{product.shopName}}</ion-text>

@@ -27,6 +27,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
     private storage: StorageService,
     private toastServ: ToastService,
     private router: Router,
+    private alertController: AlertController,
   ) {
     
 }
@@ -60,7 +61,11 @@ export class LoginPage implements OnInit, ViewDidEnter {
       console.log('------------ Keep me signed in: ',this.keepMeSignedIn);
       this.storage.storeKeepMeLoggedIn(this.keepMeSignedIn);
     } catch(error: any) {
-      await this.toastServ.presentAutoDismissToast(error, 'danger');
+      if(error === "Email not verified. Please verify your email before logging in.") {
+        await this.alertToValidate(this.email);
+      } else {
+        await this.toastServ.presentAutoDismissToast(error, 'danger');
+      }
       throw new Error(error);
     }
     
@@ -73,9 +78,18 @@ export class LoginPage implements OnInit, ViewDidEnter {
 
 
 
-  public startAsGuest() {
-    this.authService.setAsGuest();
-    this.router.navigateByUrl('/tabs');
+  public async startAsGuest() {
+
+    const loader = await this.loaderContl.create({message:'Preparing environment...'});
+    await loader.present();
+    try {
+      await this.authService.setAsGuest();
+      this.router.navigateByUrl('/tabs');
+      loader.dismiss();
+    } catch(error) {
+      loader.dismiss();
+      console.error('Something went wrong while setting up Guest');
+    }
   }
 
   public checkBoxChanges(ev: any) {
@@ -170,7 +184,31 @@ export class LoginPage implements OnInit, ViewDidEnter {
     } */
   }
 
-
+private async alertToValidate(email: string) {
+    //ToDo validate email
+    const alert = await this.alertController.create({
+      message: 'Your account should be validated before accessing it',
+      buttons: [
+        {
+          text:'Validate',
+          role: 'confirm',
+          handler: () => {
+            this.router.navigate(['auth/account-validator'], {
+              queryParams: { email: email }
+            });
+          }
+        },
+        {
+          text:'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel Validation');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
   
 
 }

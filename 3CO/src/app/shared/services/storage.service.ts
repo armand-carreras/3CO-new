@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { User } from '../models/user';
 import { Product, Review } from '../models/product';
+import { Device } from '@capacitor/device';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,11 @@ export class StorageService {
     
     const storage = await this.storage.create();
     this._storage = storage;
+    const isGuestStablished = await this.getGuestID();
+    if(!isGuestStablished) {
+      await this.storeGuestID();
+    }
+    
   }
 
   // Create and expose methods that users of this service can
@@ -83,6 +89,34 @@ export class StorageService {
   }
   
 
+
+
+  public async getGuestID() {
+    const guestID = await this._storage?.get(userKeys.guestID);
+    return guestID;
+  }
+
+  public async isGuestInServer() {
+    const guestID = await this._storage?.get(userKeys.guestInServer);
+    return guestID;
+  }
+
+  public async setGuestInServer() {
+    this._storage?.set(userKeys.guestInServer, true);
+  }
+
+  //Generate and store GuestID
+  public async storeGuestID() {
+    const id = await this.generateGuestID();
+    await this._storage?.set(userKeys.guestID, id);
+  }
+
+  private async generateGuestID() {
+    const deviceId = await Device.getId();
+    return 'Guest' + deviceId.identifier;
+    
+  }
+
 }
 
 
@@ -90,5 +124,8 @@ const userKeys = {
   name: 'userName',
   scans: 'userScans',
   rewards: 'userRewards',
-  products: 'product'
+  products: 'product',
+  guestInServer: 'guestStablished',
+  guestRegistered: 'guestRegistered',
+  guestID: 'guestID',
 }

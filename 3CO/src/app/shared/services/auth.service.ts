@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, firstValueFrom, map, Observable, tap, throwError } from 'rxjs';
-import { User } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { ToastService } from './toast.service';
@@ -8,7 +7,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 import * as crypto from 'crypto-js';
-import { LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +20,7 @@ export class AuthService {
   });
 
   private userToken: BehaviorSubject<string> = new BehaviorSubject('');
-
+  private userLoggedIn: boolean = false;
   private isGuest: boolean = true;
 
   constructor(
@@ -55,10 +54,22 @@ export class AuthService {
     }
   }
 
-  public setAsGuest() {
+  public async setAsGuest() {
     this.isGuest = true;
-    this.storage.storeKeepMeLoggedIn(false);
+    try {
+      const isGuestInServer = await this.storage.isGuestInServer()
+      if(!isGuestInServer) {
+        console.log('Guest not registered, proceding to register device');
+        await this.setGuestInServer();
+        await this.storage.setGuestInServer();
+      }
+      this.userLoggedIn = true;
+      this.storage.storeKeepMeLoggedIn(false);
+    } catch(error) {
+      console.error(error);
+    }
   }
+
   public setAsRegularUser() {
     this.isGuest = false;
   }
@@ -76,8 +87,6 @@ export class AuthService {
       console.log('Something went wrong, try again!');
     }
   }
-
-
 
 
 
@@ -110,19 +119,29 @@ export class AuthService {
       }),
       map((res) => res.token),
       catchError((error: HttpErrorResponse) => {
+        let message = '';
         if (error.status === 401) {
-          this.toastServ.presentAutoDismissToast('Unauthorized access. Please log in again.', 'danger');
+          message = 'Unauthorized access. Use valid credentials.';
+          //this.toastServ.presentAutoDismissToast(message, 'danger');
         } else if (error.status === 500) {
-          this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+          message = 'Internal server error. Please try again later.';
+          //this.toastServ.presentAutoDismissToast(message, 'danger');
+        } else if (error.status === 403) {
+          message = "Email not verified. Please verify your email before logging in.";
+          //this.toastServ.presentAutoDismissToast(message, 'danger');           
         } else {
-          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+          message = 'An unexpected error occurred.';
+          //this.toastServ.presentAutoDismissToast(message, 'danger');
         }
         // Re-throw the error so it can still be handled by other parts of the code, if necessary.
-        return throwError(() => new Error(error.error.message));
+        return throwError(() => new Error(message));
       })
     );
   }
 
+
+
+  
   public async autoLoginKeepMeSignedInUser(token: string) {
     try {
       console.log('trying to log in loading users');
@@ -173,7 +192,7 @@ export class AuthService {
           console.log(res);
           (await (this.toastServ.setToast('Successfull registration','success',600))).present();
           this.setUserIntoStorage(user, email, password, gender);
-          this.router.navigate(['auth/login'], {queryParams: {email: email, password: password}});
+          
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -189,6 +208,60 @@ export class AuthService {
     )).finally(()=>loader.dismiss());
   }
 
+
+
+  
+
+
+
+
+
+  /**
+     * @description  Register for users
+     * @method POST
+     * @param user Username of the user
+     * @param email Email of the user
+     * @param password Password of the user
+     */
+  public async migrateGuest(user: string, email: string, password: string, gender?: string): Promise<any> {
+    const URL = environment.paths.base_api+environment.paths.register;
+    const hashPassword = crypto.SHA256(password).toString();
+    const body = {
+      "name": user,
+      "email": email,
+      "password": hashPassword
+    };
+    
+    console.log('Starting Registration');
+
+    const loader = await this.loadController.create({message:'Registering'});
+    loader.present();
+
+    return await firstValueFrom(this.http.post(
+      URL,
+      JSON.stringify(body),
+      { headers: this.postHeaders, observe: 'response' }
+    ).pipe(
+      tap(async (res)=>{
+          // Redirect to login page after successful registration
+          console.log(res);
+          (await (this.toastServ.setToast('Successfull registration','success',600))).present();
+          this.setUserIntoStorage(user, email, password, gender);
+          
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          this.toastServ.presentAutoDismissToast('Unauthorized access. Please log in again.', 'danger');
+        } else if (error.status === 500) {
+          this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+        } else {
+          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+        }
+        // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+        return throwError(() => new Error(error.error.message));
+      })
+    )).finally(()=>loader.dismiss());
+  }
 
 
 
@@ -232,10 +305,38 @@ export class AuthService {
 
 
 
+  private async setGuestInServer() {
+    const guestName = await this.storage.getGuestID();
+    const body = {
+      name: guestName
+    };
+    const URL = environment.paths.base_api+environment.paths.guest;
+
+    return firstValueFrom(this.http.post(
+      URL,
+      JSON.stringify(body),
+      { headers: new HttpHeaders().append('Content-Type', 'application/json'), observe: 'response' }
+    ).pipe(
+      tap(async (res)=>{
+        console.log('GuestInServer: ', res);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 404) {
+          this.toastServ.presentAutoDismissToast('Address not found', 'danger');
+        } else if (error.status === 500) {
+          this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+        } else {
+          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+        }
+        // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+        return throwError(() => new Error(error.error.message));
+      })
+    ))
+  }
 
 
 
-  private setUserIntoStorage(user: string, email: string, password: string, gender: string) {
+  private setUserIntoStorage(user: string, email: string, password: string, gender?: string) {
     
     let avatarImagePath: string = '/assets/avatar/unisex_avatar.png';
     switch(gender) {
@@ -261,6 +362,14 @@ export class AuthService {
       }
     )
   }
+
+
+
+  
+
+
+
+  
 
 
 }

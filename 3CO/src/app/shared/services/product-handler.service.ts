@@ -35,8 +35,12 @@ export class ProductHandlerService {
 
 
   public async loadProducts() {
-    const products = await this.fetchProducts();
-    this.productList.next(products.products);
+    try {
+      const products = await this.fetchProducts();
+      this.productList.next(products.products);
+    } catch (error) {
+      throwError(()=>new Error('Error loading products'));
+    }
   }
 
 
@@ -72,7 +76,7 @@ export class ProductHandlerService {
     //ToDo fetch products from API
     //ToDo add result to productList
     const response = await firstValueFrom(
-      this.http.get<productGET>(`${environment.paths.base_api}${environment.paths.products}?per_page=50`).pipe(
+      this.http.get<productGET>(`${environment.paths.base_api}${environment.paths.products}?per_page=150`).pipe(
         tap((res) => {
           console.log(res);
         }),

@@ -86,7 +86,10 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
     this.loadReviews(event);
   }
 
-
+  getGoogleSearchUrl(productName: string, productShop: string): string {
+    const query = `${productName}; ${productShop}`;
+    return `https://www.google.com/search?q=${encodeURIComponent(query)}&tbm=shop`;
+  }
 
   async onSubmit() {
     const review: Review = {

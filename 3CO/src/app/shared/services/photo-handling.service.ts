@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastService } from './toast.service';
 import { LoadingController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
-import { CapacitorHttp, HttpOptions, HttpResponse } from '@capacitor/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +10,7 @@ import { catchError, firstValueFrom, tap, throwError } from 'rxjs';
 export class PhotoHandlingService {
 
   constructor( private toast: ToastService,
+    private storage: StorageService,
     private loader: LoadingController) {
     console.log('Photo Handling Service Initialized');
   }
@@ -22,7 +21,9 @@ export class PhotoHandlingService {
     const blob = await this.base64toBlob(base64File);
     formData.append('file', blob, 'file.jpg');
     if (isGuest) {
-      formData.append('guest', 'true');
+      const guestID = await this.storage.getGuestID();
+      formData.append('guest', 'true')
+      formData.append('name', guestID);
     }
   
     const headers: any = {
