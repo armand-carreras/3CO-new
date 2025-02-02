@@ -71,4 +71,9 @@ export class RewardsComponent  implements OnInit, ViewWillEnter {
     }
   }
 
+  public goToMigrate() {
+    this.authServ.logoutUser();
+    this.router.navigate(['/auth/migrate-user']);
+  }
+
 }

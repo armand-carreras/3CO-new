@@ -24,6 +24,6 @@
 <ng-template #isGuestTemplate>
   <div style="width: 100%; height:100%; display:flex; flex-direction: column; align-items: center; justify-content: center;">
     <ion-text style="margin-bottom: 1rem">Register to benefit from rewards</ion-text>
-    <ion-button routerLink="/auth/migrate-user">Migrate to User</ion-button>
+    <ion-button (click)="goToMigrate()" routerLink="/auth/migrate-user">Migrate to User</ion-button>
   </div>
 </ng-template>

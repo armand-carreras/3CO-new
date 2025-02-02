@@ -29,7 +29,7 @@
       </div>
 
       <div class="account-management-container">
-        <ion-button href="auth/login?logout=true" shape="round" color="tertiary">
+        <ion-button (click)="logout()" shape="round" color="tertiary">
           <ion-icon name="log-out-outline"></ion-icon>
         </ion-button>
         <ion-button [disabled]="true" href="auth/" shape="round" color="danger">

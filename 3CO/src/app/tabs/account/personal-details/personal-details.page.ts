@@ -66,8 +66,10 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
 
 
   public logout() {
-    
+    this.authServ.logoutUser();
+    this.router.navigate(['/auth']);
   }
+  
   public delete() {
 
   }
