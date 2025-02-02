@@ -6,9 +6,9 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.token !== '') { // Replace with your actual login check logic
+  if (authService.isLoggedIn) { // Replace with your actual login check logic
     // Redirect to the default tabs route
-    router.navigate(['/tabs/labels']);
+    router.navigate(['/tabs']);
     return false;
   }
 

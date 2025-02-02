@@ -27,7 +27,6 @@ export class LoginPage implements OnInit, ViewDidEnter {
     private storage: StorageService,
     private toastServ: ToastService,
     private router: Router,
-    private alertController: AlertController,
   ) {
     
 }
@@ -61,17 +60,22 @@ export class LoginPage implements OnInit, ViewDidEnter {
       console.log('------------ Keep me signed in: ',this.keepMeSignedIn);
       this.storage.storeKeepMeLoggedIn(this.keepMeSignedIn);
     } catch(error: any) {
-      if(error === "Email not verified. Please verify your email before logging in.") {
+      console.log(error.message, error.error);
+      if(error.message.includes('not verified')) {
+        console.log('alert To Validate');
         await this.alertToValidate(this.email);
       } else {
-        await this.toastServ.presentAutoDismissToast(error, 'danger');
+        //await this.toastServ.presentAutoDismissToast(error.message, 'danger');
+        console.error('Error while loggin in', error.message);
       }
       throw new Error(error);
     }
     
     //Navigate to home
     if ( token ) {
-      this.router.navigate(['/tabs/labels']);
+      this.authService.setAsLoggedIn();
+      this.router.navigateByUrl('/tabs', { replaceUrl: true });
+
     }
   }
 
@@ -84,7 +88,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
     await loader.present();
     try {
       await this.authService.setAsGuest();
-      this.router.navigateByUrl('/tabs');
+      this.router.navigateByUrl('/tabs', { replaceUrl: true });
       loader.dismiss();
     } catch(error) {
       loader.dismiss();
@@ -99,11 +103,11 @@ export class LoginPage implements OnInit, ViewDidEnter {
 
 
   private async checkIfUserWantsToBeLoggedInAutomatically() {
-    console.log('-------- CHECKING USER TO LOG IN AUTOMATICALLY ----------');
+    
     this.keepMeSignedIn = (await this.storage.getKeepMeLogged()) ?? false;
-    console.log('-------- KEEP ME SIGNED IN? ----------', this.keepMeSignedIn);
+    
     const token = await this.storage.getToken();
-    console.log('-------- Token? ----------', token);
+    
     if (this.keepMeSignedIn && token) {
       try{
         await this.authService.autoLoginKeepMeSignedInUser(token);
@@ -165,7 +169,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
         let wantsAndCanBeAutomaticallyLoggedIn = await this.checkIfUserWantsToBeLoggedInAutomatically();
         console.log('-------- After wants to be auto logged --------', wantsAndCanBeAutomaticallyLoggedIn);
         if(wantsAndCanBeAutomaticallyLoggedIn && !this.isLogout){
-          this.router.navigate(['/tabs/labels'])
+          this.router.navigateByUrl('/tabs', { replaceUrl: true });
         } else if (this.keepMeSignedIn && !this.isLogout){
           this.toastServ.presentAutoDismissToast('Your token may have expired','danger');
         } else {
@@ -186,7 +190,7 @@ export class LoginPage implements OnInit, ViewDidEnter {
 
 private async alertToValidate(email: string) {
     //ToDo validate email
-    const alert = await this.alertController.create({
+    const alert = await this.alertCntrl.create({
       message: 'Your account should be validated before accessing it',
       buttons: [
         {

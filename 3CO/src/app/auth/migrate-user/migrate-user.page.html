@@ -1,0 +1,32 @@
+<ion-content [fullscreen]="true">
+
+  <div class="register-container">
+
+    <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
+    
+    <div class="input-container">
+      <ion-text class="padding-bottom"><h3><strong>Sing Up</strong></h3></ion-text>
+      <ion-note>Migrate your progress to an official 3CO account</ion-note>
+      <br>
+      <ion-input class="padding-bottom" [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder="Enter name" ></ion-input>
+      <br>
+      <ion-input class="padding-bottom" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
+      <br>
+      <ion-input class="padding-bottom" [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Enter password">
+        <ion-input-password-toggle></ion-input-password-toggle>
+      </ion-input>
+      <br>
+      <ion-input class="padding-bottom" [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Re-enter password">
+        <ion-input-password-toggle></ion-input-password-toggle>
+      </ion-input>
+      <br>
+      <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="migrateUser()">Migrate to User</ion-button>
+      <br>
+      <div class="links-container">
+        Already have an account. <a href="auth/login">Sign Up</a>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

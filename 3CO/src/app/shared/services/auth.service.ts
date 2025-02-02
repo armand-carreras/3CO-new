@@ -43,6 +43,10 @@ export class AuthService {
     return this.userToken.getValue();
   }
 
+  get isLoggedIn() {
+    return this.userLoggedIn;
+  }
+
   getToken() {
     return this.userToken.value;
   }
@@ -74,6 +78,12 @@ export class AuthService {
     this.isGuest = false;
   }
 
+  public setAsLoggedIn() {
+    this.userLoggedIn = true;
+  }
+  public logoutUser() {
+    this.userLoggedIn = false;
+  }
 
 
   public setToken(token: string) {
@@ -116,22 +126,23 @@ export class AuthService {
         await this.userService.loadUser(res.token);
         this.userService.setAsNoGuest();
         this.isGuest = false;
+        this.userLoggedIn = true;
       }),
       map((res) => res.token),
       catchError((error: HttpErrorResponse) => {
         let message = '';
         if (error.status === 401) {
           message = 'Unauthorized access. Use valid credentials.';
-          //this.toastServ.presentAutoDismissToast(message, 'danger');
+          this.toastServ.presentAutoDismissToast(message, 'danger');
         } else if (error.status === 500) {
           message = 'Internal server error. Please try again later.';
-          //this.toastServ.presentAutoDismissToast(message, 'danger');
+          this.toastServ.presentAutoDismissToast(message, 'danger');
         } else if (error.status === 403) {
           message = "Email not verified. Please verify your email before logging in.";
-          //this.toastServ.presentAutoDismissToast(message, 'danger');           
+          this.toastServ.presentAutoDismissToast(message, 'danger');           
         } else {
           message = 'An unexpected error occurred.';
-          //this.toastServ.presentAutoDismissToast(message, 'danger');
+          this.toastServ.presentAutoDismissToast(message, 'danger');
         }
         // Re-throw the error so it can still be handled by other parts of the code, if necessary.
         return throwError(() => new Error(message));
@@ -224,10 +235,11 @@ export class AuthService {
      * @param password Password of the user
      */
   public async migrateGuest(user: string, email: string, password: string, gender?: string): Promise<any> {
-    const URL = environment.paths.base_api+environment.paths.register;
+    const guestID = await this.storage.getGuestID();
+    const URL = environment.paths.base_api+guestID+environment.paths.migrateGuest;
     const hashPassword = crypto.SHA256(password).toString();
     const body = {
-      "name": user,
+      "username": user,
       "email": email,
       "password": hashPassword
     };
@@ -247,7 +259,7 @@ export class AuthService {
           console.log(res);
           (await (this.toastServ.setToast('Successfull registration','success',600))).present();
           this.setUserIntoStorage(user, email, password, gender);
-          
+          this.logoutUser();
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

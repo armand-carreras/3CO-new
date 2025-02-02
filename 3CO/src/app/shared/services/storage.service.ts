@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { User } from '../models/user';
 import { Product, Review } from '../models/product';
 import { Device } from '@capacitor/device';
 

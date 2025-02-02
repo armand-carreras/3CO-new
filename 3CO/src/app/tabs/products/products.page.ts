@@ -219,8 +219,9 @@ export class ProductsPage implements OnInit {
     this.subscriptions.forEach((sub)=>sub.unsubscribe());
   }
 
-  private goToRegister() {
-    this.router.navigate(['/auth/register']);
+  private goToMigrate() {
+    this.authServ.logoutUser();
+    this.router.navigate(['/auth/migrate-user']);
   }
 
   private async presentAlert() {
@@ -228,9 +229,9 @@ export class ProductsPage implements OnInit {
       header: 'Become a user?',
       message: 'To benefit of all features from 3CO please register as user.',
       buttons: [{
-        text: 'Register',
+        text: 'Migrate to User',
         handler: (()=>{
-          this.goToRegister();
+          this.goToMigrate();
         })
       }],
     });

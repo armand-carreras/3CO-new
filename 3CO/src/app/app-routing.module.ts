@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { tabsDeactivateGuard } from './shared/guards/tabs-deactivate.guard';
+import { authGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -9,11 +10,11 @@ const routes: Routes = [
   },
   {
     path: 'tabs',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
-    canDeactivate: [tabsDeactivateGuard]
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
     path: 'auth',
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -41,6 +42,12 @@ const routes: Routes = [
         loadChildren: () => 
           import('./auth/account-validator/account-validator.module').then(
             m => m.AccountValidatorPageModule)
+      },
+      {
+        path: 'migrate-user',
+        loadChildren: () => 
+          import('./auth/migrate-user/migrate-user.module').then(
+            m => m.MigrateUserPageModule)
       }
     ],
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -15,6 +15,7 @@ export class RegisterPage implements OnInit {
   public password: string = '';
   public repassword: string = '';
   public gender: string = 'none';
+
 
   constructor(private router: Router,
     private authServ: AuthService,
@@ -35,7 +36,7 @@ export class RegisterPage implements OnInit {
   public async register() {
     try {
       await this.authServ.register(this.name, this.email, this.password, this.gender);
-      this.router.navigate(['auth/account-validation'], {queryParams: {email: this.email} });
+      this.router.navigate(['auth/account-validator'], {queryParams: {email: this.email} });
     } catch(e) {
       console.error('Something went wrong during register phase. --authServ.register ');
       
