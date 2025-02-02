@@ -27,7 +27,7 @@ export class CameraService {
 
   public async checkAndRequestPermissions(): Promise<PermissionStatus> {
     const permission = await Camera.checkPermissions();
-    if(permission.camera === 'denied') {
+    if(permission.camera !== 'granted') {
       return await Camera.requestPermissions();
     }
     return permission;
