@@ -23,7 +23,7 @@ export class PhotoHandlingService {
     if (isGuest) {
       const guestID = await this.storage.getGuestID();
       formData.append('guest', 'true')
-      formData.append('name', guestID);
+      formData.append('guest_name', guestID);
     }
   
     const headers: any = {

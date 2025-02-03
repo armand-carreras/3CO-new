@@ -228,17 +228,18 @@ export class AuthService {
 
 
   /**
-     * @description  Register for users
+     * @description  Migration process from guest to User
      * @method POST
-     * @param user Username of the user
+     * @param username Username of the user
      * @param email Email of the user
      * @param password Password of the user
      */
   public async migrateGuest(user: string, email: string, password: string, gender?: string): Promise<any> {
     const guestID = await this.storage.getGuestID();
-    const URL = environment.paths.base_api+guestID+environment.paths.migrateGuest;
+    const URL = environment.paths.base_api+"guest"+environment.paths.migrateGuest;
     const hashPassword = crypto.SHA256(password).toString();
     const body = {
+      "guest": guestID,
       "username": user,
       "email": email,
       "password": hashPassword
@@ -322,7 +323,7 @@ export class AuthService {
     const body = {
       name: guestName
     };
-    const URL = environment.paths.base_api+environment.paths.guest;
+    const URL = environment.paths.base_api+'guest';
 
     return firstValueFrom(this.http.post(
       URL,
