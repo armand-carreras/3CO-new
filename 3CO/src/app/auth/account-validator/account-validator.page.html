@@ -44,7 +44,13 @@
     </ion-col>
   </ion-row>
 
-  <ion-row class="ion-align-items-center ion-justify-content-center">
+  <ion-row>
+    <ion-col>
+      <ion-button style="margin-top: 1.5rem;" size="small" shape="outline" [disabled]="!canResend" (click)="resendCode()">Resend Code <ion-note *ngIf="!canResend"> ({{ countdown }}s)</ion-note></ion-button>
+    </ion-col>
+  </ion-row>
+  
+  <ion-row style="width: 100%;" class="ion-align-items-center ion-justify-content-center">
     <ion-col>
       <div class="links-container">
         <a href="auth/login">Login</a>

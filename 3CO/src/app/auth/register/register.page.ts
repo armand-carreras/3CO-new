@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { TermsAndConditionsComponent } from 'src/app/shared/components/terms-and-conditions/terms-and-conditions.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -19,7 +21,7 @@ export class RegisterPage implements OnInit {
 
   constructor(private router: Router,
     private authServ: AuthService,
-    private userServ: UserService
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -32,6 +34,14 @@ export class RegisterPage implements OnInit {
   startAsGuest() {
     this.router.navigateByUrl('/tabs')
   }
+
+  async openTermsModal() {
+        const modal = await this.modalController.create({
+          component: TermsAndConditionsComponent,
+        });
+    
+        return await modal.present();
+      }
 
   public async register() {
     try {

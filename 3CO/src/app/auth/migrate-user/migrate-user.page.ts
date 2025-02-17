@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { TermsAndConditionsComponent } from 'src/app/shared/components/terms-and-conditions/terms-and-conditions.component';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
@@ -17,7 +19,8 @@ export class MigrateUserPage implements OnInit {
    
    
      constructor(private router: Router,
-       private authServ: AuthService
+       private authServ: AuthService,
+       private modalController: ModalController
      ) { }
    
      ngOnInit() {
@@ -33,9 +36,17 @@ export class MigrateUserPage implements OnInit {
          await this.authServ.migrateGuest(this.name, this.email, this.password);
          this.router.navigate(['auth/login'], {queryParams: {email: this.email, password: this.password} });
        } catch(e) {
-         console.error('Something went wrong during migrateUser phase. --authServ.migrateUser ');
+         console.error('Something went wrong during migrateUser phase. --authServ.migrateUser ', e);
          
        }
      }
+
+     async openTermsModal() {
+      const modal = await this.modalController.create({
+        component: TermsAndConditionsComponent,
+      });
+  
+      return await modal.present();
+    }
 
 }

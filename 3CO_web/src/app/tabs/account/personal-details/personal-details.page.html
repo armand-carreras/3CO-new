@@ -1,0 +1,84 @@
+<ion-content>
+
+  
+  <ng-container *ngIf="!editMode else editTemplate">
+    
+    <div class="top-toolbar">
+      <ion-button fill="clear" (click)="goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+      <ion-title color="primary">Profile</ion-title>
+      <ion-fab-button size="small" color="transparent" (click)="edit()">
+        <ion-icon color="tertiary" name="create-outline"></ion-icon>
+      </ion-fab-button>
+    </div>
+    
+    <div class="profile-info-container">
+    
+      <div class="user-image-container">
+        <img [src]=user.avatarImg>
+      </div>
+
+      <div class="profile-info">
+        <div class="info-piece">
+          <ion-text color="primary">Name</ion-text>
+          <div class="var-container"> <ion-note color="secondary">{{user.name}}</ion-note></div>
+        </div>
+        <div class="info-piece">
+          <ion-text color="primary">Email</ion-text>
+          <div class="var-container"><ion-note color="secondary">{{user.email}}</ion-note></div>
+        </div>
+      </div>
+
+      <div class="account-management-container">
+        <ion-button (click)="logout()" shape="round" color="tertiary">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </ion-button>
+        <ion-button [disabled]="true" href="auth/" shape="round" color="danger">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+
+</ion-content>
+
+
+
+<ng-template #editTemplate>
+
+  <div class="top-toolbar">
+    <ion-button fill="clear" (click)="editMode = !editMode"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    <ion-title color="primary">Edit Profile</ion-title>
+    <ion-button size="small" color="tertiary" fill="clear" (click)="done()">
+      Done
+    </ion-button>
+  </div>
+  
+  <div class="profile-info-container">
+  
+    <div class="user-image-container">
+      <img [src]=user.avatarImg>
+    </div>
+
+    <div class="profile-info">
+      <div class="info-piece">
+        <ion-input fill="outline" shape="round" type="text" labelPlacement="stacked" label="Name" [(ngModel)]="newName"></ion-input>
+      </div>
+      <div class="info-piece">
+        <ion-input [disabled]="true" fill="outline" shape="round" type="email" labelPlacement="stacked" label="Email" [(ngModel)]="newEmail"></ion-input>
+      </div>
+      <div class="info-piece">
+        <ion-input fill="outline" shape="round" type="password" labelPlacement="stacked" label="Password" [(ngModel)]="newPassword">
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </div>
+    </div>
+
+
+  </div>
+  
+ 
+
+</ng-template>

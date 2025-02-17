@@ -6,15 +6,11 @@
     
     <div class="input-container">
       <ion-text class="padding-bottom"><h3><strong>Sign Up</strong></h3></ion-text>
-      <br>
       <ion-input class="padding-bottom" [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder="Enter name" ></ion-input>
-      <br>
       <ion-input class="padding-bottom" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
-      <br>
       <ion-input class="padding-bottom" [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Enter password">
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
-      <br>
       <ion-input class="padding-bottom" [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Re-enter password">
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
@@ -27,6 +23,9 @@
       </ion-radio-group>
       <br>
       <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="register()">Sign Up</ion-button>
+      <ion-note style="width: 100%;
+      font-size: .75rem;
+      text-align: center;">By migrating to user, you accept the <a (click)="openTermsModal()">Terms & Conditions</a></ion-note>
       <br>
       <div class="links-container">
         Already have an account. <a href="auth/login">Sign In</a>

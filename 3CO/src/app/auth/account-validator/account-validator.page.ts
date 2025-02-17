@@ -5,6 +5,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonInput, ViewDidEnter } from '@ionic/angular';
 import { InputInputEventDetail, IonInputCustomEvent, PredefinedColors } from '@ionic/core';
+import { firstValueFrom, interval, Subscription } from 'rxjs';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { environment } from 'src/environments/environment';
 
@@ -22,12 +24,16 @@ export class AccountValidatorPage implements OnInit, ViewDidEnter {
   toastMessage: string | null = null;
   inputs: string[] = new Array(6).fill('');
   validationForm: FormGroup;
+  canResend: boolean = true;
+  countdown = 0;
+  private countdownSubscription?: Subscription;
 
   constructor(
     private http: HttpClient,
     private toastController: ToastService,
     private router: Router,
     private fb: FormBuilder,
+    private authServ: AuthService,
     private activatedRoute: ActivatedRoute
   ) {
     this.validationForm = this.fb.group({
@@ -143,6 +149,37 @@ export class AccountValidatorPage implements OnInit, ViewDidEnter {
       },
     });
   }
+
+  public async resendCode() {
+    if(!this.canResend) {
+      return;
+    }
+    if(this.email) {
+      await this.authServ.resendValidationCode(this.email).subscribe({
+        next: (response: any) => {
+          this.showToast('Validation code sent, check spam folders', 'success');
+          this.startCountdown();
+        }
+      });
+    } else {
+      await this.showToast('Please Log In again', 'warning');
+      this.router.navigateByUrl('/auth/login', {replaceUrl: true});
+    }
+  }
+
+  private startCountdown() {
+    this.canResend = false;
+    this.countdown = 60;
+
+    this.countdownSubscription = interval(1000).subscribe(() => {
+      this.countdown--;
+      if (this.countdown <= 0) {
+        this.canResend = true;
+        this.countdownSubscription?.unsubscribe();
+      }
+    });
+  }
+
 
   private async showToast(message: string, color: PredefinedColors) {
     const toast = await this.toastController.presentAutoDismissToast(message, color, 1000);

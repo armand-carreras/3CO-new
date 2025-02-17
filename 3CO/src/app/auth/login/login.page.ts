@@ -160,8 +160,8 @@ export class LoginPage implements OnInit, ViewDidEnter {
         if (email && password) {
           this.email = email;
           this.password = password;
-          const alert = await this.openModalAndAskIfUserWantsToRememberTheLogin();
-          await alert.onDidDismiss();
+          //const alert = await this.openModalAndAskIfUserWantsToRememberTheLogin();
+          //await alert.onDidDismiss();
           await this.login();
         }
       } else {

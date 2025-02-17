@@ -1,0 +1,19 @@
+h1, h2 {
+    color: #2C3E50;
+}
+p {
+    margin-bottom: 15px;
+}
+
+.title {
+    width: 100%;
+    height: auto;
+    display: flex;
+    padding: 1rem;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    ion-button {
+        margin-left: auto;
+    }
+}

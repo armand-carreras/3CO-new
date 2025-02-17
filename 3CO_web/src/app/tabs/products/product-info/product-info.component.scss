@@ -1,0 +1,126 @@
+.header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding:0.5rem 1rem;
+        .main-img{
+            width: 15%;
+            height: auto;
+        }
+    }
+
+    .top-info{
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        app-rating {
+            width: 5rem;
+        }
+    }
+.product-container {
+    width: 94%;
+    height: 85vh;
+    max-height: 95%;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 1rem;
+    background-color: var(--ion-card-background);
+    overflow: scroll;
+    margin: auto;
+
+
+    .product-img-contianer{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 80%;
+        }
+    }
+
+    .shop-category-info {
+        width: 90%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .reviews-title {
+        width: 90%;
+        height: auto;
+        display: flex;
+        margin-top: 1rem;
+        margin-bottom: .5rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+}
+
+.review-poster {
+    margin-top: 2rem;
+    max-height: 80vh;
+    overflow: scroll;
+}
+
+.reviews-container{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+.single-review-container {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px solid var(--ion-color-primary-shade);
+    border-radius: 1rem;
+    margin-bottom: 0.5rem;
+}
+.user-info-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    app-rating{
+        width: 5rem;
+    }
+}
+.review-info-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    img{
+        width: 4rem;
+    }
+}
+.review-description {
+    margin-left: 1rem;
+    width: -webkit-fill-available;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+}

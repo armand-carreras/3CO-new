@@ -1,0 +1,118 @@
+<ion-content>
+  
+  <div class="label-list-container">
+
+    <div class="header">
+        <img (click)="goToMainPage()" class="main-img" src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
+    
+      <ion-chip (click)="goToProfile()">
+        <ion-avatar >
+          <img [src]="user.avatarImg" alt="3-CO">
+        </ion-avatar>
+        <ion-text>
+          {{user.name}}
+        </ion-text>
+      </ion-chip>
+    </div>
+
+    <div class="title-container">
+
+      <ion-button (click)="goToMainPage()" fill="clear">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+
+      <ion-text color="secondary">
+        <h2>Explore Labels</h2>
+      </ion-text>
+    
+    
+    </div>
+
+    <!-- <ng-container *ngIf="!isLabelSelected else moreInfo"> -->
+
+      <div class="searchbar-filter">
+      <ion-searchbar placeholder="Search by name or keyword" show-clear-button="always" [debounce]="600" (ionInput)="handleSearchBarInput($event)"></ion-searchbar>
+        <ion-button size="small" shape="outline" fill="transparent" (click)="toggleFilter()">
+          <ion-icon name="filter-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="all-categories-container">
+        <div *ngFor="let category of categories" class="category-container">
+          <!-- Check if groupedLabels[category.name] is defined before iterating -->
+          <ng-container *ngIf="!isGroupCategoryEmpty(category.name)">
+            <ion-text class="category-title"><h3>{{ category.name }}</h3></ion-text>
+          
+            <div class="label-box-container">
+              <div *ngFor="let label of groupedLabels[category.name]" (click)="showMoreLabelInfo(label)" class="label-box">
+                <img *ngIf="label.logo" [src]="label.logo" [alt]="label.name" />
+                <ion-text>
+                  {{ label.name }}
+                </ion-text>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <!-- Display Spinner if No Categories are Available -->
+        <ion-spinner *ngIf="!groupedLabels" name="lines-sharp"></ion-spinner>
+      </div>
+    
+    <!-- </ng-container> -->
+
+  </div>
+
+  <ion-modal #modal [isOpen]="isModalOpen" (ionModalDidDismiss)="onWillDismiss($event)" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+    <ng-template>
+        
+        <div class="ion-modal-block">
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button color="medium" (click)="clearFilters()">Clear</ion-button>
+              </ion-buttons>
+              <ion-title >Filters</ion-title>
+              <ion-buttons slot="end">
+                <ion-button color="primary" (click)="applyFilters()">Apply</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          
+          <div class="filter-container">
+            <ion-text><h4><strong>Shapes</strong></h4></ion-text>
+            <div class="shapes-container">
+              <ion-chip *ngFor="let shape of shapes" [ngClass]="{'selected': selectedShapes.includes(shape)}" (click)="toggleSelection(shape, 'shapes')">
+                <div [ngClass]="shape" class="shape-icon"></div>
+              </ion-chip>
+            </div>
+          </div>
+
+          <div class="filter-container">
+            <ion-text><h4><strong>Colours</strong></h4></ion-text>
+            <div class="colours-container">
+              <ion-chip *ngFor="let color of colours" [ngClass]="{'selected': selectedColours.includes(color)}" (click)="toggleSelection(color, 'colours')">
+                <div [ngStyle]="getColorBackground(color)" class="color-circle"></div>
+                <ion-text style="padding-left: .5rem;">{{color}}</ion-text>
+              </ion-chip>
+            </div>
+          </div>
+
+          <div class="filter-container">
+            <ion-text><h4><strong>Categories</strong></h4></ion-text>
+            <div class="categories-container">
+              <ion-chip *ngFor="let category of categories" [ngClass]="{'selected': selectedCategories.includes(category.name)}" (click)="toggleSelection(category.name, 'categories')">
+                <ion-icon [name]="category.icon"></ion-icon>
+                <ion-text>{{ category.name }}</ion-text>
+              </ion-chip>
+            </div>
+          </div>
+
+        </div>
+
+    </ng-template>
+  </ion-modal>
+
+</ion-content>
+
+<!-- <ng-template #moreInfo>
+  <app-more-info [label]="selectedLabel" (deselectLabel)="dismissMoreInfo($event)"></app-more-info>
+</ng-template> -->

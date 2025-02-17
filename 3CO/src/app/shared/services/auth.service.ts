@@ -277,7 +277,38 @@ export class AuthService {
   }
 
 
+  /**
+     * @description  Login for users
+     * @method POST
+     * @param email Email of the user
+     * @param password Password of the user
+     */
+  public resendValidationCode(email: string) {
+    const URL = `${environment.paths.base_api}resend_validation_code`;
+    const body = { email: email };
 
+    return this.http.post(
+      URL,
+      body,
+      { headers: this.postHeaders }
+    ).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let message = '';
+        if (error.status === 404) {
+          message = 'Email not found';
+          this.toastServ.presentAutoDismissToast(message, 'danger');
+        } else if (error.status === 500) {
+          message = 'Internal server error. Please try again later.';
+          this.toastServ.presentAutoDismissToast(message, 'danger');
+        } else {
+          message = 'An unexpected error occurred.';
+          this.toastServ.presentAutoDismissToast(message, 'danger');
+        }
+        // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+        return throwError(() => new Error(message));
+      })
+    );
+  }
 
 
   public async recover(email: string) {
