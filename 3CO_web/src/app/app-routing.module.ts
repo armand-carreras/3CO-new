@@ -12,46 +12,6 @@ const routes: Routes = [
     path: 'tabs',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
-  {
-    path: 'auth',
-    canActivate: [authGuard],
-    children: [
-      {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full',
-      },
-      {
-        path: 'login',
-        loadChildren: () =>
-          import('./auth/login/login.module').then(m => m.LoginPageModule),
-      },
-      {
-        path: 'register',
-        loadChildren: () =>
-          import('./auth/register/register.module').then(m => m.RegisterPageModule),
-      },
-      {
-        path: 'password-recovery',
-        loadChildren: () =>
-          import('./auth/password-recovery/password-recovery.module').then(
-            m => m.PasswordRecoveryPageModule),
-      },
-      {
-        path: 'account-validator',
-        loadChildren: () => 
-          import('./auth/account-validator/account-validator.module').then(
-            m => m.AccountValidatorPageModule)
-      },
-      {
-        path: 'migrate-user',
-        loadChildren: () => 
-          import('./auth/migrate-user/migrate-user.module').then(
-            m => m.MigrateUserPageModule)
-      }
-    ],
-
-  },
 
 ];
 @NgModule({

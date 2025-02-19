@@ -94,10 +94,6 @@ export class LabelsPage implements OnInit, ViewWillEnter {
   }
 
 
-  public scan() {
-    this.router.navigate(['tabs/labels/detection']);
-  }
-
   public dismissResultModal() {
     this.isResultModalOpen = false;
   }

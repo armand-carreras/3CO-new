@@ -12,9 +12,6 @@ const routes: Routes = [
   {
     path: 'label-list',
     component: LabelsListComponent
-  },  {
-    path: 'detection',
-    loadChildren: () => import('./detection/detection.module').then( m => m.DetectionPageModule)
   }
 
 ];
