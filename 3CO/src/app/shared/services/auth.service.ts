@@ -81,8 +81,10 @@ export class AuthService {
   public setAsLoggedIn() {
     this.userLoggedIn = true;
   }
-  public logoutUser() {
+  public async logoutUser() {
     this.userLoggedIn = false;
+    this.userService.setAsGuest();
+    await this.setAsGuest();
   }
 
 

@@ -74,6 +74,14 @@ export class UserService {
   
   public setAsGuest() {
     this.isGuest = true;
+    this.user.next({
+      avatarImg: '/assets/avatar/unisex_avatar.png',
+      email: 'guest@3co.com',
+      name: 'Guest User',
+      password: '',
+      scans: 0,
+      rewards: 0
+    });
   }
   public setAsNoGuest() {
     this.isGuest = false;

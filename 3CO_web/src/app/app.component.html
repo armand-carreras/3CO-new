@@ -1,4 +1,29 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
-  
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <ion-list id="inbox-list">
+
+          <ion-list-header style="margin-bottom: 1rem; padding-right: 1rem;"><img style="width: 2rem; margin-right: auto;" src="assets/3CO/3_CO_sin_letras.png">3CO</ion-list-header>
+          <ion-note style="width: 100%;
+          padding-right: 1rem;
+          text-align: right;">Concise Consumer Communication</ion-note>
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" routerLink="labels" lines="none" detail="false" routerLinkActive="selected">
+                <ion-icon aria-hidden="true" slot="start" name="bookmark-outline"></ion-icon>
+                <ion-label>Label Certifications</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" routerLink="learn" lines="none" detail="false" routerLinkActive="selected">
+                <ion-icon aria-hidden="true" slot="start" name="school-outline"></ion-icon>
+                <ion-label>Learn</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+        </ion-list>
+
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

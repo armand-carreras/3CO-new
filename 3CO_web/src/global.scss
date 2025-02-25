@@ -33,18 +33,5 @@
  */
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
-@import "@ionic/angular/css/palettes/dark.class.css";
-//@import "@ionic/angular/css/palettes/dark.system.css";
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
-.no-padding {
-    padding: 0;
-}
-.no-margin {
-    margin: 0;
-}
-
-ion-content::part(scroll) {
-    padding-top: var(--ion-safe-area-top, 0);
-}
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";

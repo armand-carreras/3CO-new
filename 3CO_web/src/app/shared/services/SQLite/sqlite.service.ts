@@ -1,68 +1,69 @@
 import { Injectable } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
-import { CapacitorSQLite, CapacitorSQLitePlugin, capSQLiteUpgradeOptions, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
-
+import SQLiteESMFactory from 'wa-sqlite/dist/wa-sqlite.mjs';
+import * as SQLite from 'wa-sqlite';
 
 @Injectable()
 
 export class SQLiteService {
-  sqliteConnection!: SQLiteConnection;
-  isService: boolean = false;
-  platform!: string;
-  sqlitePlugin!: CapacitorSQLitePlugin;
-  native: boolean = false;
+    private sqlite3: any;
+  private db: any;
+
   constructor() {
-  }
-  /**
-   * Plugin Initialization
-   */
-  async initializePlugin(): Promise<boolean> {
-          this.platform = Capacitor.getPlatform();
-          if(this.platform === 'ios' || this.platform === 'android') this.native = true;
-          this.sqlitePlugin = CapacitorSQLite;
-          this.sqliteConnection = new SQLiteConnection(this.sqlitePlugin);
-          this.isService = true;
-          return true;
+    this.initializeDatabase();
   }
 
-  async initWebStore(): Promise<void> {
-      try {
-      await this.sqliteConnection.initWebStore();
-      } catch(err: any) {
-      const msg = err.message ? err.message : err;
-      return Promise.reject(`initWebStore: ${err}`);
-      }
+  private async initializeDatabase() {
+    // Wait for the SQLite Emscripten module to be ready.
+    const module = await SQLiteESMFactory();
+
+    // Use the module to build the SQLite API instance.
+    this.sqlite3 = SQLite.Factory(module);
+
+    // Open the database asynchronously.
+    try {
+      this.db = await this.sqlite3.open_v2('assets/databases/ecodatabase.db');
+      console.log('Database opened successfully!');
+    } catch (error) {
+      console.error('Failed to open database:', error);
+    }
   }
 
-  async openDatabase(dbName:string, encrypted: boolean, mode: string, version: number, readonly: boolean): Promise<SQLiteDBConnection> {
-      let db: SQLiteDBConnection;
-      if(this.native) await this.sqliteConnection.copyFromAssets();
-      const retCC = (await this.sqliteConnection.checkConnectionsConsistency()).result;
-      let isConn = (await this.sqliteConnection.isConnection('ecodatabase.db', readonly)).result;
-      if(retCC && isConn) {
-          db = await this.sqliteConnection.retrieveConnection('ecodatabase.db', readonly);
-      } else {
-          db = await this.sqliteConnection
-                  .createConnection('ecodatabase.db', encrypted, mode, version, readonly);
+  public async queryDatabase(query: string, params: any[] = []) {
+    try {
+      // Create a statement using the query
+      const stmt = await this.db.prepare(query);
+
+      // Bind parameters to the statement if necessary
+      params.forEach((param, index) => {
+        stmt.bind(index + 1, param);
+      });
+
+      // Execute the statement and get the result
+      const result = await stmt.step();
+      let rows: any = [];
+
+      // Extract rows from the result
+      for (let i = 0; i < result.length; i++) {
+        rows.push(result.row(i));  // Assuming each row is an object
       }
-      await db.open();
+
+      // Finalize the statement to release resources
+      await stmt.finalize();
       
-      return db;
-  }
-  async retrieveConnection(dbName: string, readonly: boolean): Promise<SQLiteDBConnection> {
-      return await this.sqliteConnection.retrieveConnection(dbName, readonly);
-  }
-  async closeConnection(database: string, readonly?: boolean): Promise<void> {
-      const readOnly = readonly ? readonly : false;
-      return await this.sqliteConnection.closeConnection(database, readOnly);
-  }
-  async addUpgradeStatement(options: capSQLiteUpgradeOptions): Promise<void> {
-      await this.sqlitePlugin.addUpgradeStatement(options);
-      return;
-  }
-  async saveToStore(database: string) : Promise<void> {
-      return await this.sqliteConnection.saveToStore(database);
+      return rows;
+    } catch (error) {
+      console.error('Query failed:', error);
+      throw error;
+    }
   }
 
+  public async closeDatabase() {
+    try {
+      await this.sqlite3.close(this.db);
+      console.log('Database closed successfully!');
+    } catch (error) {
+      console.error('Failed to close database:', error);
+    }
+  }
 
 }

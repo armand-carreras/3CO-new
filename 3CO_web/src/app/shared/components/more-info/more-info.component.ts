@@ -6,6 +6,7 @@ import { Label } from 'src/app/shared/models/label';
   selector: 'app-more-info',
   templateUrl: './more-info.component.html',
   styleUrls: ['./more-info.component.scss'],
+  standalone: false
 })
 export class MoreInfoComponent  implements OnInit {
 

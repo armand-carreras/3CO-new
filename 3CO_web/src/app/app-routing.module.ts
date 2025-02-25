@@ -1,19 +1,22 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { tabsDeactivateGuard } from './shared/guards/tabs-deactivate.guard';
-import { authGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
   {
-    path:'',
-    loadChildren: () => import('./start-screen/start-screen.module').then(m => m.StartScreenPageModule)
+    path: '',
+    redirectTo: 'labels',
+    pathMatch: 'full'
   },
   {
-    path: 'tabs',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    path: 'labels',
+    loadChildren: () => import('./labels/labels.module').then( m => m.LabelsPageModule)
   },
-
+  {
+    path: 'learn',
+    loadChildren: () => import('./learn/learn.module').then( m => m.LearnPageModule)
+  }
 ];
+
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })

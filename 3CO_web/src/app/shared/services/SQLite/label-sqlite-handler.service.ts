@@ -1,4 +1,3 @@
-import { SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { Injectable} from '@angular/core';
 import { SQLiteService } from './sqlite.service';
 import { DbnameVersionService } from './dbname-version.service';
@@ -18,7 +17,6 @@ export class LabelSQLiteHandlerService {
   private uUpdStmts: UserUpgradeStatements = new UserUpgradeStatements();
   private versionUpgrades;
   private loadToVersion;
-  private db!: SQLiteDBConnection;
   private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(private sqliteService: SQLiteService,
@@ -44,13 +42,6 @@ export class LabelSQLiteHandlerService {
         .addUpgradeStatement({  database: this.databaseName,
                                 upgrade: this.versionUpgrades}); */
         // create and/or open the database
-        this.db = await this.sqliteService.openDatabase(
-                                            this.databaseName,
-                                            false,
-                                            'no-encryption',
-                                            this.loadToVersion,
-                                            false
-        );
         this.dbVerService.set(this.databaseName,this.loadToVersion);
         await this.getRandomLabel();
         await this.getAll();
@@ -64,7 +55,7 @@ export class LabelSQLiteHandlerService {
     
 
   async loadAll() {
-    const results = (await this.db.query('SELECT * FROM labelsBase64')).values;
+    const results = (await this.sqliteService.queryDatabase('SELECT * FROM labelsBase64'));
     const labels = results ? await this.parseLabels(results) : [];
     this.allList.next(labels);
   }
@@ -76,18 +67,10 @@ export class LabelSQLiteHandlerService {
       this.isAllReady.next(true);
   }
 
-  async updateUserById(id: string, active: number) {
-      const sql = `UPDATE users SET active=${active} WHERE id=${id}`;
-      await this.db.run(sql);
-  }
-  async deleteUserById(id: string) {
-      const sql = `DELETE FROM users WHERE id=${id}`;
-      await this.db.run(sql);
-  }
 
   async getImageById(id: number) {
     const query = `SELECT LOGO FROM labelsBase64 WHERE ID = ${id}`;
-    const result =  ( await this.db.query(query) ).values;
+    const result =  ( await this.sqliteService.queryDatabase(query) );
     if (result && result?.length > 0) {
       console.log('retrieved Image: ', result);
       return `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(result[0])))}`;
@@ -100,28 +83,27 @@ export class LabelSQLiteHandlerService {
         FROM "labelsBase64" d 
         WHERE "NAME" LIKE "%${name}%" OR "KEY WORDS" LIKE "%${name}%";
       `;
-      const results = ( await this.db.query(query) ).values;
+      const results = ( await this.sqliteService.queryDatabase(query) );
       const labels = results ? this.parseLabels(results) : [];
       return labels;
     }
 
     async getFromNamesArray(names: string[]) {
-      // Build the query with multiple LIKE conditions for "NAME" only
-      const conditions = names.map(() => `"NAME" LIKE ?`).join(' OR ');
-  
+      if (!names.length) return []; // Return empty array if no names are provided
+    
+      // Construct the WHERE clause dynamically
+      const conditions = names.map(name => `"NAME" LIKE '%${name}%'`).join(' OR ');
+    
       // Construct the final query
       const query = `SELECT * FROM "labelsBase64" WHERE ${conditions}`;
-  
-      // Prepare parameters: each name needs one entry in the array (for NAME)
-      const params = names.map(name => `%${name}%`);
-  
+    
       // Execute the query
-      const results = (await this.db.query(query, params)).values;
-  
+      const results = await this.sqliteService.queryDatabase(query);
+    
       // Parse the results
-      const labels = results ? this.parseLabels(results) : [];
-      return labels;
-  }
+      return results ? this.parseLabels(results) : [];
+    }
+    
   
   
   
@@ -130,20 +112,20 @@ export class LabelSQLiteHandlerService {
     private async getRandomLabel() {
       const query = `SELECT * FROM "labelsBase64" d ORDER BY random() LIMIT 1;`;
       console.log('QUERY;', query);
-      const results = ( await this.db?.query(query) )?.values;
+      const results = ( await this.sqliteService?.queryDatabase(query) );
       const labels = results ? await this.parseLabels(results) : [];
       this.randomLabel.next(labels);
     }
 
     async getFilteredLabels(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]) {
       const query = this.generateSQLQuery(selectedShapes, selectedColours, selectedCategories);
-      const results = ( await this.db.query(query) ).values;
+      const results = ( await this.sqliteService.queryDatabase(query) );
       const labels = results ? this.parseLabels(results) : [];
       return labels;
     }
 
     private generateSQLQuery(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]): string {
-      let conditions = [];
+      let conditions: any = [];
 
       // Add shape conditions if any shapes are selected
       if (selectedShapes?.length > 0) {
@@ -306,7 +288,7 @@ export class LabelSQLiteHandlerService {
 
   async getLabels() {
     const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "labelsBase64" d');
-    console.log(sqliteValues.values);
+    console.log(sqliteValues);
   }
 
 
