@@ -170,7 +170,35 @@ export class AuthService {
 
 
 
-
+public async deleteUser() {
+    const token = await this.storage.getToken();
+    if(token) {
+      const heads: HttpHeaders = new HttpHeaders()
+        .append('Authorization', `Bearer ${token}`)
+      await firstValueFrom(
+        this.http.delete(
+          `${environment.paths.base_api}${environment.paths.post_get_user}`,
+          {headers: heads}
+        ).pipe(
+          tap(async (res) => {
+            console.log(res);
+            await this.toastServ.presentAutoDismissToast('Account Deleted', 'success');
+          }),
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 401) {
+              this.toastServ.presentAutoDismissToast('Unauthorized access. Please log in again.', 'danger');
+            } else if (error.status === 500) {
+              this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+            } else {
+              this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+            }
+            // Re-throw the error so it can still be handled by other parts of the code, if necessary.
+            return throwError(() => new Error(error.error.message));
+          })
+        )
+      );
+    }
+  }
 
 
 
@@ -349,6 +377,8 @@ export class AuthService {
     )).finally(()=>loader.dismiss());
   }
 
+
+  
 
 
   private async setGuestInServer() {

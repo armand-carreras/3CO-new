@@ -70,7 +70,8 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
     this.router.navigate(['/auth']);
   }
   
-  public delete() {
+  public async deleteAccount() {
+    await this.authServ.deleteUser().then(()=>this.router.navigateByUrl('auth/login', {replaceUrl: true}));
 
   }
 
