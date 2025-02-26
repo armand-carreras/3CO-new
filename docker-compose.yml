@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  3coweb:
+    build:
+      context: ./3CO_web  # Path to Ionic app
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - node-server
+
+  node-server:
+    build:
+      context: ./DB_Server # Path to Node.js server
+    volumes:
+      - ./DB_Server/db:/usr/src/app/db
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

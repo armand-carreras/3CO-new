@@ -1,0 +1,24 @@
+# Use an official Node.js runtime as a parent image
+FROM node:16
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app/db
+
+# Copy package.json and package-lock.json
+COPY ./server/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the server files
+COPY ./server/server.js ./
+
+# Copy the SQLite database
+COPY ./db/ecodatabase.db /usr/src/app/db/ecodatabase.db
+
+# Expose the port your server will listen to
+EXPOSE 3000
+
+# Start the Node.js server
+CMD ["node", "server.js"]

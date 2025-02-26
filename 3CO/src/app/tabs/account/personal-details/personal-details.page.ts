@@ -1,7 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ViewWillEnter } from '@ionic/angular';
+import { AlertController, LoadingController, ViewWillEnter } from '@ionic/angular';
 import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
@@ -25,6 +25,7 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
     private userServ: UserService,
     private loaderServ: LoadingController,
     private toastService: ToastService,
+    private alertService: AlertController,
     private authServ: AuthService,
     private router: Router) { }
 
@@ -34,6 +35,12 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
   ionViewWillEnter(): void {
     this.setUser(this.userServ.getUserValue());
   }
+
+
+  get isUserGuest(): boolean {
+    return this.authServ.isUserGuest;
+  }
+
 
   public async edit() {
 
@@ -71,8 +78,28 @@ export class PersonalDetailsPage implements OnInit, ViewWillEnter {
   }
   
   public async deleteAccount() {
-    await this.authServ.deleteUser().then(()=>this.router.navigateByUrl('auth/login', {replaceUrl: true}));
+    const alert = await this.alertService.create({
+      message: 'Are you sure you want to delete your 3CO account?',
+      buttons:[
+        {text:'Yes',
+          handler:(()=>{
+            this.deleteUserAccount();
+          }
+        )},
+        {text: 'No', role:'cancel'}
+      ],
+    });
+    await alert.present();
 
+  }
+
+
+  private async deleteUserAccount() {
+    await this.authServ.deleteUser()
+      .then(()=>{
+        this.authServ.logoutUser();
+        this.router.navigateByUrl('/auth', {replaceUrl: true})
+      });
   }
 
   private setUser( user: User ) {

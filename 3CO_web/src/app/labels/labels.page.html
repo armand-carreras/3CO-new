@@ -49,7 +49,7 @@
 
         
         <div class="labels-container">
-          <ng-container *ngIf="featuredLabel!=null else labelLoader">
+          <ng-container *ngIf="featuredLabel$ | async as featuredLabel; else labelLoader">
           <ion-text>
             <h4>Featured Label</h4>
           </ion-text>

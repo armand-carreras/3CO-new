@@ -1,17 +1,25 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { LabelSQLiteHandlerService } from './shared/services/SQLite/label-sqlite-handler.service';
+import { ViewWillEnter } from '@ionic/angular';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: false,
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   
-  currentPage = 'Labels';
+  constructor(private labelService: LabelSQLiteHandlerService) {
+  }
 
-  constructor(private activeRoute: ActivatedRoute) {
-    console.log(activeRoute.pathFromRoot);
+
+  ngOnInit() {
+    /* console.log('initializing DB values');
+    try {
+      await this.labelService.initializeDatabase();
+    } catch(err) {
+      console.error(err);
+    } */
   }
 
 }

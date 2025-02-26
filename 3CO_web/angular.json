@@ -44,8 +44,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "8kb",
+                  "maximumError": "8kb"
                 }
               ],
               "fileReplacements": [
@@ -83,7 +83,7 @@
               "progress": false
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

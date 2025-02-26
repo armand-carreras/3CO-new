@@ -10,7 +10,7 @@ import { LabelsPage } from './labels.page';
 import { MoreInfoLabelsModule } from '../shared/modules/more-info-labels.module';
 import { LabelsListComponent } from './labels-list/labels-list.component';
 import { LabelSQLiteHandlerService } from '../shared/services/SQLite/label-sqlite-handler.service';
-import { SQLiteService } from '../shared/services/SQLite/sqlite.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -20,7 +20,7 @@ import { SQLiteService } from '../shared/services/SQLite/sqlite.service';
     LabelsPageRoutingModule,
     MoreInfoLabelsModule
   ],
-  providers: [LabelSQLiteHandlerService, SQLiteService],
+  providers: [LabelSQLiteHandlerService, provideHttpClient(withInterceptorsFromDi())],
   declarations: [LabelsPage, LabelsListComponent],
   schemas: []
 })

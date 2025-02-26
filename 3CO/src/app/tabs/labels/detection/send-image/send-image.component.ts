@@ -98,7 +98,6 @@ export class SendImageComponent  implements OnInit {
   
       // Extract error message for the toast
       const errorMessage = error.message || 'An unexpected error occurred';
-      this.toastServ.presentAutoDismissToast(`${errorMessage}`, 'danger');
     }
   }
 

@@ -1,159 +1,141 @@
-import { Injectable} from '@angular/core';
-import { SQLiteService } from './sqlite.service';
-import { DbnameVersionService } from './dbname-version.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { UserUpgradeStatements } from './user.upgrade.statements';
+import { Injectable, OnInit} from '@angular/core';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Label } from '../../models/label';
+import { HttpClient } from '@angular/common/http';
+import { ToastService } from '../toast.service';
+import { LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class LabelSQLiteHandlerService {
-  public allList: BehaviorSubject<Label[]> =
-  new BehaviorSubject<Label[]>([]);
-  private randomLabel: BehaviorSubject<Label[]> = new BehaviorSubject<Label[]>([]);
-  private databaseName: string = "";
-  private uUpdStmts: UserUpgradeStatements = new UserUpgradeStatements();
-  private versionUpgrades;
-  private loadToVersion;
+
+  public randomLabel$: BehaviorSubject<Label | null> = new BehaviorSubject<Label | null>(null);
+  
+  private dbReady = new BehaviorSubject<boolean>(false);
+  private apiUrl = 'http://localhost:3000/labels';
+  private allList: BehaviorSubject<Label[]> = new BehaviorSubject<Label[]>([]);
   private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-    constructor(private sqliteService: SQLiteService,
-                private dbVerService: DbnameVersionService) {
-        this.versionUpgrades = this.uUpdStmts.userUpgrades;
-        this.loadToVersion = this.versionUpgrades[this.versionUpgrades.length-1].toVersion;
+    constructor(private http: HttpClient,
+      private loaderController: LoadingController,
+      private toastController: ToastService
+    ) {
+      
     }
 
 
-    get featuredLabel() {
-      return this.randomLabel.getValue();
+    get featuredLabel$(): Observable<Label | null> {
+      return this.randomLabel$.asObservable();
     }
     // Labels Observable
-    get allLabels(): Label[] {
-        return this.allList.getValue();
+    get allLabels(): Observable<Label[]> {
+        return this.allList.asObservable();
+    }
+
+    get dbReady$() {
+      return this.dbReady.asObservable()
     }
 
     
-    async initializeDatabase(dbName: string) {
-        this.databaseName = dbName;
-        // create upgrade statements
-       /*  await this.sqliteService
-        .addUpgradeStatement({  database: this.databaseName,
-                                upgrade: this.versionUpgrades}); */
-        // create and/or open the database
-        this.dbVerService.set(this.databaseName,this.loadToVersion);
-        await this.getRandomLabel();
-        await this.getAll();
+  async initializeDatabase() {
+    const loader = await this.loaderController.create({message: 'Loading information', animated: true});
+    await loader.present();
+    try {
+      await this.loadAll();
+      await this.getRandomLabel();
+      this.dbReady.next(true);
+      console.log(this.dbReady.value);
+    } catch(err) {
+      console.error(err);
+      await this.toastController.presentAutoDismissToast('Error connecting to DB', 'warning');
+    } finally {
+      await loader.dismiss();
     }
-    
-    // Is Labels Get already done?
-    allState() {
-        return this.isAllReady.asObservable();
-    }
+  }
+  
+  // Is Labels Get already done?
+  allState() {
+      return this.isAllReady.asObservable();
+  }
     
     
 
   async loadAll() {
-    const results = (await this.sqliteService.queryDatabase('SELECT * FROM labelsBase64'));
-    const labels = results ? await this.parseLabels(results) : [];
-    this.allList.next(labels);
-  }
-  
-
-  // CRUD Operations
-  async getAll() {
-      await this.loadAll();
-      this.isAllReady.next(true);
-  }
-
-
-  async getImageById(id: number) {
-    const query = `SELECT LOGO FROM labelsBase64 WHERE ID = ${id}`;
-    const result =  ( await this.sqliteService.queryDatabase(query) );
-    if (result && result?.length > 0) {
-      console.log('retrieved Image: ', result);
-      return `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(result[0])))}`;
-    }
-    return null;
-  }
-
-    async getFromNameString(name: string) {
-      const query = `SELECT * 
-        FROM "labelsBase64" d 
-        WHERE "NAME" LIKE "%${name}%" OR "KEY WORDS" LIKE "%${name}%";
-      `;
-      const results = ( await this.sqliteService.queryDatabase(query) );
-      const labels = results ? this.parseLabels(results) : [];
-      return labels;
-    }
-
-    async getFromNamesArray(names: string[]) {
-      if (!names.length) return []; // Return empty array if no names are provided
-    
-      // Construct the WHERE clause dynamically
-      const conditions = names.map(name => `"NAME" LIKE '%${name}%'`).join(' OR ');
-    
-      // Construct the final query
-      const query = `SELECT * FROM "labelsBase64" WHERE ${conditions}`;
-    
-      // Execute the query
-      const results = await this.sqliteService.queryDatabase(query);
-    
-      // Parse the results
-      return results ? this.parseLabels(results) : [];
-    }
-    
-  
-  
-  
-
-
-    private async getRandomLabel() {
-      const query = `SELECT * FROM "labelsBase64" d ORDER BY random() LIMIT 1;`;
-      console.log('QUERY;', query);
-      const results = ( await this.sqliteService?.queryDatabase(query) );
+    try {
+      const results = await firstValueFrom(this.http.get<Label[]>(`${this.apiUrl}`));
       const labels = results ? await this.parseLabels(results) : [];
-      this.randomLabel.next(labels);
+      this.allList.next(labels);
+      this.isAllReady.next(true);
+    } catch (error) {
+      console.error('Error fetching labels:', error);
     }
 
-    async getFilteredLabels(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]) {
-      const query = this.generateSQLQuery(selectedShapes, selectedColours, selectedCategories);
-      const results = ( await this.sqliteService.queryDatabase(query) );
-      const labels = results ? this.parseLabels(results) : [];
+  }
+  
+
+ 
+  async getFromNameString(name: string) {
+    try {
+      const results = await this.http.get<Label[]>(`${this.apiUrl}/search?name=${name}`).toPromise();
+      const labels = results ? await this.parseLabels(results) : [];
       return labels;
+    } catch (error) {
+      console.error('Error searching labels:', error);
+      return [];
     }
+  }
 
-    private generateSQLQuery(selectedShapes: string[], selectedColours: string[], selectedCategories: string[]): string {
-      let conditions: any = [];
-
-      // Add shape conditions if any shapes are selected
-      if (selectedShapes?.length > 0) {
-        let shapeConditions = selectedShapes.map(shape => `"SHAPE" LIKE '%${shape}%'`).join(' OR ');
-        conditions.push(`(${shapeConditions})`);
-      }
-
-      // Add color conditions if any colors are selected
-      if (selectedColours?.length > 0) {
-        let colorConditions = selectedColours.map(color => `"MAIN COLOR" LIKE '%${color}%'`).join(' OR ');
-        conditions.push(`(${colorConditions})`);
-      }
-
-      // Add category conditions if any categories are selected
-      if (selectedCategories?.length > 0) {
-        let categoryConditions = selectedCategories.map(category => `"CATEGORY" LIKE '%${category}%'`).join(' OR ');
-        conditions.push(`(${categoryConditions})`);
-      }
-
-      // Construct the final query
-      let sqlQuery = `
-        SELECT * 
-        FROM "labelsBase64" d 
-        WHERE ${conditions.join(' AND ')};
-      `;
-
-      return sqlQuery;
+  async getFromNamesArray(names: string[]) {
+    if (!names.length) return [];
+    try {
+      const results = await this.http.post<Label[]>(`${this.apiUrl}/search`, { names }).toPromise();
+      const labels = results ? await this.parseLabels(results) : [];
+      return labels;
+    } catch (error) {
+      console.error('Error searching labels:', error);
+      return [];
     }
+  }
+  
+  
+  
+
+
+  async getRandomLabel() {
+    try {
+      const results = await firstValueFrom(this.http.get<Label>(`${this.apiUrl}/random`));
+      const labels = results ? await this.parseLabels([results]) : [];
+      this.randomLabel$.next(labels[0] || null);
+    } catch (err) {
+      console.error('Error fetching random label:', err);
+    }
+  }
+
+  async getFilteredAndSearchedLabels(
+    name: string,
+    selectedShapes: string[],
+    selectedColours: string[],
+    selectedCategories: string[]
+  ) {
+    try {
+      const results = await firstValueFrom(
+        this.http.post<Label[]>(`${this.apiUrl}/filter-and-search`, {
+          name,               // 🔹 Search name
+          selectedShapes,     // 🔹 Filter options
+          selectedColours,    
+          selectedCategories  
+        })
+      );
+  
+      const labels = results ? await this.parseLabels(results) : [];
+      return labels;
+    } catch (error) {
+      console.error('Error filtering and searching labels:', error);
+      return [];
+    }
+  }
 
 
     private async parseLabels(results: any[]): Promise<Label[]> {
@@ -166,9 +148,7 @@ export class LabelSQLiteHandlerService {
         if(res['Siegelklarheit'] && res['Siegelklarheit'] !== 'Not assessed') {
           const splitedRanking = res['Siegelklarheit'].split('\n');
           evaluation = `${splitedRanking[1].split(' ')[1]};${splitedRanking[2].split(' ')[1]};${splitedRanking[3].split(' ')[1]}`;
-        }
-        console.log('---------> Evaluation: ', evaluation);
-        
+        }        
         const newLabel: Label = {
           logo: base64Logo,
           name: res['NAME'],
@@ -191,106 +171,10 @@ export class LabelSQLiteHandlerService {
       return labels;
     }
     
-    /* private async byteArrayToBase64(byteArray: number[]): Promise<string> {
-      const blob = new Blob([new Uint8Array(byteArray)], { type: 'image/jpeg' });
-      return this.blobToBase64(blob);
-    }
 
-    // Helper to convert BLOB to base64
-    private blobToBase64(blob: Blob): Promise<string> {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      }); 
-    }
-    */
-
+    
 
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /* private initPlugin!: boolean;
-  private conn!: SQLiteDBConnection;
-  private connected = false;
-
-
-  constructor(private _sqlite: SQLiteService,
-    private platform: Platform,
-    ) { }
-
-
-  get isConnected(): boolean {
-    return this.connected;
-  }
-
-  get dbConnection(): SQLiteDBConnection {
-    return this.conn;
-  }
-
-  async initializeApp() {
-    await this.platform.ready().then(async () => {
-      await this._sqlite.initializePlugin().then(async ret => {
-        this.initPlugin = ret;
-        console.log('>>>> in App  this.initPlugin ' + this.initPlugin);
-        await this.connectToDBFile();
-      });
-    });
-    await this._sqlite.initWebStore();
-  }
-
-  async connectToDBFile() {
-
-    this.conn = await this._sqlite.('ecodatabase.db',false );
-    if(this.conn) { this.connected=true; }
- 
-  }
-
-
-  // Function to copy the SQLite database file
-  async getDatabaseFile() {
-    const sourcePath = 'assets/3COLabelDatabase/ecodatabase.db'; // Path to your existing SQLite database file
-
-    try {
-        return await Filesystem.getUri({path: sourcePath, directory: Directory.Data});
-    } catch (error) {
-        console.error('Error getting database file uri:', error);
-        return -1;
-    }
-  }
-
-  async getLabels() {
-    const sqliteValues = this._sqlite.sqliteConnection..query('SELECT * FROM "labelsBase64" d');
-    console.log(sqliteValues);
-  }
-
-
-}
- */

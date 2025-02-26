@@ -25,8 +25,8 @@ export class InitializeAppService {
                 const DB = 'ecodatabase.db'
                 if( this.sqliteService.platform === 'web') {
                     await this.sqliteService.initWebStore();
-                    await this.sqliteService.saveToStore(DB);
                     await this.storageService.initializeDatabase(DB);
+                    await this.sqliteService.saveToStore(DB);
                 } else {
                     await this.storageService.initializeDatabase(DB);
                 }

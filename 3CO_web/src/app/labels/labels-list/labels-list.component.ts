@@ -1,11 +1,10 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonModal, ModalController, ViewWillEnter } from '@ionic/angular';
-import { CATEGORIES, ColorList, Label } from 'src/app/shared/models/label';
-import { User } from 'src/app/shared/models/user';
+import { ColorList, Label } from 'src/app/shared/models/label';
 import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
-import { OverlayEventDetail } from '@ionic/core/components';
 import { MoreInfoComponent } from 'src/app/shared/components/more-info/more-info.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -15,7 +14,7 @@ import { MoreInfoComponent } from 'src/app/shared/components/more-info/more-info
   standalone: false
   
 })
-export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
+export class LabelsListComponent  implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
 
   public labelsReady: boolean = false;
@@ -35,6 +34,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
     { name: 'Energy', icon: 'flash-outline' },
     { name: 'Other', icon: 'balloon-outline' }
   ];
+  public searchTerm: string = '';
 
   // Arrays to store selected items
   selectedShapes: string[] = [];
@@ -74,7 +74,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
 
 
   private labels: Label[] = [];
-
+  private labelSubscription!: Subscription;
   private allGroupedLabels = this.groupedLabels;
 
 
@@ -87,23 +87,24 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
     
   }
   
-  get allLabels() {
+  /* get allLabels() {
     return this.labels;
-  }
+  } */
 
   
-  ngOnInit() {
+  async ngOnInit() {
     console.log('NgOnInit labels-init');
-    this.fetchAllLabels();
+    await this.fetchAllLabels();
   }
-  ionViewWillEnter(): void {
-  }
+
+
   ionViewDidEnter() {
     this.modal.dismiss();
     this.modal.willDismiss.subscribe(()=>{this.isModalOpen=false})
   }
   
   ngOnDestroy() {
+    this.labelSubscription?.unsubscribe();
   }
 
   toggleFilter() {
@@ -125,21 +126,32 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
 
 
   public async handleSearchBarInput(ev: any) {
-    if(ev!==''){
-      const labels = await this.labelsService.getFromNameString(ev.detail.value);
-      this.emptyGroupedLabels()
-      this.groupLabelsByCategory(labels, false);
-    } else {
+    this.searchTerm = ev.detail.value; // Store search term
+
+    if (
+      !this.searchTerm && 
+      this.selectedShapes.length === 0 && 
+      this.selectedColours.length === 0 && 
+      this.selectedCategories.length === 0
+  ) {
       this.groupedLabels = this.allGroupedLabels;
-    }
-
+      return;
+  }
+  
+    const labels = await this.labelsService.getFilteredAndSearchedLabels(
+      this.searchTerm || '',
+      this.selectedShapes,
+      this.selectedColours,
+      this.selectedCategories
+    );
+  
+    this.emptyGroupedLabels();
+    this.groupLabelsByCategory(labels, false);
   }
 
-  public goToProfile(){
-    this.router.navigate(['/tabs/account']);
-  }
+  
   public goToMainPage() {
-    this.router.navigate(['/tabs/labels']);
+    this.router.navigate(['/labels']);
   }
 
   public async showMoreLabelInfo(label: Label) {
@@ -207,14 +219,26 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
 
   // Apply filters and close modal
   public async applyFilters() {
-    if(this.selectedCategories?.length>0 || this.selectedColours?.length>0 || this.selectedShapes?.length>0) {
-      const labels = await this.labelsService.getFilteredLabels(this.selectedShapes, this.selectedColours, this.selectedCategories);
-      this.emptyGroupedLabels()
-      this.groupLabelsByCategory(labels, false);
-    } else {
+
+    if (
+      !this.searchTerm && 
+      this.selectedShapes.length === 0 && 
+      this.selectedColours.length === 0 && 
+      this.selectedCategories.length === 0
+  ) {
       this.groupedLabels = this.allGroupedLabels;
-    }
-    // Close modal after applying filters
+      return;
+  }
+
+    const labels = await this.labelsService.getFilteredAndSearchedLabels(
+      this.searchTerm || '',   // Pass current search term
+      this.selectedShapes,
+      this.selectedColours,
+      this.selectedCategories
+    );
+  
+    this.emptyGroupedLabels();
+    this.groupLabelsByCategory(labels, false);
     this.modal.dismiss();
   }
 
@@ -240,11 +264,16 @@ export class LabelsListComponent  implements OnInit, OnDestroy, ViewWillEnter {
   }
 
 
-  private fetchAllLabels() {
-    this.labels = this.labelsService.allLabels;
-    console.log('--------- Labels List before grouping labels: ');
-    this.groupLabelsByCategory(this.labels, true);
-    console.log('--------- Labels List after grouping labels: ');
+  private async fetchAllLabels() {
+    try {
+      this.labelSubscription = this.labelsService.allLabels.subscribe(labels=>{
+        console.log('labels from labels-list', labels);
+        this.groupLabelsByCategory(labels, true);
+      });
+      await this.labelsService.loadAll();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   

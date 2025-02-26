@@ -22,6 +22,10 @@
 </head>
 
 <body>
+  <script type="module">
+    import { defineCustomElements } from "@capacitor-community/sqlite/loader";
+    defineCustomElements(window);
+  </script>
   <app-root></app-root>
 </body>
 

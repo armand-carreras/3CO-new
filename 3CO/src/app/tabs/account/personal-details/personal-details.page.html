@@ -41,7 +41,7 @@
         <ion-button (click)="logout()" shape="round" color="tertiary">
           <ion-icon name="log-out-outline"></ion-icon>
         </ion-button>
-        <ion-button (click)="deleteAccount()" shape="round" color="danger">
+        <ion-button [disabled]="isUserGuest" (click)="deleteAccount()" shape="round" color="danger">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
       </div>

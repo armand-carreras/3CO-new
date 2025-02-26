@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Label } from '../shared/models/label';
 import { Router } from '@angular/router';
 import { LabelSQLiteHandlerService } from '../shared/services/SQLite/label-sqlite-handler.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ViewDidEnter } from '@ionic/angular';
 import { MoreInfoComponent } from '../shared/components/more-info/more-info.component';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-labels',
@@ -11,7 +12,7 @@ import { MoreInfoComponent } from '../shared/components/more-info/more-info.comp
   styleUrls: ['./labels.page.scss'],
   standalone: false
 })
-export class LabelsPage implements OnInit {
+export class LabelsPage implements OnInit, ViewDidEnter {
 
   public isLabelSelected = false;
   public detectedLabels: Label[] = [];
@@ -20,8 +21,8 @@ export class LabelsPage implements OnInit {
   public unlockedBadgesNow: {badgeCategory: string, badgeType: string, rewardImage: string}[] = [];
   
   private isModalOpen: boolean;
+  private labelsLoaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isResultModalOpen: boolean = false;
-  private base64Image: string = '';
   private receivedBase64Image: string = '';
   private randomLabel!: Label;
 
@@ -32,6 +33,12 @@ export class LabelsPage implements OnInit {
     private modalController: ModalController
   ) {
     this.isModalOpen = false;
+    if(!this.labelsLoaded.value) {
+      this.labelService.getRandomLabel();
+      this.labelsLoaded.next(true);
+    } else { 
+      console.log('labels already loaded');
+    }
   }
 
   /**
@@ -52,28 +59,33 @@ export class LabelsPage implements OnInit {
     return this.isModalOpen;
   }
 
-  get featuredLabel(): Label {
-    return this.randomLabel;
+  get featuredLabel$(): Observable<Label|null> {
+    return this.labelService.featuredLabel$;
   }
 
-  ngOnInit() {
-    console.log('Entering LabelsPage NgOnInit');
+  async ngOnInit() {
+    /* console.log('Entering LabelsPage NgOnInit');
+    if(!this.labelsLoaded.value) {
+      await this.labelService.initializeDatabase();
+      this.labelsLoaded.next(true);
+    } else { 
+      console.log('labels already loaded');
+    } */
+  }
+
+  ngAfterViewInit(): void {
+    console.log('Entering LabelsPage afterViewInit');
+  }
+
+  async ionViewDidEnter() {
     try{
       console.log('--------- Labels Page before setting random label');
-      this.setRandomLabel();
+      //this.setRandomLabel();
     } catch(err) {
       console.error(err);
     }
   }
 
-  ionViewWillEnter(): void {
-    console.log('Entering LabelsPage ViewWillEnter');
-  }
-
-
-  public scan() {
-    this.router.navigate(['tabs/labels/detection']);
-  }
 
   public dismissResultModal() {
     this.isResultModalOpen = false;
@@ -92,12 +104,8 @@ export class LabelsPage implements OnInit {
       await modal.present();
   }
 
- /*  public showMoreLabelDetectedInfo(label: Label) {
-    this.selectedLabelForMoreInfo = label;
-    this.isResultModalOpen = false;
-    this.isLabelSelected = true;
-    this.isScanInfo = true;
-  } */
+
+  
 
   public dismissMoreInfo(ev: any) {
     this.isLabelSelected = false;
@@ -111,14 +119,14 @@ export class LabelsPage implements OnInit {
   }
 
   public seeMoreLabels() {
-      this.router.navigate(['/tabs/labels/label-list']);
+      this.router.navigate(['labels/label-list']);
   }
 
 
-  private setRandomLabel() {
+  /* private setRandomLabel() {
     this.randomLabel = this.labelService.featuredLabel[0];
     this.featuredLabel['logo'] = this.featuredLabel?.logo ?? '/assets/databases/No_Image_Available.jpg'
-  }
+  } */
 
 
 

@@ -182,6 +182,7 @@ public async deleteUser() {
         ).pipe(
           tap(async (res) => {
             console.log(res);
+            
             await this.toastServ.presentAutoDismissToast('Account Deleted', 'success');
           }),
           catchError((error: HttpErrorResponse) => {

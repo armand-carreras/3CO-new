@@ -34,6 +34,10 @@ export class PhotoHandlingService {
     }
   
     try {
+
+      const loader = await this.loader.create({message:'Sending Image', animated: true, showBackdrop: true});
+      await loader.present();
+
       const response = await fetch(
         `${environment.paths.base_detection_api}${environment.paths.image_detection}`,
         {
@@ -43,6 +47,8 @@ export class PhotoHandlingService {
         }
       );
   
+      await loader.dismiss();
+      
       if (response.status === 401) {
         this.toast.presentAutoDismissToast('Error: Unauthorized. Please check your token or authentication.', 'danger');
         throw new Error('Unauthorized access. Check token or authentication.');
