@@ -12,7 +12,7 @@ export class CameraService {
 
   public async getPhoto(): Promise<Photo> {
     const image = await Camera.getPhoto({
-      quality: 60,
+      quality: 70,
       allowEditing: false,
       resultType: CameraResultType.Base64,
       correctOrientation: true,
