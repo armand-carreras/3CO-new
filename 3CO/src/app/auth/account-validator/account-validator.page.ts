@@ -162,7 +162,7 @@ export class AccountValidatorPage implements OnInit, ViewDidEnter {
         }
       });
     } else {
-      await this.showToast('Please Log In again', 'warning');
+      await this.showToast('Missing email, log in again and resend validation', 'warning');
       this.router.navigateByUrl('/auth/login', {replaceUrl: true});
     }
   }

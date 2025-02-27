@@ -315,7 +315,7 @@ public async deleteUser() {
      * @param password Password of the user
      */
   public resendValidationCode(email: string) {
-    const URL = `${environment.paths.base_api}resend_validation_code`;
+    const URL = `${environment.paths.base_api}${environment.paths.user_resend}`;
     const body = { email: email };
 
     return this.http.post(
@@ -403,7 +403,7 @@ public async deleteUser() {
         } else if (error.status === 500) {
           this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
         } else {
-          this.toastServ.presentAutoDismissToast('An unexpected error occurred.', 'danger');
+          this.toastServ.presentAutoDismissToast(error.message, 'danger');
         }
         // Re-throw the error so it can still be handled by other parts of the code, if necessary.
         return throwError(() => new Error(error.error.message));

@@ -20,7 +20,8 @@ export const environment = {
     products: 'products',
     reviews: 'reviews',
     recover: 'user/password_recovery',
-    verification: 'user/verify_email'
+    verification: 'user/verify_email',
+    user_resend: 'user/resend_verification'
   }
 };
 
