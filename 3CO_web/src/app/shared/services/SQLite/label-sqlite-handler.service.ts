@@ -14,7 +14,7 @@ export class LabelSQLiteHandlerService {
   public randomLabel$: BehaviorSubject<Label | null> = new BehaviorSubject<Label | null>(null);
   
   private dbReady = new BehaviorSubject<boolean>(false);
-  private apiUrl = 'http://localhost:3000/labels';
+  private apiUrl = 'https://3coapp.click/web/labels';
   private allList: BehaviorSubject<Label[]> = new BehaviorSubject<Label[]>([]);
   private isAllReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
