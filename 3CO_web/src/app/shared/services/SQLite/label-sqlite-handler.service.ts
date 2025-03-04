@@ -11,7 +11,7 @@ import { LoadingController } from '@ionic/angular';
 
 export class LabelSQLiteHandlerService {
 
-  public randomLabel$: BehaviorSubject<Label | null> = new BehaviorSubject<Label | null>(null);
+  public randomLabel$: BehaviorSubject<Label[] | null> = new BehaviorSubject<Label[] | null>(null);
   
   private dbReady = new BehaviorSubject<boolean>(false);
   private apiUrl = 'https://3coapp.click/web/labels';
@@ -26,7 +26,7 @@ export class LabelSQLiteHandlerService {
     }
 
 
-    get featuredLabel$(): Observable<Label | null> {
+    get featuredLabel$(): Observable<Label[] | null> {
       return this.randomLabel$.asObservable();
     }
     // Labels Observable
@@ -46,7 +46,7 @@ export class LabelSQLiteHandlerService {
       await this.loadAll();
       await this.getRandomLabel();
       this.dbReady.next(true);
-      console.log(this.dbReady.value);
+      //console.log(this.dbReady.value);
     } catch(err) {
       console.error(err);
       await this.toastController.presentAutoDismissToast('Error connecting to DB', 'warning');
@@ -105,9 +105,10 @@ export class LabelSQLiteHandlerService {
 
   async getRandomLabel() {
     try {
-      const results = await firstValueFrom(this.http.get<Label>(`${this.apiUrl}/random`));
-      const labels = results ? await this.parseLabels([results]) : [];
-      this.randomLabel$.next(labels[0] || null);
+      const result1 = await firstValueFrom(this.http.get<Label>(`${this.apiUrl}/random`));
+      const result2 = await firstValueFrom(this.http.get<Label>(`${this.apiUrl}/random`));
+      const labels = result1&&result2 ? await this.parseLabels([result1, result2]) : [];
+      this.randomLabel$.next(labels || null);
     } catch (err) {
       console.error('Error fetching random label:', err);
     }

@@ -22,8 +22,8 @@ export class MoreInfoComponent  implements OnInit {
 
   ngOnInit() {
     
-    console.log('More info label ranking: ', this.label.ranking);
-    console.log('Splitted ranking: ', JSON.stringify(this.label.ranking.split(';')));
+    //console.log('More info label ranking: ', this.label.ranking);
+    //console.log('Splitted ranking: ', JSON.stringify(this.label.ranking.split(';')));
   }
 
   get ranking1() {

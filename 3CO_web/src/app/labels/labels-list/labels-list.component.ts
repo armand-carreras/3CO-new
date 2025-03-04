@@ -93,7 +93,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   
   async ngOnInit() {
-    console.log('NgOnInit labels-init');
+    //console.log('NgOnInit labels-init');
     await this.fetchAllLabels();
   }
 
@@ -113,7 +113,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   onWillDismiss(event: Event) {
     this.isModalOpen = false;
-    console.log('dismissing filter', JSON.stringify(event));
+    //console.log('dismissing filter', JSON.stringify(event));
   }
   
   public isGroupCategoryEmpty(category: string) {
@@ -169,7 +169,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
 
   public dismissMoreInfo(event: any) {
 
-    console.log('------------ goBack', event);
+    //console.log('------------ goBack', event);
     this.zone.run(()=> { 
       this.isLabelSelected = false;
       this.selectedLabel = {
@@ -267,7 +267,7 @@ export class LabelsListComponent  implements OnInit, OnDestroy {
   private async fetchAllLabels() {
     try {
       this.labelSubscription = this.labelsService.allLabels.subscribe(labels=>{
-        console.log('labels from labels-list', labels);
+        //console.log('labels from labels-list', labels);
         this.groupLabelsByCategory(labels, true);
       });
       await this.labelsService.loadAll();

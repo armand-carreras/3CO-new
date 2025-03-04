@@ -51,7 +51,10 @@
             flex-direction: row;
             justify-content: flex-start;
             align-items:  stretch;
-            overflow-x: scroll;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--ion-color-primary) #74747436;;
+            
             .label-box {
                 width: 35%;
                 min-width: 35%;
@@ -64,7 +67,7 @@
                 align-items: center;
                 text-align: center;
                 border: 2.5px solid var(--ion-color-secondary);
-                background: var(--ion-color-light);
+                background: var(--ion-card-background);
                 border-radius: 15px;
                 padding: 0.5rem 1rem;
                 margin-right: 1rem;
@@ -84,3 +87,12 @@
         }
     }
 }
+
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-button {
+    display: none;
+  }

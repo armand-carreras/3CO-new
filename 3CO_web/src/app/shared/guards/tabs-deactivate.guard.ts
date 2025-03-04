@@ -4,7 +4,7 @@ export const tabsDeactivateGuard: CanDeactivateFn<any> = (component, currentRout
  
   // Handle undefined `nextState` (e.g., back button)
   if (!nextState?.url) {
-    console.log('Back button detected, blocking deactivation');
+    //console.log('Back button detected, blocking deactivation');
     return false;
   }
 
@@ -15,6 +15,6 @@ export const tabsDeactivateGuard: CanDeactivateFn<any> = (component, currentRout
     return true; // Allow deactivation for these specific cases
   }
 
-  console.log('Deactivation blocked for route:', nextState.url);
+  //console.log('Deactivation blocked for route:', nextState.url);
   return false; // Block deactivation for all other cases
 }

@@ -8,6 +8,12 @@
           <ion-note style="width: 100%;
           padding-right: 1rem;
           text-align: right;">Concise Consumer Communication</ion-note>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item routerDirection="root" routerLink="home" lines="none" detail="false" routerLinkActive="selected">
+              <ion-icon aria-hidden="true" slot="start" name="home-outline"></ion-icon>
+              <ion-label>Home</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
             <ion-menu-toggle auto-hide="false">
               <ion-item routerDirection="root" routerLink="labels" lines="none" detail="false" routerLinkActive="selected">
                 <ion-icon aria-hidden="true" slot="start" name="bookmark-outline"></ion-icon>
@@ -21,8 +27,21 @@
               </ion-item>
             </ion-menu-toggle>
         </ion-list>
-
       </ion-content>
+      <ion-footer>
+        <ion-toolbar>
+
+          <div slot="start" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start;">
+            <img style="margin-left: 1rem;" width="30px" src="assets/3CO/eu_flag.png">
+            <ion-note style="margin: auto;">EU funded</ion-note>
+          </div>
+          <ion-buttons slot="end">
+            <ion-button (click)="changeMode()" fill="outline" shape="round" color="primary">
+              <ion-icon name="invert-mode-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content"></ion-router-outlet>
   </ion-split-pane>

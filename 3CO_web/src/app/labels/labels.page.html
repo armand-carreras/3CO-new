@@ -51,20 +51,24 @@
         <div class="labels-container">
           <ng-container *ngIf="featuredLabel$ | async as featuredLabel; else labelLoader">
           <ion-text>
-            <h4>Featured Label</h4>
+            <h4>Featured Labels</h4>
           </ion-text>
-            <div class="label-info-box" (click)="showMoreLabelInfo(featuredLabel)">
-              <ion-text>{{featuredLabel.name}}</ion-text>
-              <img [src]=featuredLabel.logo>
+          <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
+            <div class="label-info-box" (click)="showMoreLabelInfo(featuredLabel[0])">
+              <ion-text>{{featuredLabel[0].name}}</ion-text>
+              <img [src]=featuredLabel[0].logo>
               <ion-text class="truncate-text" color="medium">
-                {{featuredLabel.shortDescription}}
+                {{featuredLabel[0].shortDescription}}
               </ion-text>
-              <div class="rating">
-                <ion-icon name="star"></ion-icon>
-                <ion-icon name="star"></ion-icon>
-                <ion-icon name="star-half-outline"></ion-icon>
-              </div>
             </div>
+            <div class="label-info-box" (click)="showMoreLabelInfo(featuredLabel[1])">
+              <ion-text>{{featuredLabel[1].name}}</ion-text>
+              <img [src]=featuredLabel[1].logo>
+              <ion-text class="truncate-text" color="medium">
+                {{featuredLabel[1].shortDescription}}
+              </ion-text>
+            </div>
+          </div>
           </ng-container>
         </div>
 

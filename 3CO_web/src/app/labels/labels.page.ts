@@ -37,7 +37,7 @@ export class LabelsPage implements OnInit, ViewDidEnter {
       this.labelService.getRandomLabel();
       this.labelsLoaded.next(true);
     } else { 
-      console.log('labels already loaded');
+      //console.log('labels already loaded');
     }
   }
 
@@ -59,7 +59,7 @@ export class LabelsPage implements OnInit, ViewDidEnter {
     return this.isModalOpen;
   }
 
-  get featuredLabel$(): Observable<Label|null> {
+  get featuredLabel$(): Observable<Label[]|null> {
     return this.labelService.featuredLabel$;
   }
 
@@ -74,12 +74,12 @@ export class LabelsPage implements OnInit, ViewDidEnter {
   }
 
   ngAfterViewInit(): void {
-    console.log('Entering LabelsPage afterViewInit');
+    //console.log('Entering LabelsPage afterViewInit');
   }
 
   async ionViewDidEnter() {
     try{
-      console.log('--------- Labels Page before setting random label');
+      //console.log('--------- Labels Page before setting random label');
       //this.setRandomLabel();
     } catch(err) {
       console.error(err);
@@ -109,7 +109,7 @@ export class LabelsPage implements OnInit, ViewDidEnter {
 
   public dismissMoreInfo(ev: any) {
     this.isLabelSelected = false;
-    console.log('------------- trying to dissmiss modal:',JSON.stringify(ev))
+    //console.log('------------- trying to dissmiss modal:',JSON.stringify(ev))
     if(ev.backToScanInfo){
       this.isScanInfo = true;
       this.isResultModalOpen = true;

@@ -1,0 +1,73 @@
+.scan-container {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    background: rgb(2,114,122);
+    background: linear-gradient(90deg, rgba(2,114,122,0.7510383702531646) 0%, rgba(138,189,13,1) 100%);
+    margin: .75rem 0;
+    padding: .5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    .app-banner {
+        width: 60%;
+        color: white;
+    }
+    #scan-banner {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: flex-start;
+
+      p {
+        margin: 0;
+        padding: .5rem 0;
+      }
+    }
+    .store-buttons {
+        a{
+            margin: 1rem;
+        }
+    }
+
+    img {
+      width: 8rem;
+    }
+  }
+
+  .info-container {
+    .info {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        .text{
+            margin-left: 2rem;
+            width: 50%;
+        }
+        .img-container{
+            margin: auto;
+            img{
+                width: auto;
+                height: 35vh;
+            }
+        }
+    }
+  }
+
+  .img-banner-container{
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    img{
+        width: 20%;
+        height: auto;
+    }
+  }
+
+  .header {
+    margin-bottom: 3rem;
+  }
