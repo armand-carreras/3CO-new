@@ -37,7 +37,7 @@
             <div *ngFor="let link of groupedLinks[category.name]" class="label-box">
               <a [href]="link.url" target="_blank">
                 <img [src]="link.image">
-                <ion-text style="color: black;">{{link.name | slice:0:15}}</ion-text>
+                <ion-text>{{link.name | slice:0:15}}</ion-text>
               </a>
             </div>
           </div>
