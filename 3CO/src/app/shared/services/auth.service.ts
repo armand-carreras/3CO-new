@@ -84,7 +84,8 @@ export class AuthService {
   public async logoutUser() {
     this.userLoggedIn = false;
     this.userService.setAsGuest();
-    await this.setAsGuest();
+    this.isGuest = true;
+    this.storage.storeKeepMeLoggedIn(false);
   }
 
 
@@ -397,11 +398,14 @@ public async deleteUser() {
       tap(async (res)=>{
         console.log('GuestInServer: ', res);
       }),
-      catchError((error: HttpErrorResponse) => {
+      catchError(async (error: HttpErrorResponse) => {
         if (error.status === 404) {
           this.toastServ.presentAutoDismissToast('Address not found', 'danger');
         } else if (error.status === 500) {
           this.toastServ.presentAutoDismissToast('Internal server error. Please try again later.', 'danger');
+        } else if( error.error.message === "Guest name already exists"){
+          console.log(error.error.message);
+          await this.storage.setGuestInServer();
         } else {
           this.toastServ.presentAutoDismissToast(error.message, 'danger');
         }
