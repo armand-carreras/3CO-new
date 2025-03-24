@@ -52,6 +52,9 @@ export class AccountPage implements OnInit, ViewWillEnter {
       await this.userServ.fetchUser();
       this.user = this.userServ.getUserValue();
       console.log('------------ User from account: ', JSON.stringify(this.user));
+    } else {
+      this.userServ.setAsGuest();
+      this.user = this.userServ.getUserValue();
     }
   }
 
