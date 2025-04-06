@@ -48,3 +48,6 @@
 ion-content::part(scroll) {
     padding-top: var(--ion-safe-area-top, 0);
 }
+
+
+.backtoast::part(message) { text-align: center; }
