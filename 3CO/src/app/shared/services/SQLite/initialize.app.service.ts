@@ -22,13 +22,14 @@ export class InitializeAppService {
         await this.sqliteService.initializePlugin().then(async (ret) => {
             this.platform = this.sqliteService.platform;
             try {
-                const DB = 'ecodatabase.db'
+                const DB = 'ecodatabase'
                 if( this.sqliteService.platform === 'web') {
                     await this.sqliteService.initWebStore();
                     await this.storageService.initializeDatabase(DB);
                     await this.sqliteService.saveToStore(DB);
                 } else {
                     await this.storageService.initializeDatabase(DB);
+                    
                 }
                 
                 this.isAppInit = true;
@@ -42,4 +43,8 @@ export class InitializeAppService {
             }
         });
     }
+
+ 
+
 }
+

@@ -11,9 +11,11 @@ import { ThemeService } from './shared/services/theme.service';
 import { SQLiteService } from './shared/services/SQLite/sqlite.service';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { provideHttpClient} from '@angular/common/http';
+import { SplashScreenComponent } from './shared/components/splash-screen/splash-screen.component';
+import { SystemBarsService } from './shared/services/system-bars.service';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SplashScreenComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -23,6 +25,7 @@ import { provideHttpClient} from '@angular/common/http';
   providers: [
     StorageService,
     ThemeService,
+    SystemBarsService,
     SQLiteService,
     provideHttpClient(),
     { 

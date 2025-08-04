@@ -14,7 +14,7 @@ export class LabelSQLiteHandlerService {
   public allList: BehaviorSubject<Label[]> =
   new BehaviorSubject<Label[]>([]);
   private randomLabel: BehaviorSubject<Label[]> = new BehaviorSubject<Label[]>([]);
-  private databaseName: string = "";
+  private databaseName: string = "ecodatabase";
   private uUpdStmts: UserUpgradeStatements = new UserUpgradeStatements();
   private versionUpgrades;
   private loadToVersion;
@@ -39,21 +39,16 @@ export class LabelSQLiteHandlerService {
     
     async initializeDatabase(dbName: string) {
         this.databaseName = dbName;
-        // create upgrade statements
-       /*  await this.sqliteService
-        .addUpgradeStatement({  database: this.databaseName,
-                                upgrade: this.versionUpgrades}); */
-        // create and/or open the database
         this.db = await this.sqliteService.openDatabase(
-                                            this.databaseName,
+                                            'ecodatabase.db',
                                             false,
                                             'no-encryption',
                                             this.loadToVersion,
                                             false
         );
+        //await this.waitForSQLiteMaster()
         this.dbVerService.set(this.databaseName,this.loadToVersion);
-        await this.getRandomLabel();
-        await this.getAll();
+        
     }
     
     // Is Labels Get already done?
@@ -61,6 +56,7 @@ export class LabelSQLiteHandlerService {
         return this.isAllReady.asObservable();
     }
     
+       
     
 
   async loadAll() {
@@ -127,10 +123,11 @@ export class LabelSQLiteHandlerService {
   
 
 
-    private async getRandomLabel() {
-      const query = `SELECT * FROM "labelsBase64" d ORDER BY random() LIMIT 1;`;
-      console.log('QUERY;', query);
+    public async getRandomLabel() {
+      const query = `SELECT * FROM "labelsBase64" ORDER BY random() LIMIT 1;`;
+      console.log('++++++++++++++++++++++ QUERY: ', query);
       const results = ( await this.db?.query(query) )?.values;
+      console.log('++++++++++++++++++++++ Results: ', results)
       const labels = results ? await this.parseLabels(results) : [];
       this.randomLabel.next(labels);
     }
@@ -166,7 +163,7 @@ export class LabelSQLiteHandlerService {
       // Construct the final query
       let sqlQuery = `
         SELECT * 
-        FROM "labelsBase64" d 
+        FROM "labelsBase64" 
         WHERE ${conditions.join(' AND ')};
       `;
 
@@ -190,7 +187,7 @@ export class LabelSQLiteHandlerService {
         const newLabel: Label = {
           logo: base64Logo,
           name: res['NAME'],
-          establishmentYear: res['YEAR OF EST.'],
+          establishmentYear: res['YEAR_OF_EST'],
           description: res['DESCRIPTION'],
           shortDescription: res['USER-FRIENDLY DESCRIPTION'],
           category: res['CATEGORY'],

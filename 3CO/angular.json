@@ -20,7 +20,7 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
-              "crypto-js"
+              "crypto"
             ],
             "assets": [
               {

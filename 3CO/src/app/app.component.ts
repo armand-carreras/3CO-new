@@ -7,6 +7,8 @@ import { Location } from '@angular/common';
 import { App } from '@capacitor/app';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { LabelSQLiteHandlerService } from './shared/services/SQLite/label-sqlite-handler.service';
+import { SystemBarsService } from './shared/services/system-bars.service';
 
 @Component({
   selector: 'app-root',
@@ -25,12 +27,15 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private themeServ: ThemeService,
     private storageServ: StorageService,
-    private initStorage: InitializeAppService,
+    private initSQLite: InitializeAppService,
+    private labelSQLite: LabelSQLiteHandlerService,
     private platform: Platform,
+    private barService: SystemBarsService,
     private location: Location,
     private router: Router,
-    private toastController: ToastController
+    private toastController: ToastController,
   ) {
+   
     this.initializeApp();
   }
   
@@ -39,8 +44,9 @@ export class AppComponent implements OnInit, OnDestroy {
   
   async ngOnInit(){
     
-    await this.initStorage.initializeApp();
-    
+    await this.initSQLite.initializeApp();
+    await this.labelSQLite.getRandomLabel();
+    await this.labelSQLite.getAll();
     await this.storageServ.init();
     await this.themeServ.initTheme();
   }
@@ -89,10 +95,10 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+
+    
   }
-  
-  
-  
 
   
 

@@ -51,3 +51,13 @@ ion-content::part(scroll) {
 
 
 .backtoast::part(message) { text-align: center; }
+
+:root {
+  --system-bars-bg: #ffffff;   /* light palette */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --system-bars-bg: #121212; /* dark palette */
+  }
+}
