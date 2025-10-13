@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Photo } from '@capacitor/camera';
-import { Platform, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
 import { Label } from 'src/app/shared/models/label';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { BadgeService } from 'src/app/shared/services/badge.service';
-import { CameraService } from 'src/app/shared/services/camera.service';
-import { PhotoHandlingService } from 'src/app/shared/services/photo-handling.service';
-import { LabelSQLiteHandlerService } from 'src/app/shared/services/SQLite/label-sqlite-handler.service';
-import { ToastService } from 'src/app/shared/services/toast.service';
 
 @Component({
   selector: 'app-detection',

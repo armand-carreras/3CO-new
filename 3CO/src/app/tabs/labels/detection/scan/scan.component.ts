@@ -50,19 +50,26 @@ export class ScanComponent  implements OnInit {
 
   private async mobileScan() {
     const permission = await this.cameraService.checkAndRequestPermissions();
-    if (permission.camera !== 'granted' && permission.camera !== 'limited') {
-      this.toastServ.presentAutoDismissToast('Please allow camera usage.', 'warning')
+    if (permission.camera !== 'granted') {
+      this.toastServ.presentAutoDismissToast('You should accept to use the Camera or your Gallery!', 'warning');
       await this.cameraService.checkAndRequestPermissions();
-    } else {
+    }
+    else if(permission.photos === 'denied') {
+      this.toastServ.presentAutoDismissToast('Please check your device Settings and allow 3C0 to use the camera, and gallery.','warning');
+    }
+    else {
       await this.cameraService
         .getPhoto()
         .then((photo: Photo) => {
           this.emitPhoto('data:image/*;base64,'+photo.base64String);
         })
-        .catch((error) =>
-          this.toastServ.presentAutoDismissToast(`Error when getting photo:  ${error}`, 'warning')
-        );
+        .catch((error) => {
+          if(error.includes('User Cancelled')){
+            this.toastServ.presentAutoDismissToast(error, 'warning')
+          }
+        });
     }
+    
   }
 
   private webScan() {
