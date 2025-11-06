@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-button (click)="goBack()" fill="clear"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>Rewards</ion-title>
+    <ion-title>{{'rewards'|translate}}</ion-title>
   </ion-toolbar>
 
 
@@ -13,8 +13,8 @@
         <div class="badge-box">
           <img [src]="badgeInfo.imgSRC" alt="Badge image">
           <div class="badge-info">
-            <ion-text style="margin: 1rem 0;"><ion-note>Category: </ion-note>{{badgeInfo.badge.badge_category}} - {{badgeInfo.badge.badge_type}}</ion-text>
-            <ion-text style="margin: 1rem 0;"><ion-note>Unlocked: </ion-note>{{badgeInfo.badge.unlocked_at}}</ion-text>
+            <ion-text style="margin: 1rem 0;"><ion-note>{{'rewards.category'|translate}} </ion-note>{{badgeInfo.badge.badge_category}} - {{badgeInfo.badge.badge_type}}</ion-text>
+            <ion-text style="margin: 1rem 0;"><ion-note>{{'rewards.unlocked'|translate}} </ion-note>{{badgeInfo.badge.unlocked_at}}</ion-text>
           </div>
         </div>
       }
@@ -24,7 +24,7 @@
 
 <ng-template #isGuestTemplate>
   <div style="width: 100%; height:100%; display:flex; flex-direction: column; align-items: center; justify-content: center;">
-    <ion-text style="margin-bottom: 1rem">Register to benefit from rewards</ion-text>
-    <ion-button (click)="goToMigrate()" routerLink="/auth/migrate-user">Migrate to User</ion-button>
+    <ion-text style="margin-bottom: 1rem">{{'rewards.benefit'|translate}}</ion-text>
+    <ion-button (click)="goToMigrate()" routerLink="/auth/migrate-user">{{'rewards.migrate'|translate}}</ion-button>
   </div>
 </ng-template>

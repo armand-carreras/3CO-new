@@ -10,9 +10,15 @@ import { StorageService } from './shared/services/storage.service';
 import { ThemeService } from './shared/services/theme.service';
 import { SQLiteService } from './shared/services/SQLite/sqlite.service';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { provideHttpClient} from '@angular/common/http';
+import { HttpClient, provideHttpClient} from '@angular/common/http';
 import { SplashScreenComponent } from './shared/components/splash-screen/splash-screen.component';
 import { SystemBarsService } from './shared/services/system-bars.service';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+
+
+
+
 
 @NgModule({
   declarations: [AppComponent, SplashScreenComponent],
@@ -20,7 +26,9 @@ import { SystemBarsService } from './shared/services/system-bars.service';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    TranslatePipe,
+    TranslateDirective
   ],
   providers: [
     StorageService,
@@ -32,6 +40,18 @@ import { SystemBarsService } from './shared/services/system-bars.service';
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
+    provideTranslateService({
+      lang: 'en',
+      fallbackLang: 'en',
+      loader: provideTranslateHttpLoader({
+        prefix: '/i18n/',
+        suffix: '.json'
+      })
+    }),
+  ],
+  exports: [
+    TranslatePipe,
+    TranslateDirective
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

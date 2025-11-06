@@ -8,6 +8,7 @@ import { RegisterPageRoutingModule } from './register-routing.module';
 
 import { RegisterPage } from './register.page';
 import { MoreInfoLabelsModule } from 'src/app/shared/modules/more-info-labels.module';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { MoreInfoLabelsModule } from 'src/app/shared/modules/more-info-labels.mo
     FormsModule,
     IonicModule,
     RegisterPageRoutingModule,
-    MoreInfoLabelsModule
+    MoreInfoLabelsModule,
+    TranslatePipe
   ],
   declarations: [RegisterPage]
 })

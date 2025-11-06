@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { PersonalDetailsPageRoutingModule } from './personal-details-routing.module';
 
 import { PersonalDetailsPage } from './personal-details.page';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PersonalDetailsPageRoutingModule
+    PersonalDetailsPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [PersonalDetailsPage]
 })

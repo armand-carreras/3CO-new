@@ -5,30 +5,30 @@
     <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
     
     <div class="input-container">
-      <ion-text class="padding-bottom"><h3><strong>Sign Up</strong></h3></ion-text>
-      <ion-input class="padding-bottom" [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder="Enter name" ></ion-input>
-      <ion-input class="padding-bottom" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
-      <ion-input class="padding-bottom" [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Enter password">
+      <ion-text class="padding-bottom"><h3><strong>{{'sign-up'|translate}}</strong></h3></ion-text>
+      <ion-input class="padding-bottom" [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder="{{'migrate.name-placeholder'|translate}}" ></ion-input>
+      <ion-input class="padding-bottom" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="{{'migrate.email-placeholder'|translate}}"></ion-input>
+      <ion-input class="padding-bottom" [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="{{'migrate.pass-placeholder'|translate}}">
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
-      <ion-input class="padding-bottom" [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Re-enter password">
+      <ion-input class="padding-bottom" [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="{{'migrate.repass-placeholder'|translate}}">
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
       <br>
-      <ion-text style="font-size: 0.8rem; margin: 0.5rem;">How do you identify yourself?</ion-text>
+      <ion-text style="font-size: 0.8rem; margin: 0.5rem;">{{'register.identify-as'|translate}}</ion-text>
       <ion-radio-group style="margin: auto;" [(ngModel)]="gender" [value]="gender">
-        <ion-radio value="man" labelPlacement="stacked">Man</ion-radio>
-        <ion-radio value="woman" labelPlacement="stacked">Woman</ion-radio>
-        <ion-radio value="none" labelPlacement="stacked">Not Specified</ion-radio>
+        <ion-radio value="man" labelPlacement="stacked">{{'register.man'|translate}}</ion-radio>
+        <ion-radio value="woman" labelPlacement="stacked">{{'register.woman'|translate}}</ion-radio>
+        <ion-radio value="none" labelPlacement="stacked">{{'register.not-specified'|translate}}</ion-radio>
       </ion-radio-group>
       <br>
-      <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="register()">Sign Up</ion-button>
+      <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="register()">{{'sign-up'|translate}}</ion-button>
       <ion-note style="width: 100%;
       font-size: .75rem;
-      text-align: center;">By migrating to user, you accept the <a (click)="openTermsModal()">Terms & Conditions</a></ion-note>
+      text-align: center;">{{"terms-conditions.acceptance"|translate}} <a (click)="openTermsModal()">{{"terms-conditions"|translate}}</a></ion-note>
       <br>
       <div class="links-container">
-        Already have an account. <a href="auth/login">Sign In</a>
+        {{'already-have-account'|translate}} <a href="auth/login">{{'sign-in'|translate}}</a>
       </div>
     </div>
 

@@ -10,13 +10,13 @@
 
   <ion-row class="ion-align-items-center ion-justify-content-center">
     <ion-col>
-      <h3>Validate Your Email</h3>
+      <h3>{{'validateEmail.Title' | translate}}</h3>
     </ion-col>
   </ion-row>
 
   <ion-row class="ion-align-items-center ion-justify-content-center">
     <ion-col>
-      <ion-note>Check your inbox <br>and enter the 6-digit number</ion-note>
+      <ion-note>{{ '6-digit-number' | translate }}</ion-note>
     </ion-col>
   </ion-row>
 
@@ -38,7 +38,7 @@
         </div>
     
         <ion-button expand="block" type="submit" [disabled]="validNumber">
-          Validate Email
+          {{'validateEmail.button'|translate}}
         </ion-button>
       </form>
     </ion-col>
@@ -46,15 +46,15 @@
 
   <ion-row>
     <ion-col>
-      <ion-button style="margin-top: 1.5rem;" size="small" shape="outline" [disabled]="!canResend" (click)="resendCode()">Resend Code <ion-note *ngIf="!canResend"> ({{ countdown }}s)</ion-note></ion-button>
+      <ion-button style="margin-top: 1.5rem;" size="small" shape="outline" [disabled]="!canResend" (click)="resendCode()"> {{'resend-code' | translate}} <ion-note *ngIf="!canResend"> ({{ countdown }}s)</ion-note></ion-button>
     </ion-col>
   </ion-row>
   
   <ion-row style="width: 100%;" class="ion-align-items-center ion-justify-content-center">
     <ion-col>
       <div class="links-container">
-        <a href="auth/login">Login</a>
-        <a href="auth/register">Register</a> 
+        <a href="auth/login">{{ 'login' | translate }}</a>
+        <a href="auth/register">{{ 'register' | translate }}</a> 
       </div>
     </ion-col>
   </ion-row>

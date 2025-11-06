@@ -4,6 +4,7 @@ import { MoreInfoComponent } from 'src/app/shared/components/more-info/more-info
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TermsAndConditionsComponent } from '../components/terms-and-conditions/terms-and-conditions.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 
@@ -16,6 +17,7 @@ import { TermsAndConditionsComponent } from '../components/terms-and-conditions/
     CommonModule,
     FormsModule,
     IonicModule,
+    TranslatePipe
   ],
   exports: [
     MoreInfoComponent,

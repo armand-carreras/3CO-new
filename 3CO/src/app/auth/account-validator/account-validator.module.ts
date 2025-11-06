@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AccountValidatorPageRoutingModule } from './account-validator-routing.module';
 
 import { AccountValidatorPage } from './account-validator.page';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { AccountValidatorPage } from './account-validator.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    AccountValidatorPageRoutingModule
+    AccountValidatorPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [AccountValidatorPage]
 })

@@ -5,23 +5,23 @@
     <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
     
     <div class="input-container">
-      <ion-text ><h3><strong>Sing Up</strong></h3></ion-text>
-      <ion-note class="padding-bottom">Migrate your progress to an official 3CO account</ion-note>
-      <ion-input class="padding-bottom" [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder="Enter name" ></ion-input>
-      <ion-input class="padding-bottom" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
-      <ion-input class="padding-bottom" [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Enter password">
+      <ion-text ><h3><strong>{{'sign-up'|translate}}</strong></h3></ion-text>
+      <ion-note class="padding-bottom">{{'migrate-progress'|translate}}</ion-note>
+      <ion-input class="padding-bottom" [(ngModel)]="name" label="Name" shape="round" label-placement="stacked" fill="outline" placeholder='{{"migrate.name-placeholder"|translate}}' ></ion-input>
+      <ion-input class="padding-bottom" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder='{{"migrate.email-placeholder"|translate}}'></ion-input>
+      <ion-input class="padding-bottom" [(ngModel)]="password" label="Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder='{{"migrate.pass-placeholder"|translate}}'>
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
-      <ion-input class="padding-bottom" [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder="Re-enter password">
+      <ion-input class="padding-bottom" [(ngModel)]="repassword" label="Re-Type Password" shape="round" type="password" label-placement="stacked" fill="outline" placeholder='{{"migrate.repass-placeholder"|translate}}'>
         <ion-input-password-toggle></ion-input-password-toggle>
       </ion-input>
-      <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="migrateUser()">Migrate to User</ion-button>
+      <ion-button expand="full" shape="round" [disabled]="!canRegister" (click)="migrateUser()">{{'migrate.user-migration'|translate}}</ion-button>
       <ion-note style="width: 100%;
       font-size: .75rem;
-      text-align: center;">By migrating to user, you accept the <a (click)="openTermsModal()">Terms & Conditions</a></ion-note>
+      text-align: center;">{{'terms-conditions.acceptance'|translate}} <a (click)="openTermsModal()">{{'terms-conditions'|translate}}</a></ion-note>
       <br>
       <div class="links-container">
-        Already have an account. <a href="auth/login">Sign Up</a>
+        {{'already-have-account'|translate}} <a href="auth/login">{{'sign-up'|translate}}</a>
       </div>
     </div>
 

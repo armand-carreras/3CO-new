@@ -58,7 +58,7 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
       title: ['', Validators.required],
       image: [''],
       description: [''],
-      rating: [0, [Validators.required, Validators.min(0), Validators.max(5)]]
+      rating: [5, [Validators.required, Validators.min(0), Validators.max(5)]]
     });
    }
 

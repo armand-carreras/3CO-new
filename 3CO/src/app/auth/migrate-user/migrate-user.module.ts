@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { MigrateUserPageRoutingModule } from './migrate-user-routing.module';
 
 import { MigrateUserPage } from './migrate-user.page';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MigrateUserPageRoutingModule
+    MigrateUserPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [MigrateUserPage]
 })

@@ -6,7 +6,7 @@
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Processed Image</ion-title>
+    <ion-title>{{'feedback'|translate}}</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="outline" shape="round" (click)="scan()">
         <ion-icon name="camera-outline"></ion-icon>
@@ -20,12 +20,12 @@
   
   <ng-template #noLabelDetected>
     <div style="width: 100%; height:100%; display:flex; flex-direction: column; align-items: center; justify-content: center;">
-      <ion-text>No label was detected</ion-text>
+      <ion-text>{{'feedback.no-label'|translate}}</ion-text>
     </div>
   </ng-template>
   
   
-  <ion-text style="width: 100%; text-align: center;" *ngIf="feedback.badges && feedback.badges.length>0"><h5 style="margin: 0;padding: 0;">Rewards</h5></ion-text>
+  <ion-text style="width: 100%; text-align: center;" *ngIf="feedback.badges && feedback.badges.length>0"><h5 style="margin: 0;padding: 0;">{{'account.rewards'|translate}}</h5></ion-text>
   <div class="unlocked-badges-container">
     <ng-container *ngIf="!isGuest else register">
       <ng-container *ngFor="let badge of feedback.badges">
@@ -39,8 +39,8 @@
 
   <ng-template #register>
     <div style="width: 90%; height: auto; flex-wrap: nowrap; display: flex; flex-direction: row; justify-content: center; align-items: center;">
-      <ion-text>Register as a 3CO user to get rewards</ion-text>
-      <ion-button shape="round" fill="outline" color="warning" href="/auth/register">Register</ion-button>
+      <ion-text>{{'feedback.register'|translate}}</ion-text>
+      <ion-button shape="round" fill="outline" color="warning" href="/auth/register">{{'register'|translate}}</ion-button>
     </div>
   </ng-template>
   

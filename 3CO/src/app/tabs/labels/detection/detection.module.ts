@@ -11,6 +11,7 @@ import { MoreInfoLabelsModule } from 'src/app/shared/modules/more-info-labels.mo
 import { FeedbackComponent } from './feedback/feedback.component';
 import { ScanComponent } from './scan/scan.component';
 import { SendImageComponent } from './send-image/send-image.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { SendImageComponent } from './send-image/send-image.component';
     FormsModule,
     IonicModule,
     DetectionPageRoutingModule,
-    MoreInfoLabelsModule
+    MoreInfoLabelsModule,
+    TranslatePipe
   ],
   declarations: [DetectionPage, FeedbackComponent, ScanComponent, SendImageComponent]
 })

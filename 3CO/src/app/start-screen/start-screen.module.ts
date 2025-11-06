@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { StartScreenPageRoutingModule } from './start-screen-routing.module';
 
 import { StartScreenPage } from './start-screen.page';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    StartScreenPageRoutingModule
+    StartScreenPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [StartScreenPage]
 })

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar mode="ios">
-    <ion-title>Send Image</ion-title>
+    <ion-title>{{'send-image'|translate}}</ion-title>
     <ion-buttons slot="start">
       <ion-button (click)="backToScan()">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -10,5 +10,5 @@
 </ion-header>
 <ion-content class="ion-padding">
   <img [src]="imgEncodedPhotoBase64" alt="Your photo could not be load properly.">
-  <ion-button (click)="sendImage()" expand="block" shape="round" [disabled]="imgEncodedPhotoBase64===''">Send Image</ion-button>
+  <ion-button (click)="sendImage()" expand="block" shape="round" [disabled]="imgEncodedPhotoBase64===''">{{'send-image'|translate}}</ion-button>
 </ion-content>

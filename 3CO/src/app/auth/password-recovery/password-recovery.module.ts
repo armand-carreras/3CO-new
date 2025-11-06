@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { PasswordRecoveryPageRoutingModule } from './password-recovery-routing.module';
 
 import { PasswordRecoveryPage } from './password-recovery.page';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PasswordRecoveryPageRoutingModule
+    PasswordRecoveryPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [PasswordRecoveryPage]
 })

@@ -9,13 +9,15 @@ import { AccountPageRoutingModule } from './account-routing.module';
 import { AccountPage } from './account.page';
 import { RewardsComponent } from './rewards/rewards.component';
 import { VersionComponent } from './version/version.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AccountPageRoutingModule
+    AccountPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [AccountPage, RewardsComponent, VersionComponent]
 })

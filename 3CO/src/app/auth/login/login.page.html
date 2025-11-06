@@ -5,29 +5,29 @@
     <img src="/assets/3CO/23-03-28_3CO-Logo_pos_noBack.png">
     
     <div class="input-container">
-      <ion-text><h3><strong>Sign In</strong></h3></ion-text>
+      <ion-text><h3><strong>{{'sign-in'|translate}}</strong></h3></ion-text>
       <br>
-      <ion-input mode="md" [(ngModel)]="email" label="Email" shape="round" label-placement="stacked" fill="outline" placeholder="Enter email"></ion-input>
+      <ion-input mode="md" [(ngModel)]="email" label="{{'email'|translate}}" shape="round" label-placement="stacked" fill="outline" placeholder="{{'migrate.email-placeholder'|translate}}"></ion-input>
       <br>
-      <ion-input mode="md" [(ngModel)]="password" type="password" label="Password" shape="round" label-placement="stacked" fill="outline" placeholder="Enter password"></ion-input>
+      <ion-input mode="md" [(ngModel)]="password" type="password" label="{{'password'|translate}}" shape="round" label-placement="stacked" fill="outline" placeholder="{{'migrate.pass-placeholder'|translate}}"></ion-input>
       <br>
-      <ion-button expand="full" shape="round" (click)="login()">Sign In</ion-button>
+      <ion-button expand="full" shape="round" (click)="login()">{{'sign-in'|translate}}</ion-button>
       <br>
-      <ion-checkbox style="width: 90%; margin: auto;" [checked]="keepMeSignedIn" justify="end" labelPlacement="start" (ionChange)="checkBoxChanges($event)">Keep me logged in</ion-checkbox>
+      <ion-checkbox style="width: 90%; margin: auto;" [checked]="keepMeSignedIn" justify="end" labelPlacement="start" (ionChange)="checkBoxChanges($event)">{{"keep-me-logged-in"|translate}}</ion-checkbox>
       <br>
       <div class="links-container">
-        <a href="auth/register">Register</a> 
-        <a href="auth/password-recovery">Forgot Password?</a>
+        <a href="auth/register">{{'register' | translate}}</a> 
+        <a href="auth/password-recovery">{{'forgot-password'|translate}}</a>
       </div>
     </div>
 
 
     <div class="guest-container">
       <div class="guest-text">
-        <ion-text>Start as a guest.</ion-text>
-        <ion-note color="danger">(Some content may not be available)</ion-note>
+        <ion-text>{{'start-as-guest'|translate}}</ion-text>
+        <ion-note color="danger">{{'content-not-available'|translate}}</ion-note>
       </div>
-      <ion-button shape="round" fill="outline" size="small" (click)="startAsGuest()">Log as Guest</ion-button>
+      <ion-button shape="round" fill="outline" size="small" (click)="startAsGuest()">{{'log-guest'|translate}}</ion-button>
     </div>
 
   </div>
