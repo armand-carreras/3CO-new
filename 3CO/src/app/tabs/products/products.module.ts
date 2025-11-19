@@ -10,6 +10,7 @@ import { ProductsPage } from './products.page';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { RatingComponent } from './rating/rating.component';
 import { ProductInfoComponent } from './product-info/product-info.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { ProductInfoComponent } from './product-info/product-info.component';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    ProductsPageRoutingModule
+    ProductsPageRoutingModule,
+    TranslatePipe
   ],
   declarations: [ProductsPage, ProductFormComponent, ProductInfoComponent, RatingComponent]
 })

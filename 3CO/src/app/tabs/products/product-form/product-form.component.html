@@ -8,7 +8,7 @@
       <ion-button (click)="goToMainPage()" fill="clear">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
-      <h5 style="margin: 0;">Add new product</h5>
+      <h5 style="margin: 0;">{{"product.add"|translate}}</h5>
     </div>
 
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()" style="width: 90%; height: 100%; margin: 0 auto;">
@@ -57,8 +57,8 @@
       
 
       <ion-item>
-        <ion-label position="start">Product Image</ion-label>
-        <ion-button expand="full" (click)="scan()">Select Image</ion-button>
+        <ion-label position="start">{{"product.image"|translate}}</ion-label>
+        <ion-button expand="full" (click)="scan()">{{"product.select"|translate}}</ion-button>
       </ion-item>
 
       <!-- Image preview -->
@@ -66,7 +66,7 @@
         <img [src]="imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;" />
       </div>
 
-      <ion-button expand="full" type="submit" [disabled]="productForm.invalid">Add Product</ion-button>
+      <ion-button expand="full" type="submit" [disabled]="productForm.invalid">{{"product.add_button"|translate}}</ion-button>
     </form>
   </div>
 </ion-content>

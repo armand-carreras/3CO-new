@@ -18,15 +18,14 @@
   
     <div class="title-container">
       <ion-text color="secondary">
-        <h2>Engage</h2>
+        <h2>{{"product.engage"|translate}}</h2>
       </ion-text>
     </div>
 
     <div class="scan-container">
       <div id="scan-banner">
         <ion-text style="color: white;">
-          <p>Search, post or review 
-            <br/>with 3-CO!</p>
+          <p>{{"product.search_post"|translate}}</p>
         </ion-text>
       </div>
       <ion-button color="primary" shape="round" (click)="postNewProduct()">Post</ion-button>
@@ -43,7 +42,7 @@
 
     <div class="recently-added-container">
       <ion-text color="primary">
-        <h5 class="no-padding">Recently added products</h5>
+        <h5 class="no-padding">{{"product.recently"}}</h5>
       </ion-text>
     </div>
 
@@ -52,7 +51,7 @@
       
       <ng-container *ngIf="productsLoaded && !isThereAnyProduct">
         <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-          <ion-note>Be the first posting a product</ion-note>
+          <ion-note>{{"product.be_first"|translate}}</ion-note>
         </div>
       </ng-container>
       
@@ -133,17 +132,17 @@
         <ion-header>
           <ion-toolbar>
             <ion-buttons slot="start">
-              <ion-button color="medium" (click)="clearFilters()">Clear</ion-button>
+              <ion-button color="medium" (click)="clearFilters()">{{"product.clear"|translate}}</ion-button>
             </ion-buttons>
-            <ion-title >Filters</ion-title>
+            <ion-title >{{"product.filters"|translate}}</ion-title>
             <ion-buttons slot="end">
-              <ion-button color="primary" (click)="applyFilters()">Apply</ion-button>
+              <ion-button color="primary" (click)="applyFilters()">{{"product.apply"|translate}}</ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
 
         <div class="filter-container">
-          <ion-text><h4><strong>Categories</strong></h4></ion-text>
+          <ion-text><h4><strong>{{"categories"|translate}}</strong></h4></ion-text>
           <div class="categories-container">
             <ion-chip *ngFor="let category of categories" [ngClass]="{'selected': selectedCategories.includes(category.name)}" (click)="toggleSelection(category.name)">
               <ion-icon [name]="category.icon"></ion-icon>

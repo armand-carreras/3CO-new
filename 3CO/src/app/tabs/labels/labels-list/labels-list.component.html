@@ -22,7 +22,7 @@
       </ion-button>
 
       <ion-text color="secondary">
-        <h2>Explore Labels</h2>
+        <h2>{{'explore-labels'|translate}}</h2>
       </ion-text>
     
     
@@ -70,7 +70,7 @@
               <ion-buttons slot="start">
                 <ion-button color="medium" (click)="clearFilters()">Clear</ion-button>
               </ion-buttons>
-              <ion-title >Filters</ion-title>
+              <ion-title >{{"filters"|translate}}</ion-title>
               <ion-buttons slot="end">
                 <ion-button color="primary" (click)="applyFilters()">Apply</ion-button>
               </ion-buttons>
@@ -78,7 +78,7 @@
           </ion-header>
           
           <div class="filter-container">
-            <ion-text><h4><strong>Shapes</strong></h4></ion-text>
+            <ion-text><h4><strong>{{"shapes"|translate}}</strong></h4></ion-text>
             <div class="shapes-container">
               <ion-chip *ngFor="let shape of shapes" [ngClass]="{'selected': selectedShapes.includes(shape)}" (click)="toggleSelection(shape, 'shapes')">
                 <div [ngClass]="shape" class="shape-icon"></div>
@@ -87,7 +87,7 @@
           </div>
 
           <div class="filter-container">
-            <ion-text><h4><strong>Colours</strong></h4></ion-text>
+            <ion-text><h4><strong>{{"colours"|translate}}</strong></h4></ion-text>
             <div class="colours-container">
               <ion-chip *ngFor="let color of colours" [ngClass]="{'selected': selectedColours.includes(color)}" (click)="toggleSelection(color, 'colours')">
                 <div [ngStyle]="getColorBackground(color)" class="color-circle"></div>
@@ -97,7 +97,7 @@
           </div>
 
           <div class="filter-container">
-            <ion-text><h4><strong>Categories</strong></h4></ion-text>
+            <ion-text><h4><strong>{{"categories"|translate}}</strong></h4></ion-text>
             <div class="categories-container">
               <ion-chip *ngFor="let category of categories" [ngClass]="{'selected': selectedCategories.includes(category.name)}" (click)="toggleSelection(category.name, 'categories')">
                 <ion-icon [name]="category.icon"></ion-icon>

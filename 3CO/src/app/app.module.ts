@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, OnInit } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, OnInit, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -40,13 +40,11 @@ import { provideTranslateService, TranslateDirective, TranslatePipe } from '@ngx
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideTranslateService({
-      lang: 'en',
-      fallbackLang: 'en',
-      loader: provideTranslateHttpLoader({
-        prefix: '/i18n/',
-        suffix: '.json'
-      })
+      lang: 'en-GB',
+      fallbackLang: 'en-GB',
+      loader: provideTranslateHttpLoader()
     }),
   ],
   exports: [

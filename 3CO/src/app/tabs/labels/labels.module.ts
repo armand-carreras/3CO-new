@@ -9,6 +9,7 @@ import { LabelsPageRoutingModule } from './labels-routing.module';
 import { LabelsPage } from './labels.page';
 import { LabelsListComponent } from './labels-list/labels-list.component';
 import { MoreInfoLabelsModule } from 'src/app/shared/modules/more-info-labels.module';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { MoreInfoLabelsModule } from 'src/app/shared/modules/more-info-labels.mo
     FormsModule,
     IonicModule,
     LabelsPageRoutingModule,
-    MoreInfoLabelsModule
+    MoreInfoLabelsModule,
+    TranslatePipe
   ],
   declarations: [LabelsPage, LabelsListComponent],
   schemas: []

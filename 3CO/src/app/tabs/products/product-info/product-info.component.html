@@ -29,21 +29,21 @@
         <ion-button [href]="getGoogleSearchUrl(product.name, product.shopName)" 
         target="_blank" expand="block" fill="outline" shape="round">
           <ion-icon style="padding-right: 1rem;" name="logo-google"></ion-icon>
-          <ion-text slot="end">Search in Google</ion-text>
+          <ion-text slot="end">{{"product.search"|translate}}</ion-text>
         </ion-button>
         <br>
         <div class="shop-category-info">
-          <ion-text><ion-note>Category: </ion-note>{{product.categories}}</ion-text>
-          <ion-text><ion-note>Shop: </ion-note>{{product.shopName}}</ion-text>
+          <ion-text><ion-note>{{"product.category"|translate}}: </ion-note>{{product.categories}}</ion-text>
+          <ion-text><ion-note>{{"product.shop"|translate}}: </ion-note>{{product.shopName}}</ion-text>
         </div>
-        <ion-text style="width: 90%;"><h5>Description: </h5></ion-text>
+        <ion-text style="width: 90%;"><h5>{{"product.description"|translate}}: </h5></ion-text>
         <ion-note style="width: 90%; text-align: start;">{{product.description}}</ion-note>
         <div class="reviews-title">
-          <ion-text><h5>Reviews</h5></ion-text>
+          <ion-text><h5>{{"product.review"|translate}}</h5></ion-text>
           <ion-button style="--padding-start: 0.5rem; --padding-end: 0.5rem"
             color="secondary" shape="round" fill="outline" (click)="editReview()">
             <ion-icon name="add-outline"></ion-icon>
-            Review
+            {{"product.review"|translate}}
           </ion-button>
         </div>
   
@@ -69,7 +69,7 @@
           
           <div class="single-review-container" *ngFor="let review of productReviews">
             <div class="user-info-container">
-              <ion-text><ion-note>Reviewer: </ion-note>{{review.creatorUsername}}</ion-text>
+              <ion-text><ion-note>{{"product.reviewer"|translate}}: </ion-note>{{review.creatorUsername}}</ion-text>
               <app-rating [rating]="review.rating"></app-rating>
             </div>
             <div class="review-info-container">
@@ -127,7 +127,7 @@
       <ion-button fill="clear" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
-      <ion-text>{{product.name}} review</ion-text>
+      <ion-text>{{product.name}}</ion-text>
         <app-rating [rating]="product.rating"></app-rating>
     </div>
 
@@ -151,20 +151,20 @@
           <ion-icon slot="end" name="star"></ion-icon>
         </ion-range>
         <div style="text-align: center; font-weight: bold; margin-top: 5px;">
-          Rating: {{ reviewForm.get('rating')?.value || 0 }}
+          {{"product.rating"|translate}}: {{ reviewForm.get('rating')?.value || 0 }}
         </div>
       </ion-item>
       
 
       <ion-item>
-        <ion-label position="start">Product Image</ion-label>
-        <ion-button expand="full" (click)="scan()">Select Image</ion-button>
+        <ion-label position="start">{{"product.image"|translate}}</ion-label>
+        <ion-button expand="full" (click)="scan()">{{"product.select"|translate}}</ion-button>
       </ion-item>
       <!-- Image preview -->
       <div *ngIf="imagePreview" style="text-align: center; margin-top: 10px;">
         <img [src]="imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;"/>
       </div>
-      <ion-button expand="full" type="submit" [disabled]="reviewForm.invalid">Add Review</ion-button>
+      <ion-button expand="full" type="submit" [disabled]="reviewForm.invalid">{{"product.add_review"|translate}}</ion-button>
     </form>
 
   </div>

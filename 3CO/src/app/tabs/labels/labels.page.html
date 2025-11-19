@@ -3,7 +3,7 @@
     
     <div id="title">
       <ion-text color="secondary">
-        <h1>Discover the eco-environment!</h1>
+        <h1>{{"label.discover"|translate}}</h1>
       </ion-text>
       <img src="assets/3CO/3_CO_sin_letras.png">
     </div>
@@ -15,27 +15,27 @@
       <div id="descriptive-container">
         <div id="description">
           <ion-text color="secondary">
-            <h4><strong>Welcome to 3-CO.</strong></h4>
+            <h4><strong>{{"label.welcome"|translate}}</strong></h4>
           </ion-text>
-          <ion-note>Scan labels for eco-friendly feedback</ion-note>
+          <ion-note>{{"label.scan_desc"|translate}}</ion-note>
         </div>
         
         <div class="scan-container">
           <div id="scan-banner">
             <ion-text style="color: white;">
-              <p><strong>Earn your badges by <br>scanning</strong></p>
+              <p><strong>{{"label.earn"|translate}}</strong></p>
             </ion-text>
-            <ion-button (click)="scan()" shape="round" color="primary">Scan</ion-button>
+            <ion-button (click)="scan()" shape="round" color="primary">{{"label.scan"|translate}}</ion-button>
           </div>
           <img src="assets/3CO/QRCode_read.png">
         </div>
 
         <div id="discover">
           <ion-text>
-            <p style="font-weight: bold; color:var(--ion-color-primary)">Discover the Labels</p>
+            <p style="font-weight: bold; color:var(--ion-color-primary)">{{"label.discover_labels"|translate}}</p>
           </ion-text>
           <ion-button (click)="seeMoreLabels()" color="primary" fill="clear" shape="round">
-            <ion-label id="scan-label">See all</ion-label>
+            <ion-label id="scan-label">{{"label.see"|translate}}</ion-label>
           </ion-button>
         </div>
 
@@ -43,7 +43,7 @@
         <div class="labels-container">
           <ng-container *ngIf="featuredLabel!=null else labelLoader">
           <ion-text>
-            <h4>Featured Label</h4>
+            <h4>{{"label.featured"|translate}}</h4>
           </ion-text>
             <div class="label-info-box" (click)="showMoreLabelInfo(featuredLabel)">
               <ion-text>{{featuredLabel.name}}</ion-text>
@@ -74,13 +74,13 @@
 
 <ng-template #labelLoader>
   <ion-text>
-    <h4>Featured Label</h4>
+    <h4>{{"label.featured"|translate}}</h4>
   </ion-text>
     <div class="label-info-box">
-      <ion-text>No Label Found</ion-text>
+      <ion-text>{{"label.no_label"|translate}}</ion-text>
       <img src='/assets/databases/No_Image_Available.jpg'>
       <ion-text class="truncate-text" color="medium">
-        There's no label DB connection or there are no labels on it try again later.
+        {{"label.db_connection"|translate}}
       </ion-text>
       <div class="rating">
         <ion-icon name="star"></ion-icon>

@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { LabelSQLiteHandlerService } from './shared/services/SQLite/label-sqlite-handler.service';
 import { SystemBarsService } from './shared/services/system-bars.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -34,9 +35,12 @@ export class AppComponent implements OnInit, OnDestroy {
     private location: Location,
     private router: Router,
     private toastController: ToastController,
+    private translate: TranslateService
   ) {
    
     this.initializeApp();
+    this.translate.addLangs(['ca-ES', 'de-DE', 'en-GB', 'es-ES', 'fr-FR', 'it-IT']);
+    this.translate.use('en-GB'); // default
   }
   
   
