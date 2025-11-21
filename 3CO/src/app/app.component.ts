@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { LabelSQLiteHandlerService } from './shared/services/SQLite/label-sqlite-handler.service';
 import { SystemBarsService } from './shared/services/system-bars.service';
 import { TranslateService } from '@ngx-translate/core';
+import { I18nHandlerService } from './shared/services/i18n-handler.service';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private initSQLite: InitializeAppService,
     private labelSQLite: LabelSQLiteHandlerService,
     private platform: Platform,
-    private barService: SystemBarsService,
+    private i18nHandler: I18nHandlerService,
     private location: Location,
     private router: Router,
     private toastController: ToastController,
@@ -53,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     await this.labelSQLite.getAll();
     await this.storageServ.init();
     await this.themeServ.initTheme();
+    await this.i18nHandler.init();
   }
 
 

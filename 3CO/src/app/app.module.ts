@@ -15,6 +15,7 @@ import { SplashScreenComponent } from './shared/components/splash-screen/splash-
 import { SystemBarsService } from './shared/services/system-bars.service';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideTranslateService, TranslateDirective, TranslatePipe } from '@ngx-translate/core';
+import { I18nHandlerService } from './shared/services/i18n-handler.service';
 
 
 
@@ -28,13 +29,14 @@ import { provideTranslateService, TranslateDirective, TranslatePipe } from '@ngx
     AppRoutingModule,
     IonicStorageModule.forRoot(),
     TranslatePipe,
-    TranslateDirective
+    TranslateDirective,
   ],
   providers: [
     StorageService,
     ThemeService,
     SystemBarsService,
     SQLiteService,
+    I18nHandlerService,
     provideHttpClient(),
     { 
       provide: RouteReuseStrategy,

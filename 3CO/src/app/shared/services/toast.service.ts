@@ -40,7 +40,7 @@ export class ToastService {
 }
 
 export type PredefinedColors =
-  | 'primary'
+  'primary'
   | 'secondary'
   | 'tertiary'
   | 'success'
