@@ -36,10 +36,24 @@
         <ion-icon slot="start" color="primary" name="extension-puzzle-outline"></ion-icon>
         <ion-label>{{'account.version'|translate}}</ion-label>
       </ion-item>
-      <ion-item button detail="true" lines="none" (click)="checkVersion()">
+      <ion-item class='language-item' lines="none">
         <ion-icon slot="start" color="primary" name="language-outline"></ion-icon>
         <ion-label>{{'account.language'|translate}}</ion-label>
-        
+        <ion-select
+          justify="end"
+          [(ngModel)]="preferredLanguage"
+          [placeholder]="preferredLanguage.name"
+          [value]="preferredLanguage.value"
+          (ionChange)="changeSelectorValue($event)"
+          interface="popover"
+        >
+          <ion-select-option
+            *ngFor="let lang of selectorValues"
+            [value]="lang.value"
+          >
+            {{ lang.name }}
+          </ion-select-option>
+        </ion-select>
       </ion-item>
     </ion-list>
     </div>

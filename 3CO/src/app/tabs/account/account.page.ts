@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ViewWillEnter } from '@ionic/angular';
+import { LoadingController, ViewDidEnter, ViewWillEnter } from '@ionic/angular';
 import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { AvailableLangs, I18nHandlerService } from 'src/app/shared/services/i18n-handler.service';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -20,15 +21,42 @@ export class AccountPage implements OnInit, ViewWillEnter {
     rewards: 0
   }
 
+  public preferredLanguage: LangOption = {value: 'en-GB', name: 'English'};
+  public selectorValues: LangOption[] = [
+    {value: 'en-GB', name: 'English'},
+    {value: 'es-ES', name: 'Español'},
+    {value: 'ca-ES', name: 'Català'},
+    {value: 'de-DE', name: 'Deutsch'},
+    {value: 'it-IT', name: 'Italiano'},
+    {value: 'fr-FR', name: 'Français'},
+  ];
+
   constructor(private router: Router,
+    private loader: LoadingController,
     private authServ: AuthService,
-    private userServ: UserService
+    private userServ: UserService,
+    private i18n: I18nHandlerService,
+    private change: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
   }
-  ionViewWillEnter(): void {
-    this.updateUser();
+  async ionViewWillEnter() {
+    const loader = await this.loader.create({message:'Loading...'});
+    await loader.present();
+    await this.updateUser();
+    const lang = await this.i18n.getPreferredLanguage();
+    this.preferredLanguage = this.selectorValues.find(el=>el.value===lang)??{value: 'en-GB', name: 'English'};
+    this.change.detectChanges();
+    loader.dismiss();
+  }
+
+
+
+  public changeSelectorValue(event: CustomEvent) {
+    //console.log('Event from Selector: ', event.detail.value);
+    this.i18n.setPreferredLanguage(event.detail.value);
+    this.preferredLanguage = this.selectorValues.find(el=>el.value===event.detail.value)??{value: 'en-GB', name: 'English'};
   }
 
   public checkPersonalInfo() {
@@ -59,4 +87,9 @@ export class AccountPage implements OnInit, ViewWillEnter {
   }
 
 
+}
+
+export interface LangOption {
+  value: AvailableLangs;
+  name: string;
 }

@@ -28,9 +28,10 @@ export class I18nHandlerService {
 
   public setPreferredLanguage(lang: AvailableLangs) {
     this.storageServ.set('preferredLanguage', lang);
+    this.loadLanguage(lang);
   }
 
-  public async getPreferredLanguage() {
+  public async getPreferredLanguage(): Promise<AvailableLangs> {
     const lang = await this.storageServ.get('preferredLanguage');
     return lang ?? 'es-GB';
   }
