@@ -1,52 +1,63 @@
-
- <div class="header">
+<div class="header">
   <img (click)="goToMainPage()" class="main-img" src="assets/3CO/3_CO_sin_letras.png" alt="3-CO">
   <ion-chip (click)="goToProfile()">
-    <ion-avatar >
+    <ion-avatar>
       <img [src]="currentUser.avatarImg" alt="3-CO">
     </ion-avatar>
     <ion-text>
       {{currentUser.name}}
     </ion-text>
   </ion-chip>
-</div>  
+</div>
 
-  <ng-container *ngIf="!isCreateReview else reviewTemplate">
-    
-    <div class="product-container">
-      <ion-content style="--background: var(--ion-card-background)">
-        <div class="top-info">
-          <ion-button fill="clear" (click)="goBack()">
-            <ion-icon name="arrow-back-outline"></ion-icon>
-          </ion-button>
-          <ion-text>{{product.name}}</ion-text>
-            <app-rating [rating]="product.rating"></app-rating>
-        </div>
-        <div class="product-img-contianer">
-          <img [src]="product.image">
-        </div>
-        <br>
-        <ion-button [href]="getGoogleSearchUrl(product.name, product.shopName)" 
-        target="_blank" expand="block" fill="outline" shape="round">
-          <ion-icon style="padding-right: 1rem;" name="logo-google"></ion-icon>
-          <ion-text slot="end">{{"product.search"|translate}}</ion-text>
+<ng-container *ngIf="!isCreateReview else reviewTemplate">
+
+  <div class="product-container">
+    <ion-content style="--background: var(--ion-card-background)">
+      <div class="top-info">
+        <ion-button fill="clear" (click)="goBack()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
         </ion-button>
-        <br>
-        <div class="shop-category-info">
-          <ion-text><ion-note>{{"product.category"|translate}}: </ion-note>{{product.categories}}</ion-text>
-          <ion-text><ion-note>{{"product.shop"|translate}}: </ion-note>{{product.shopName}}</ion-text>
-        </div>
-        <ion-text style="width: 90%;"><h5>{{"product.description"|translate}}: </h5></ion-text>
-        <ion-note style="width: 90%; text-align: start;">{{product.description}}</ion-note>
-        <div class="reviews-title">
-          <ion-text><h5>{{"product.review"|translate}}</h5></ion-text>
-          <ion-button style="--padding-start: 0.5rem; --padding-end: 0.5rem"
-            color="secondary" shape="round" fill="outline" (click)="editReview()">
-            <ion-icon name="add-outline"></ion-icon>
-            {{"product.review"|translate}}
-          </ion-button>
-        </div>
-  
+        <ion-text>{{product.name}}</ion-text>
+        <app-rating [rating]="product.rating"></app-rating>
+      </div>
+      <div class="product-img-contianer">
+        <img [src]="product.image">
+      </div>
+      <br>
+      <ion-button [href]="getGoogleSearchUrl(product.name, product.shopName)" target="_blank" expand="block"
+        fill="outline" shape="round">
+        <ion-icon style="padding-right: 1rem;" name="logo-google"></ion-icon>
+        <ion-text slot="end">{{"product.search"|translate}}</ion-text>
+      </ion-button>
+      <br>
+      <div class="shop-category-info">
+        <ion-text><ion-note>{{"product.category"|translate}}: </ion-note>{{product.categories}}</ion-text>
+        <ion-text><ion-note>{{"product.shop"|translate}}: </ion-note>{{product.shopName}}</ion-text>
+      </div>
+      <ion-text style="width: 90%;">
+        <h5>{{"product.description"|translate}}: </h5>
+      </ion-text>
+
+      <div style="width: 90%; display: flex; justify-content: space-between;">
+        <!-- Add Button for automatic translation using AnylangService -->
+        <ion-note style="text-align: start;">{{product.description}}</ion-note>
+        <ion-button (click)="translateDescription()">
+          <ion-icon size="small" name="language-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="reviews-title">
+        <ion-text>
+          <h5>{{"product.review"|translate}}</h5>
+        </ion-text>
+        <ion-button style="--padding-start: 0.5rem; --padding-end: 0.5rem" color="secondary" shape="round"
+          fill="outline" (click)="editReview()">
+          <ion-icon name="add-outline"></ion-icon>
+          {{"product.review"|translate}}
+        </ion-button>
+      </div>
+
       <!-- <div class="reviews-container" >
         <div class="single-review-container" *ngFor="let review of productReviews">
           <div class="user-info-container">
@@ -62,11 +73,11 @@
           </div>
         </div>
       </div> -->
-      
-      <ion-list class="reviews-container" >
+
+      <ion-list class="reviews-container">
 
         <ng-container *ngIf="reviewsFetched else reviewSkeleton">
-          
+
           <div class="single-review-container" *ngFor="let review of productReviews">
             <div class="user-info-container">
               <ion-text><ion-note>{{"product.reviewer"|translate}}: </ion-note>{{review.creatorUsername}}</ion-text>
@@ -75,7 +86,9 @@
             <div class="review-info-container">
               <img *ngIf="review.image" [src]="review.image">
               <div class="review-description">
-                <ion-text><h5 style="margin: 0;">{{review.title}}</h5></ion-text>
+                <ion-text>
+                  <h5 style="margin: 0;">{{review.title}}</h5>
+                </ion-text>
                 <ion-note>{{review.description}}</ion-note>
               </div>
             </div>
@@ -84,18 +97,16 @@
         </ng-container>
 
       </ion-list>
-  
-      <ion-infinite-scroll
-        (ionInfinite)="loadMore($event)">
-        <ion-infinite-scroll-content
-          loadingText="Loading more reviews...">
+
+      <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+        <ion-infinite-scroll-content loadingText="Loading more reviews...">
         </ion-infinite-scroll-content>
       </ion-infinite-scroll>
-  
+
     </ion-content>
-    </div>
-  
-  </ng-container>
+  </div>
+
+</ng-container>
 
 
 
@@ -103,14 +114,16 @@
   <div class="single-review-container" *ngFor="let review of [1,2,3,4,5]">
     <div class="user-info-container">
       <ion-skeleton-text></ion-skeleton-text>
-      <ion-skeleton-text ></ion-skeleton-text>
+      <ion-skeleton-text></ion-skeleton-text>
     </div>
     <div class="review-info-container">
       <ion-thumbnail slot="start">
         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
       </ion-thumbnail>
       <div class="review-description">
-        <ion-skeleton-text><h5 style="margin: 0;"></h5></ion-skeleton-text>
+        <ion-skeleton-text>
+          <h5 style="margin: 0;"></h5>
+        </ion-skeleton-text>
         <ion-skeleton-text></ion-skeleton-text>
       </div>
     </div>
@@ -128,25 +141,30 @@
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
       <ion-text>{{product.name}}</ion-text>
-        <app-rating [rating]="product.rating"></app-rating>
+      <app-rating [rating]="product.rating"></app-rating>
     </div>
 
-    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" style="width: 90%; height: auto; overflow: scroll; margin: 0 auto;">
+    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()"
+      style="width: 90%; height: auto; overflow: scroll; margin: 0 auto;">
 
       <ion-item>
-        <ion-input label="Creator" labelPlacement="stacked" [disabled]="true" type="text" [value]="currentUser.name"></ion-input>
+        <ion-input label="Creator" labelPlacement="stacked" [disabled]="true" type="text"
+          [value]="currentUser.name"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input label="Title" placeholder="What's the most important to know?" labelPlacement="stacked" [required]="true" formControlName="title" type="text"></ion-input>
+        <ion-input label="Title" placeholder="What's the most important to know?" labelPlacement="stacked"
+          [required]="true" formControlName="title" type="text"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-textarea labelPlacement="stacked" placeholder="What did you like or dislike? What did you use this product for?"
-        label="Comment" formControlName="description"></ion-textarea>
+        <ion-textarea labelPlacement="stacked"
+          placeholder="What did you like or dislike? What did you use this product for?" label="Comment"
+          formControlName="description"></ion-textarea>
       </ion-item>
 
       <ion-item>
-        <ion-range [required]="true" labelPlacement="stacked" label="Rating" formControlName="rating" min="0" max="5" step="1" snaps="true" ticks="true">
+        <ion-range [required]="true" labelPlacement="stacked" label="Rating" formControlName="rating" min="0" max="5"
+          step="1" snaps="true" ticks="true">
           <ion-icon slot="start" name="star-outline"></ion-icon>
           <ion-icon slot="end" name="star"></ion-icon>
         </ion-range>
@@ -154,7 +172,7 @@
           {{"product.rating"|translate}}: {{ reviewForm.get('rating')?.value || 0 }}
         </div>
       </ion-item>
-      
+
 
       <ion-item>
         <ion-label position="start">{{"product.image"|translate}}</ion-label>
@@ -162,11 +180,11 @@
       </ion-item>
       <!-- Image preview -->
       <div *ngIf="imagePreview" style="text-align: center; margin-top: 10px;">
-        <img [src]="imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;"/>
+        <img [src]="imagePreview" alt="Image Preview" style="max-width: 100%; height: auto;" />
       </div>
-      <ion-button expand="full" type="submit" [disabled]="reviewForm.invalid">{{"product.add_review"|translate}}</ion-button>
+      <ion-button expand="full" type="submit"
+        [disabled]="reviewForm.invalid">{{"product.add_review"|translate}}</ion-button>
     </form>
 
   </div>
 </ng-template>
-

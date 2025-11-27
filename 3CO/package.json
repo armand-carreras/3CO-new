@@ -46,6 +46,7 @@
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@types/crypto-js": "^4.2.2",
+    "anylang": "^3.3.0",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "ionicons": "^7.0.0",

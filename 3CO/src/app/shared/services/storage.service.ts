@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Product, Review } from '../models/product';
 import { Device } from '@capacitor/device';
+import { AvailableLangs } from './i18n-handler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,12 @@ export class StorageService {
   get storageWorking() {
     return this._storage ? true : false;
   }
+
+
+  public async getPreferredLanguage(): Promise<AvailableLangs> {
+      const lang = await this.storage.get('preferredLanguage');
+      return lang ?? 'es-GB';
+    }
 
   async init() {
     

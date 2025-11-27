@@ -17,7 +17,7 @@ import { UserService } from 'src/app/shared/services/user.service';
   templateUrl: './product-info.component.html',
   styleUrls: ['./product-info.component.scss'],
 })
-export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnter {
+export class ProductInfoComponent implements OnInit, ViewWillLeave, ViewWillEnter {
 
   @Input() product!: Product;
   @Input() currentUser!: User;
@@ -33,9 +33,9 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
   public isCreateReview: boolean = false;
   public productReviews: Review[] = [];
   public reviewsFetched: boolean = false;
-  
+
   private photo!: Photo;
-  
+
   private currentPage: number = 1;
   private totalPages: number = 1;
   private perPage: number = 10;
@@ -60,18 +60,18 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
       description: [''],
       rating: [5, [Validators.required, Validators.min(0), Validators.max(5)]]
     });
-   }
+  }
 
   ngOnInit() {
     this.currentUser = this.userServ.getUserValue();
-    console.log('loading reviews for productID: ',this.product.id);
+    console.log('loading reviews for productID: ', this.product.id);
     //await this.loadAllReviews();
     this.loadReviews();
   }
 
   ionViewWillEnter() {
   }
-  
+
   ionViewWillLeave(): void {
     console.log('leaving review page: setting everything to 0');
     this.productReviews = [];
@@ -121,7 +121,7 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
 
 
   editReview() {
-    if(!this.authService.isUserGuest){
+    if (!this.authService.isUserGuest) {
       this.isCreateReview = true;
     } else {
       this.presentAlert();
@@ -135,7 +135,7 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
     this.wannaGoBack.emit(true);
   }
 
-  public goToProfile(){
+  public goToProfile() {
     this.router.navigate(['/tabs/account']);
   }
   public goToMainPage() {
@@ -152,7 +152,7 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
       message: 'To benefit of all features from 3CO please register as user.',
       buttons: [{
         text: 'Register',
-        handler: (()=>{
+        handler: (() => {
           this.goToRegister();
         })
       }],
@@ -161,11 +161,11 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
     await alert.present();
   }
 
-  
+
 
 
   public scan() {
-    console.log('---------> Scanning image: ',this.platform.platforms())
+    console.log('---------> Scanning image: ', this.platform.platforms())
     if (this.platform.is('mobile')) {
       this.mobileScan();
     } else {
@@ -179,20 +179,20 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
       this.toastServ.presentAutoDismissToast('You should accept to use the Camera or your Gallery!', 'warning');
       await this.cameraService.checkAndRequestPermissions();
     }
-    else if(permission.photos === 'denied') {
-      this.toastServ.presentAutoDismissToast('Please check your device Settings and allow 3C0 to use the camera, and gallery.','warning');
+    else if (permission.photos === 'denied') {
+      this.toastServ.presentAutoDismissToast('Please check your device Settings and allow 3C0 to use the camera, and gallery.', 'warning');
     }
     else {
       await this.cameraService
         .getPhoto()
         .then((photo: Photo) => {
-          console.log('photo done: ',JSON.stringify(photo));
+          console.log('photo done: ', JSON.stringify(photo));
           this.photo = photo;
           this.reviewForm.patchValue({ image: `data:image/${photo.format};base64,${photo.base64String}` });
           this.imagePreview = `data:image/${photo.format};base64,${photo.base64String}`; // Set the image preview
         })
         .catch((error) => {
-          if(error.includes('User Cancelled')){
+          if (error.includes('User Cancelled')) {
             this.toastServ.presentAutoDismissToast(error, 'warning')
           }
         });
@@ -242,12 +242,12 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
       const response: reviewGET = await this.productServ.loadReviewsForProduct(this.product.id, this.currentPage, this.perPage);
       // Append the new reviews to the list
       this.productReviews = [...this.productReviews, ...response.reviews];
-      
-      if(!this.reviewsFetched) {
+
+      if (!this.reviewsFetched) {
         this.reviewsFetched = true;
       }
 
-      if(response.reviews.length===0){
+      if (response.reviews.length === 0) {
         const toast = await this.toastServ.setAnimatedToast('Be the first reviewing this product!', 'primary', 700);
         toast.present();
       }
@@ -273,7 +273,7 @@ export class ProductInfoComponent  implements OnInit, ViewWillLeave, ViewWillEnt
     }
   }
 
- 
+
 
 
 
