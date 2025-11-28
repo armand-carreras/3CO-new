@@ -41,7 +41,7 @@
 
       <div style="width: 90%; display: flex; justify-content: space-between;">
         <!-- Add Button for automatic translation using AnylangService -->
-        <ion-note style="text-align: start;">{{product.description}}</ion-note>
+        <ion-note style="text-align: start;">{{product.description | autoTranslate:product.shouldTranslate}}</ion-note>
         <ion-button (click)="translateDescription()">
           <ion-icon size="small" name="language-outline"></ion-icon>
         </ion-button>
@@ -89,7 +89,10 @@
                 <ion-text>
                   <h5 style="margin: 0;">{{review.title}}</h5>
                 </ion-text>
-                <ion-note>{{review.description}}</ion-note>
+                <ion-note>{{review.description | autoTranslate:review.shouldTranslate}}</ion-note>
+                <ion-button (click)="translateReview(review)" fill="clear" size="small">
+                  <ion-icon name="language-outline"></ion-icon>
+                </ion-button>
               </div>
             </div>
           </div>

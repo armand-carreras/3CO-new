@@ -9,6 +9,7 @@ export interface Product {
     description: string;
     rating: number;
     reviews?: Review[];
+    shouldTranslate?: boolean;
 }
 
 export interface Review {
@@ -18,6 +19,7 @@ export interface Review {
     description: string;
     rating: number;
     image?: string; //base64 string
+    shouldTranslate?: boolean;
 }
 
 export interface ProductPost {
@@ -28,15 +30,15 @@ export interface ProductPost {
     categories: ProductCategory[];
     description: string;
 }
- export type ProductCategory = 
+export type ProductCategory =
     'Electronics'
-    |  'Cosmetics'
-    |  'Industry'
-    |  'Building'
-    |  'Matresses'
-    |  'Global'
-    |  'Food'
-    |  'Textile'
-    |  'Chemicals'
-    |  'Energy'
-    |  'Other';
+    | 'Cosmetics'
+    | 'Industry'
+    | 'Building'
+    | 'Matresses'
+    | 'Global'
+    | 'Food'
+    | 'Textile'
+    | 'Chemicals'
+    | 'Energy'
+    | 'Other';

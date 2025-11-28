@@ -220,14 +220,15 @@ export class ProductInfoComponent implements OnInit, ViewWillLeave, ViewWillEnte
     }
   }
 
+  public translateDescription() {
+    console.log('Translate description method called');
+    this.product.shouldTranslate = !this.product.shouldTranslate;
+  }
 
-
-
-
-
-
-
-
+  public translateReview(review: Review) {
+    console.log('Translate review method called');
+    review.shouldTranslate = !review.shouldTranslate;
+  }
 
   async loadReviews(event?: any) {
     // Avoid fetching beyond total pages

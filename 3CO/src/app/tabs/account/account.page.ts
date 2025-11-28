@@ -5,6 +5,7 @@ import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AvailableLangs, I18nHandlerService } from 'src/app/shared/services/i18n-handler.service';
 import { UserService } from 'src/app/shared/services/user.service';
+import { AnylangService } from 'src/app/shared/services/anylang.service';
 
 @Component({
   selector: 'app-account',
@@ -21,14 +22,14 @@ export class AccountPage implements OnInit, ViewWillEnter {
     rewards: 0
   }
 
-  public preferredLanguage: LangOption = {value: 'en-GB', name: 'English'};
+  public preferredLanguage: LangOption = { value: 'en-GB', name: 'English' };
   public selectorValues: LangOption[] = [
-    {value: 'en-GB', name: 'English'},
-    {value: 'es-ES', name: 'Español'},
-    {value: 'ca-ES', name: 'Català'},
-    {value: 'de-DE', name: 'Deutsch'},
-    {value: 'it-IT', name: 'Italiano'},
-    {value: 'fr-FR', name: 'Français'},
+    { value: 'en-GB', name: 'English' },
+    { value: 'es-ES', name: 'Español' },
+    { value: 'ca-ES', name: 'Català' },
+    { value: 'de-DE', name: 'Deutsch' },
+    { value: 'it-IT', name: 'Italiano' },
+    { value: 'fr-FR', name: 'Français' },
   ];
 
   constructor(private router: Router,
@@ -36,17 +37,18 @@ export class AccountPage implements OnInit, ViewWillEnter {
     private authServ: AuthService,
     private userServ: UserService,
     private i18n: I18nHandlerService,
-    private change: ChangeDetectorRef
+    private change: ChangeDetectorRef,
+    private anylangService: AnylangService
   ) { }
 
   ngOnInit() {
   }
   async ionViewWillEnter() {
-    const loader = await this.loader.create({message:'Loading...'});
+    const loader = await this.loader.create({ message: 'Loading...' });
     await loader.present();
     await this.updateUser();
     const lang = await this.i18n.getPreferredLanguage();
-    this.preferredLanguage = this.selectorValues.find(el=>el.value===lang)??{value: 'en-GB', name: 'English'};
+    this.preferredLanguage = this.selectorValues.find(el => el.value === lang) ?? { value: 'en-GB', name: 'English' };
     this.change.detectChanges();
     loader.dismiss();
   }
@@ -56,7 +58,8 @@ export class AccountPage implements OnInit, ViewWillEnter {
   public changeSelectorValue(event: CustomEvent) {
     //console.log('Event from Selector: ', event.detail.value);
     this.i18n.setPreferredLanguage(event.detail.value);
-    this.preferredLanguage = this.selectorValues.find(el=>el.value===event.detail.value)??{value: 'en-GB', name: 'English'};
+    this.anylangService.updateCurrentLanguage(event.detail.value); // Notify AnylangService of language change
+    this.preferredLanguage = this.selectorValues.find(el => el.value === event.detail.value) ?? { value: 'en-GB', name: 'English' };
   }
 
   public checkPersonalInfo() {
@@ -76,7 +79,7 @@ export class AccountPage implements OnInit, ViewWillEnter {
   }
 
   private async updateUser() {
-    if(!this.authServ.isUserGuest) {
+    if (!this.authServ.isUserGuest) {
       await this.userServ.fetchUser();
       this.user = this.userServ.getUserValue();
       console.log('------------ User from account: ', JSON.stringify(this.user));

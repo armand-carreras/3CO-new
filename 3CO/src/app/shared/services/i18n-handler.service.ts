@@ -11,14 +11,14 @@ export class I18nHandlerService {
   constructor(
     private translateServ: TranslateService,
     private storageServ: StorageService
-  ) { 
+  ) {
     this.init();
   }
 
 
   public init() {
     console.log('initializing i18n Service');
-    this.getPreferredLanguage().then((lang)=>{
+    this.getPreferredLanguage().then((lang) => {
       this.loadLanguage(lang);
     });
 

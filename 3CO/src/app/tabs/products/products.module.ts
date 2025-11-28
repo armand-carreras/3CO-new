@@ -11,6 +11,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { RatingComponent } from './rating/rating.component';
 import { ProductInfoComponent } from './product-info/product-info.component';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AutoTranslatePipe } from 'src/app/shared/pipes/auto-translate.pipe';
 
 @NgModule({
   imports: [
@@ -21,6 +22,6 @@ import { TranslatePipe } from '@ngx-translate/core';
     ProductsPageRoutingModule,
     TranslatePipe
   ],
-  declarations: [ProductsPage, ProductFormComponent, ProductInfoComponent, RatingComponent]
+  declarations: [ProductsPage, ProductFormComponent, ProductInfoComponent, RatingComponent, AutoTranslatePipe]
 })
-export class ProductsPageModule {}
+export class ProductsPageModule { }
