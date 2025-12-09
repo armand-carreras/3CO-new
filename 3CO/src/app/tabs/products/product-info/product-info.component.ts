@@ -5,8 +5,10 @@ import { Photo } from '@capacitor/camera';
 import { AlertController, LoadingController, Platform, ViewWillEnter, ViewWillLeave } from '@ionic/angular';
 import { Product, Review } from 'src/app/shared/models/product';
 import { User } from 'src/app/shared/models/user';
+import { AnylangService } from 'src/app/shared/services/anylang.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { CameraService } from 'src/app/shared/services/camera.service';
+import { I18nHandlerService } from 'src/app/shared/services/i18n-handler.service';
 import { ProductHandlerService } from 'src/app/shared/services/product-handler.service';
 import { ToastService } from 'src/app/shared/services/toast.service';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -33,6 +35,9 @@ export class ProductInfoComponent implements OnInit, ViewWillLeave, ViewWillEnte
   public isCreateReview: boolean = false;
   public productReviews: Review[] = [];
   public reviewsFetched: boolean = false;
+  public loadingDescriptionTranslation: boolean = false;
+  public loadingReviewTranslations: Map<string, boolean> = new Map();
+
 
   private photo!: Photo;
 
@@ -51,6 +56,8 @@ export class ProductInfoComponent implements OnInit, ViewWillLeave, ViewWillEnte
     private toastServ: ToastService,
     private loaderService: LoadingController,
     private router: Router,
+    private anylangService: AnylangService,
+    private i18nService: I18nHandlerService
   ) {
     this.currentUser = this.userServ.getUserValue();
 
@@ -220,14 +227,74 @@ export class ProductInfoComponent implements OnInit, ViewWillLeave, ViewWillEnte
     }
   }
 
-  public translateDescription() {
+  public async translateDescription() {
     console.log('Translate description method called');
-    this.product.shouldTranslate = !this.product.shouldTranslate;
+
+    // If already translated, just toggle off
+    if (this.product.shouldTranslate) {
+      this.product.shouldTranslate = false;
+      return;
+    }
+
+    // Start loading state
+    this.loadingDescriptionTranslation = true;
+
+    try {
+      // Get target language
+      const targetLang = await this.i18nService.getPreferredLanguage();
+
+      // Perform translation (this will cache it in the service)
+      await this.anylangService.translate(this.product.description, targetLang);
+
+      // Now enable the pipe to display the cached translation
+      this.product.shouldTranslate = true;
+    } catch (error) {
+      console.error('Error translating description:', error);
+      this.toastServ.presentAutoDismissToast('Translation failed', 'danger');
+    } finally {
+      // Stop loading state
+      this.loadingDescriptionTranslation = false;
+    }
   }
 
-  public translateReview(review: Review) {
+  public async translateReview(review: Review) {
     console.log('Translate review method called');
-    review.shouldTranslate = !review.shouldTranslate;
+
+    // Create unique key for this review's loading state
+    const reviewKey = review.id?.toString() || review.description;
+
+    // If already translated, just toggle off
+    if (review.shouldTranslate) {
+      review.shouldTranslate = false;
+      this.loadingReviewTranslations.delete(reviewKey);
+      return;
+    }
+
+    // Start loading state for this specific review
+    this.loadingReviewTranslations.set(reviewKey, true);
+
+    try {
+      // Get target language
+      const targetLang = await this.i18nService.getPreferredLanguage();
+
+      // Perform translation (this will cache it in the service)
+      await this.anylangService.translate(review.description, targetLang);
+
+      // Now enable the pipe to display the cached translation
+      review.shouldTranslate = true;
+    } catch (error) {
+      console.error('Error translating review:', error);
+      this.toastServ.presentAutoDismissToast('Translation failed', 'danger');
+    } finally {
+      // Stop loading state for this specific review
+      this.loadingReviewTranslations.set(reviewKey, false);
+    }
+  }
+
+  // Helper method to check if a review is being translated
+  public isReviewTranslating(review: Review): boolean {
+    const reviewKey = review.id?.toString() || review.description;
+    return this.loadingReviewTranslations.get(reviewKey) || false;
   }
 
   async loadReviews(event?: any) {
