@@ -6,11 +6,14 @@
           <h3 style="padding:0; margin:0; margin-bottom: 1rem">{{'start-screen.welcome'|translate}}</h3>
         </strong></ion-text>
       <ion-note>{{'start-screen.note'|translate}}</ion-note>
-      <ion-progress-bar *ngIf="!isModelLoaded" [value]="progress" color="primary"></ion-progress-bar>
-      <ion-note *ngIf="!isModelLoaded" style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">
-        {{ progress > 0.01 ? 'Downloading translation model... ' + (progress | percent) : 'Loading translation model...'
-        }}
-      </ion-note>
+      <ng-container *ngIf="!isModelLoaded && loading">
+        <ion-progress-bar style="margin-top: 1rem;" [value]="progress" color="primary"></ion-progress-bar>
+        <ion-note style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">
+          {{ progress > 0.01 ? 'Downloading translation model... ' + (progress | percent) : 'Loading translation
+          model...'
+          }}
+        </ion-note>
+      </ng-container>
     </div>
     <ion-button [disabled]="!isModelLoaded" shape="round" expand="full" color="primary"
       (click)="navigateToAuth()">{{'start-screen.next'|translate}}</ion-button>

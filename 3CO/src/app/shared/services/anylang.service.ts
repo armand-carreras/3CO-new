@@ -68,23 +68,34 @@ export class AnylangService {
 
     this.isLoading = true;
     try {
-      console.log('🔄 Loading translation model:', this.modelName);
+      await this.storage.ensureReady();
+      const alreadyLoaded = await this.storage.get('model_loaded');
 
       // @ts-ignore
       this.translator = await pipeline('translation', this.modelName, {
         progress_callback: (data: any) => {
+          if (alreadyLoaded) return; // Suppress progress if already loaded
+
           if (data.status === 'progress' && data.file) {
             const fileProgress = (data.loaded / data.total) * 100;
             const sizeMB = (data.total / 1024 / 1024).toFixed(1);
-            console.log(`⬇️ Downloading ${data.file} (${sizeMB}MB): ${fileProgress.toFixed(1)}%`);
-            this.modelDownloadProgress$.next(Math.round(fileProgress));
+            console.log(`Downloading ${data.file} (${sizeMB}MB): ${fileProgress.toFixed(1)}%`);
+
+            // Cap progress at 95% so we don't trigger navigation until all files are done
+            this.modelDownloadProgress$.next(Math.min(Math.round(fileProgress), 95));
           } else if (data.status === 'ready') {
-            console.log('✅ Model ready!');
-            this.modelDownloadProgress$.next(100);
+            console.log('Model ready!');
+            // Do not emit 100 here, wait for the promise to resolve
           }
         }
       });
-      console.log('✅ Translation model loaded successfully!');
+      console.log('Translation model loaded successfully!');
+
+      // Mark model as loaded in storage
+      if (!alreadyLoaded) {
+        await this.storage.set('model_loaded', true);
+      }
+
       this.modelDownloadProgress$.next(100);
     } catch (error) {
       console.error('Failed to load translation model:', error);
@@ -120,8 +131,8 @@ export class AnylangService {
       const detectedLang = franc(text);
       const src = this.francToNllb[detectedLang] || 'spa_Latn'; // Default to Spanish if unknown
 
-      console.log(`🔍 Detected language: ${detectedLang} -> ${src}`);
-      console.log(`📝 Translating from ${src} to ${tgt}`);
+      console.log(`Detected language: ${detectedLang} -> ${src}`);
+      console.log(`Translating from ${src} to ${tgt}`);
 
       const options: any = {
         tgt_lang: tgt,
@@ -138,7 +149,7 @@ export class AnylangService {
         translatedText = (result as any).translation_text;
       }
 
-      console.log(`✅ Translation complete`);
+      console.log(`Translation complete`);
 
       this.cache.set(cacheKey, translatedText);
       return translatedText;
@@ -169,6 +180,20 @@ export class AnylangService {
     if (this.langMap[normalized]) return this.langMap[normalized];
 
     return null;
+  }
+
+  public async isModelLoaded(): Promise<boolean> {
+    await this.storage.ensureReady();
+    // Check if model was previously loaded successfully
+    const isModelCached = await this.storage.get('model_loaded');
+
+    console.log('Loading translation model:', this.modelName);
+    if (isModelCached) {
+      console.log('Translation model already loaded!');
+      this.modelDownloadProgress$.next(100);
+      return true;
+    }
+    return false;
   }
 
 }

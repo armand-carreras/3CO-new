@@ -42,7 +42,7 @@
       <div style="width: 90%; display: flex; justify-content: space-between;">
         <!-- Add Button for automatic translation using AnylangService -->
         <ion-note style="text-align: start;">{{product.description | autoTranslate:product.shouldTranslate}}</ion-note>
-        <ion-button (click)="translateDescription()">
+        <ion-button (click)="translateDescription()" fill="clear" size="small">
           <ion-icon size="small" name="language-outline"></ion-icon>
         </ion-button>
       </div>
@@ -91,7 +91,9 @@
                 </ion-text>
                 <ion-note>{{review.description | autoTranslate:review.shouldTranslate}}</ion-note>
                 <ion-button (click)="translateReview(review)" fill="clear" size="small">
-                  <ion-icon name="language-outline"></ion-icon>
+                  <ng-container *ngIf="!loadingTranslation" else translating>
+                    <ion-icon name="language-outline" size="small"></ion-icon>
+                  </ng-container>
                 </ion-button>
               </div>
             </div>
@@ -111,7 +113,9 @@
 
 </ng-container>
 
-
+<ng-template #translating>
+  <ion-spiner name="crescent"></ion-spiner>
+</ng-template>
 
 <ng-template #reviewSkeleton>
   <div class="single-review-container" *ngFor="let review of [1,2,3,4,5]">

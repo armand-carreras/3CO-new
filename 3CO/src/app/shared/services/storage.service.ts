@@ -10,8 +10,13 @@ import { AvailableLangs } from './i18n-handler.service';
 export class StorageService {
 
   private _storage: Storage | null = null;
+  private readyPromise: Promise<void>;
+  private readyResolve: () => void = () => { };
 
   constructor(private storage: Storage) {
+    this.readyPromise = new Promise((resolve) => {
+      this.readyResolve = resolve;
+    });
   }
 
   get storageWorking() {
@@ -20,19 +25,23 @@ export class StorageService {
 
 
   public async getPreferredLanguage(): Promise<AvailableLangs> {
-      const lang = await this.storage.get('preferredLanguage');
-      return lang ?? 'es-GB';
-    }
+    const lang = await this.storage.get('preferredLanguage');
+    return lang ?? 'es-GB';
+  }
 
   async init() {
-    
+
     const storage = await this.storage.create();
     this._storage = storage;
     const isGuestStablished = await this.getGuestID();
-    if(!isGuestStablished) {
+    if (!isGuestStablished) {
       await this.storeGuestID();
     }
-    
+    this.readyResolve();
+  }
+
+  public async ensureReady(): Promise<void> {
+    return this.readyPromise;
   }
 
   // Create and expose methods that users of this service can
@@ -63,8 +72,8 @@ export class StorageService {
   public async setProductToStore(product: Product) {
     console.log('Setting up new product to store', product);
     const prods = await this.getStoredProducts();
-    this._storage?.set('products', [...(prods || []), product]); 
-  } 
+    this._storage?.set('products', [...(prods || []), product]);
+  }
 
   public getStoredProducts() {
     return this._storage?.get('products');
@@ -82,7 +91,7 @@ export class StorageService {
           product.reviews = []; // Initialize reviews array if it doesn't exist
         }
         product.reviews.push(review);
-  
+
         // Save the updated products array back into storage
         await this._storage?.set('products', products);
         console.log(`Review added to product with ID: ${prodId}`);
@@ -93,7 +102,7 @@ export class StorageService {
       console.warn('No products found in storage.');
     }
   }
-  
+
 
 
 
@@ -120,7 +129,7 @@ export class StorageService {
   private async generateGuestID() {
     const deviceId = await Device.getId();
     return 'Guest' + deviceId.identifier;
-    
+
   }
 
 }
